@@ -10,6 +10,7 @@
 - [5. Class Diagram](#5-class-diagram)
 - [6. ER Diagram](#6-er-diagram)
 - [7. Sequences Diagrams](#7-sequences-diagrams)
+- [8. Document External and Internal APIs](#8-document-external-and-internal-apis)
 
 ## Objectives
 
@@ -79,6 +80,8 @@
 - As a guide, I want to receive online payments directly through the platform.
 - As a guide, I want to earn certification badges, so that I can increase my credibility.
 
+---
+
 ## 3. Mockups
 
 <img src="mockup/Home.png" width="1080" height="720">
@@ -91,19 +94,25 @@
 
 <img src="mockup/Booking.png" width="1080" height="720">
 
+---
+
 ## 4. Architecture Diagram
 
 <img src="diagrams/ArchitectureDiagram.png" width="1080" height="1720">
 
+---
 
 ## 5. Class Diagram
 
 <img src="diagrams/ClassDiagramW.png" width="1080" height="1080">
 
+---
+
 ## 6. ER Diagram
 
 <img src="diagrams/ERDiagram.png" width="1080" height="720">
 
+---
 
 ## 7. Sequences Diagrams
 
@@ -117,4 +126,288 @@
 
 ### Booking
 <img src="diagrams/SequenceDiagramBooking.png" width="1080" height="820">
+
+----
+
+## 8. Document External and Internal APIs
+
+### 8.1 External API
+#### Mapbox GL JS
+
+| Property | Description |
+|----------|-------------|
+| Purpose | Display interactive maps in the frontend |
+| Integration Type | Frontend JavaScript library |
+| Input | Coordinates |
+| Output | Interactive rendered map |
+
+#### Integration Example
+
+```
+const map = new mapboxgl.Map({
+    container: 'map',
+    style: 'mapbox://styles/mapbox/streets-v12',
+    center: [longitude, latitude],
+    zoom: 12
+});
+```
+
+### 8.2 Internal API
+
+GuidHéHo expose a REST API that allows the frontend application to manage users, guides, bookings and reviews.
+
+#### Authentication Endpoints
+##### Register User
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/auth/register``` |
+| Method | ```POST``` |
+| Input Format | JSON |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+{
+    "firstname": "Mahmoud",
+    "lastname": "Bouate",
+    "email": "mahmoudbouate@example.com",
+    "password": "password/123"
+}
+```
+
+##### Example Response
+
+```
+{
+    "message": "User created successfully",
+    "token": "jwt_token",
+    "user": {
+        "id": 1,
+        "firstname": "Mahmoud",
+        "lastname": "Bouate",
+        "email": "mahmoudbouate@example.com"
+    }
+}
+```
+
+##### Login User
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/auth/login``` |
+| Method | ```POST``` |
+| Input Format | JSON |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+{
+    "email": "mahmoudbouate@example.com",
+    "password": "password/123"
+}
+```
+
+##### Example Response
+
+```
+{
+    "message": "Login successful",
+    "token": "jwt_token",
+    "user": {
+        "id": 1,
+        "firstname": "Mahmoud",
+        "lastname": "Bouate"
+    }
+}
+```
+
+#### User Endpoints
+##### Get User Profile
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/users/:id``` |
+| Method | ```GET``` |
+| Input Format | URL parameter |
+| Output Format | JSON |
+
+##### Example Response
+
+```
+{
+    "id": 1,
+    "firstname": "Mahmoud",
+    "lastname": "Bouate"
+}
+```
+
+##### Update User Profile
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/users/:id``` |
+| Method | ```PATCH``` |
+| Authorization | Bearer token |
+| Input Format | JSON |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+{
+    "firstname": "Lucas",
+    "lastname": "Podevin",
+    "email": "lucas.podevin@example.com"
+}
+```
+
+##### Example Response
+
+```
+{
+    "message": "Profile updated successfully"
+}
+```
+
+#### Guide Endpoints
+##### Get All Guides
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/guides``` |
+| Method | ```GET``` |
+| Input Format | Query parameters |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+/guides?city=Bordeaux
+```
+
+##### Example Response
+
+```
+[
+    {
+    "id": 1,
+    "firstname": "Pierre",
+    "lastname": "Palmade",
+    "price": 40,
+    "rating": 4.8
+    },
+    ...
+]
+```
+
+##### Get Guide Details
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/guides/:id``` |
+| Method | ```GET``` |
+| Input Format | URL parameter |
+| Output Format | JSON |
+
+##### Example Response
+
+```
+{
+    "id": 1,
+    "firstname": "Pierre",
+    "lastname": "Palmade",
+    "bio": "A travel guide with good deals",
+    "city": "Bordeaux",
+    "price": 40,
+    "rating": 4.8
+}
+```
+
+#### Booking Endpoints
+##### Create Booking
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/bookings``` |
+| Method | ```POST``` |
+| Authorization | Bearer token |
+| Input Format | JSON |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+{
+    "guideId": 1,
+    "date": "2026-05-19",
+    "numberOfPeople": 2
+}
+```
+
+##### Example Response
+
+```
+{
+    "message": "Booking created successfully",
+    "bookingId": 1
+}
+```
+
+#### Review Endpoints
+##### Add Review
+
+| Property | Description |
+|----------|-------------|
+| URL | ```/reviews``` |
+| Method | ```POST``` |
+| Authorization | Bearer token |
+| Input Format | JSON |
+| Output Format | JSON |
+
+##### Example Request
+
+```
+{
+    "userId": 1,
+    "guideId": 1,
+    "rating": 4,
+    "comment": "Excellent experience"
+}
+```
+
+##### Example Response
+
+```
+{
+    "message": "Review added successfully"
+}
+```
+
+#### Error Response Format
+
+The API returns standardized error messages in JSON format.
+
+##### Example Error Response
+
+```
+{
+    "error": "Invalid credentials"
+}
+```
+
+##### Common HTTP Status Codes
+
+| Code | Meaning |
+|------|---------|
+| 200 | Request successful |
+| 201 | Resource created successfully |
+| 400 | Bad request |
+| 401 | Unauthorized |
+| 404 | Resource not found |
+| 500 | Internal server error |
+
+
 
