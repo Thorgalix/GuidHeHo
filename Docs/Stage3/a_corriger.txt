@@ -1,6 +1,0 @@
-Class Diagram
-
-méthode login et register à retirer
-Guide -> GuideProfile
-supprimer tous les ids (gérés par Django)
-

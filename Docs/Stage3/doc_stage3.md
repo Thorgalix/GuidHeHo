@@ -6,11 +6,11 @@
 - [1. User Stories + MoSCoW (Traveler)](#1-user-stories-moscow-traveler)
 - [2. Guide User Stories + MoSCoW](#2-guide-user-stories-moscow)
 - [3. Mockups](#3-mockups)
-- [4. Architecture Diagram](#4-architecture-diagram)
-- [5. Class Diagram](#5-class-diagram)
-- [6. ER Diagram](#6-er-diagram)
-- [7. Sequences Diagrams](#7-sequences-diagrams)
-- [8. Document External and Internal APIs](#8-document-external-and-internal-apis)
+- [4. Diagrams](#4-diagrams)
+- [5. Document External and Internal APIs](#5-document-external-and-internal-apis)
+- [6. SCM Strategy](#6-scm-strategy)
+- [7. QA Strategy](#7-qa-strategy)
+- [8. Technical Justifications](#8-technical-justifications)
 
 ## Objectives
 
@@ -96,42 +96,44 @@
 
 ---
 
-## 4. Architecture Diagram
+## 4. Diagrams
+
+### Architecture Diagram
 
 <img src="diagrams/ArchitectureDiagram.png" width="1080" height="1720">
 
 ---
 
-## 5. Class Diagram
+### Class Diagram
 
-<img src="diagrams/ClassDiagramW.png" width="1080" height="1080">
-
----
-
-## 6. ER Diagram
-
-<img src="diagrams/ERDiagram.png" width="1080" height="720">
+<img src="diagrams/ClassDiagramGuidHéHo.png" width="1080" height="720">
 
 ---
 
-## 7. Sequences Diagrams
+### ER Diagram
 
-### Login
-<img src="diagrams/SequenceDiagramLogin.png" width="1080" height="860">
+<img src="diagrams/ERDiagram.png" width="1080" height="860">
+
+---
+
+### Sequences Diagrams
+
+#### Login
+<img src="diagrams/SequenceDiagramLogin.png" width="1080" height="1000">
 
 
-### Find a Guide
+#### Find a Guide
 <img src="diagrams/SequenceDiagramSearch.png" width="1080" height="500">
 
 
-### Booking
+#### Booking
 <img src="diagrams/SequenceDiagramBooking.png" width="1080" height="820">
 
 ----
 
-## 8. Document External and Internal APIs
+## 5. Document External and Internal APIs
 
-### 8.1 External API
+### 5.1 External API
 #### Mapbox GL JS
 
 | Property | Description |
@@ -152,7 +154,7 @@ const map = new mapboxgl.Map({
 });
 ```
 
-### 8.2 Internal API
+### 5.2 Internal API
 
 GuidHéHo expose a REST API that allows the frontend application to manage users, guides, bookings and reviews.
 
@@ -409,5 +411,142 @@ The API returns standardized error messages in JSON format.
 | 404 | Resource not found |
 | 500 | Internal server error |
 
+## 6. SCM Strategy
 
+The project GuidHéHo uses Git for version control. The project repository is hosted on Github.
+
+### Branching Strategy
+
+- ```main``` : Stable production-ready version of the project
+- ```dev_lucas``` : Development branch used by Lucas
+- ```dev_mahmoud``` : Development branch used by Mahmoud
+
+Each developer works independently on their own branch before merging stable features into the main branch.
+
+### Development Workflow
+
+The development workflow follows these steps:
+
+1. Each developer pulls the latest version of the repository
+2. Development is done on a personal development branch
+3. Changes are committed regularly with clear commit messages
+4. Features are tested locally before integration
+5. Code reviews and verification are performed before merging
+6. Stable code is merged into the main branch
+
+## 7. QA Strategy
+
+The GuidHéHo project implements a structured Quality Assurance (QA) strategy to ensure the reliability of the backend API, database integrity, and frontend behavior.
+The QA process is divided into three main layers: API testing, Django backend testing (including database validation), and manual frontend testing.
+
+### 7.1 API Testing
+
+API testing is performed using Postman.
+Postman is used to validate the REST API behavior and ensure correct communication between the frontend and backend.
+
+#### Objectives of API Testing
+
+- Verify that all REST endpoints return correct responses
+- Validate HTTP status codes (200, 201, 400, 401, 404, 500)
+- Test authentication and authorization (JWT token handling)
+- Ensure correct JSON response structure
+- Test error handling for invalid inputs
+
+#### Endpoints Tested
+
+- ```/auth/register```
+- ```/auth/login```
+- ```/users/:id```
+- ```/guides```
+- ```/bookings```
+- ```/reviews```
+
+#### Expected Results
+
+- Correct JSON responses for valid requests
+- Proper error messages for invalid requests
+- Secure access to protected routes
+- Consistent API behavior across all endpoints
+
+### 7.2 Django Testing
+
+Backend and database testing are handled using the built-in testing framework of Django.
+
+This layer combines both business logic testing and database validation, as Django automatically interacts with PostgreSQL through its ORM.
+
+#### Objectives of Django Testing
+
+- Validate backend business logic (authentication, bookings, reviews)
+- Ensure correct behavior of API endpoints
+- Test database operations through the ORM
+- Verify data integrity and constraints
+- Ensure correct model relationships (foreign keys, one-to-many, etc.)
+
+#### Types of Tests
+
+- Unit Tests
+    - User creation and authentication
+    - Booking creation logic
+    - Review validation rules
+- Integration Tests
+    - Database interaction through Django ORM
+
+#### Database Validation
+
+Database behavior is tested implicitly through Django models and ORM operations:
+
+- Unique constraints (e.g., unique email addresses)
+- Required fields validation
+- Foreign key relationships (users, guides, bookings)
+- Data consistency after CRUD operations
+
+### 7.3 Manual Frontend Testing
+
+#### Objectives of Frontend Testing
+
+- Verify correct rendering of SSR HTML pages
+- Ensure navigation between pages works correctly
+- Validate form submissions (login, registration, booking)
+- Test JavaScript interactions and dynamic behavior
+- Ensure responsive design across different screen sizes
+- Validate integration with Mapbox for map rendering
+
+#### Elements Tested Manually
+
+- Home page rendering
+- Login and registration forms
+- User dashboard
+- Guide profile pages
+- Booking flow
+- Map display with markers and coordinates
+- Responsive layout (mobile, tablet, desktop)
+
+## 8. Technical Justifications
+
+### Backend Framework: Django
+
+We chose Django because it provides:
+- built-in authentication system
+- ORM for DB managements
+- rapid development for MVP
+
+### Database: PostgreSQL
+
+We chose PostgreSQL because:
+- strong relational data model (user, bookings, guides...)
+- well integrated with Django ORM
+- good documentation for manage with Django
+
+### API Design: REST
+
+REST architecture was chosen because:
+- technology learn during our program
+- easy integration with Postman testing
+
+### Map Integration: Mapbox
+
+Mapbox was selected because:
+- easy integration with JavaScript
+- customizable interactive maps
+- good support for markers and geolocation
 
