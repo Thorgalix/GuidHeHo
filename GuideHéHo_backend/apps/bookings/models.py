@@ -1,6 +1,6 @@
 from django.db import models
 from apps.accounts.models import User
-from apps.guides.models import GuideProfile, Availability
+from apps.guides.models import Availability, Guide
 
 
 class Booking(models.Model):
@@ -12,33 +12,17 @@ class Booking(models.Model):
         ('cancelled', 'Cancelled'),
     )
 
-    traveler = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='bookings'
-    )
+    traveler = models.ForeignKey(User,on_delete=models.CASCADE,related_name='bookings')
 
-    guide = models.ForeignKey(
-        GuideProfile,
-        on_delete=models.CASCADE,
-        related_name='bookings'
-    )
+    guide = models.ForeignKey(Guide,on_delete=models.CASCADE,related_name='bookings')
 
-    availability = models.ForeignKey(
-        Availability,
-        on_delete=models.CASCADE,
-        related_name='bookings'
-    )
+    availability = models.ForeignKey(Availability,on_delete=models.CASCADE,related_name='bookings')
 
-    date = models.DateField()
+    Booking_date = models.DateField()
 
     number_of_people = models.PositiveIntegerField()
 
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending'
-    )
+    status = models.CharField(max_length=20,choices=STATUS_CHOICES,default='pending')
 
     message = models.TextField(blank=True, null=True)
 
