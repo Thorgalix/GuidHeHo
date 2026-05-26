@@ -1,6 +1,6 @@
 from django.db import models
 from apps.accounts.models import User
-from apps.guides.models import GuideProfile
+from apps.guides.models import Guide
 
 
 class Review(models.Model):
@@ -11,11 +11,7 @@ class Review(models.Model):
         related_name='reviews'
     )
 
-    guide = models.ForeignKey(
-        GuideProfile,
-        on_delete=models.CASCADE,
-        related_name='reviews'
-    )
+    guide = models.ForeignKey(Guide,on_delete=models.CASCADE,related_name='reviews')
 
     rating = models.PositiveIntegerField()
 
@@ -23,5 +19,5 @@ class Review(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return f"{self.rating}⭐ - {self.guide.user.username}"
+    class Meta:
+        unique_together = ("traveler", "guide")
