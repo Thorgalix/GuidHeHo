@@ -1,4 +1,5 @@
 # pyright: reportMissingTypeStubs=false
+from django.urls import path, include
 """
 URL configuration for config project.
 
@@ -20,5 +21,10 @@ from django.contrib import admin
 from django.urls import path
 
 urlpatterns = [
-    path("admin/", admin.site.urls),
+    path('admin/', admin.site.urls),
+
+    path('users/', include('apps.accounts.urls')),
+    path('guides/', include('apps.guides.urls')),
+    path('auth/', include('apps.accounts.urls')),
+    path("bookings/", include("apps.bookings.urls")),
 ]

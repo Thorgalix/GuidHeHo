@@ -39,3 +39,4 @@ class Availability(models.Model):
     end_datetime = models.DateTimeField()
 
     is_available = models.BooleanField(default=True)
+
