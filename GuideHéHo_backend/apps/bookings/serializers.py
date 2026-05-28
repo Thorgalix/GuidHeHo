@@ -19,3 +19,5 @@ class BookingSerializer(serializers.ModelSerializer):
             "message",
         ]
         read_only_fields = ["traveler", "status"]
+
+        
