@@ -27,4 +27,5 @@ urlpatterns = [
     path('guides/', include('apps.guides.urls')),
     path('auth/', include('apps.accounts.urls')),
     path("bookings/", include("apps.bookings.urls")),
+    path("reviews/", include("apps.reviews.urls")),
 ]
