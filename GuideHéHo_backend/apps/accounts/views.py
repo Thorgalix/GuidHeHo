@@ -27,10 +27,16 @@ class RegisterView(APIView):
         if serializer.is_valid():
 
             # Save uses RegisterSerializer.create() to persist the user.
-            serializer.save()
+            user = serializer.save()
 
             return Response(
-                serializer.data,
+                {
+                    "id": user.id,
+                    "email": user.email,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "role": user.role,
+                },
                 status=status.HTTP_201_CREATED
             )
 

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GuidHéHo</title>
+
+</head>
+<body>
+    <header>
+
+    </header>
+
+    <main>
+        <h1>GuidHéHo</h1>
+
+        <!-- Espace de recherche -->
+         <!-- à ajouter : 
+          -possibilité de faire une recherche avancée avec plusieurs filtres (nb de personnes, langues parlées, prix max, dates de résa(pas dispo encore))
+          -pagination 
+          -mapbox pour afficher les résultats sur une carte
+          -->
+        <section id="guidsearch">
+            <h2>Recherche</h2>
+            <form id="search-bar">
+                <label for="search-input-city">Ville</label>
+                <input id="search-input-city" type="search" class="input" name="city" placeholder="Ville ex: Dijon">
+                <label for="search-input-theme">Thème</label>
+                <input id="search-input-theme" type="search" class="input" name="theme" placeholder="Thème ex: Histoire">
+                <button type="submit">Rechercher</button>
+                <div id="search-input-message" aria-live="polite"></div>
+            </form>
+
+            <div id="search-results"></div>
+
+        </section>
+
+
+        <!-- Espace d'inscription -->
+        <section id="register">
+            <h2>Inscription</h2>
+            <form id="register_form">
+                <label for="firstname-input">Prénom</label>
+                <input id="firstname-input" type="text" class="input" name="first_name" placeholder="Prénom">
+                <label for="lastname-input">Nom</label>
+                <input id="lastname-input" type="text" class="input" name="last_name" placeholder="Nom">
+                <label for="email-input">Email</label>
+                <input id="email-input" type="email" class="input" name="email" placeholder="Email">
+                <label for="password-input">Mot de passe</label>
+                <input id="password-input" type="password" class="input" name="password" placeholder="Mot de passe">
+                <label for="id-role">Rôle</label>
+                <select name="role" id="id-role">
+                    <option value="traveler">Traveler</option>
+                    <option value="guide">Guide</option>
+                </select>
+                <button type="submit">S'inscrire</button>
+                <div id="status_register" aria-live="polite"></div>
+            </form>
+
+        </section>
+
+
+        <!-- Espace de connexion -->
+        <section id="login">
+            <h2>Login</h2>
+            <form id="login_form">
+                <label for="email-login-input">Email</label>
+                <input id="email-login-input" type="email" class="input" name="email" placeholder="Email">
+                <label for="password-login-input">Mot de passe</label>
+                <input id="password-login-input" type="password" class="input" name="password" placeholder="Mot de passe">
+                <button type="submit">Se connecter</button>
+                <div id="status_login" aria-live="polite"></div>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <script src="search.js" defer></script>
+        <script src="register.js" defer></script>
+        <script src="login.js" defer></script>
+    </footer>
+</body>
+</html>
