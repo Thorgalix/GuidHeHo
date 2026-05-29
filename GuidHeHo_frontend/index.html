@@ -16,7 +16,7 @@
 
         <!-- Espace de recherche -->
          <!-- à ajouter : 
-          -possibilité de faire une recherche avancée avec plusieurs filtres (nb de personnes, langues parlées, prix max, dates de résa(pas dispo encore))
+          -possibilité de faire une recherche avancée avec plusieurs filtres (nb de personnes et dates de résa(pas dispo encore))
           -pagination 
           -mapbox pour afficher les résultats sur une carte
           -->
@@ -26,12 +26,23 @@
                 <label for="search-input-city">Ville</label>
                 <input id="search-input-city" type="search" class="input" name="city" placeholder="Ville ex: Dijon">
                 <label for="search-input-theme">Thème</label>
-                <input id="search-input-theme" type="search" class="input" name="theme" placeholder="Thème ex: Histoire">
+                <select id="search-input-theme" class="input" name="theme">
+                    <option value="">Tous les thèmes</option>
+                </select>
+                <label for="search-input-language">Langue</label>
+                <select id="search-input-language" class="input" name="language">
+                    <option value="">Toutes les langues</option>
+                </select>
+                <label for="search-input-price-max">Prix maximum (€)</label>
+                <input id="search-input-price-max" type="number" min="0" step="0.01" class="input" name="price_max" placeholder="Prix max ex: 50">
                 <button type="submit">Rechercher</button>
                 <div id="search-input-message" aria-live="polite"></div>
             </form>
 
             <div id="search-results"></div>
+            
+            <!-- mapbox pour afficher les résultats sur une carte -->
+            <div id="map-guide"></div>
 
         </section>
 
