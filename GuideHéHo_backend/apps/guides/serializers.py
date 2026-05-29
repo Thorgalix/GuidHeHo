@@ -51,4 +51,12 @@ class GuideCreateSerializer(serializers.ModelSerializer):
         guide.themes.set(themes)
         return guide
 
-
+class ThemeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Theme
+        fields = ["id", "name"]
+        
+class LanguageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Language
+        fields = ["id", "name"]

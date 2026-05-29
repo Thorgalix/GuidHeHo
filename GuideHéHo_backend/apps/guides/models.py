@@ -22,6 +22,9 @@ class Guide(models.Model):
 
     city = models.CharField(max_length=100)
 
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
 
     languages = models.ManyToManyField(Language)

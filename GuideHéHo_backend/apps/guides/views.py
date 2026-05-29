@@ -4,8 +4,8 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import Guide
-from .serializers import GuideCreateSerializer, GuideSeralizer
+from .models import Guide, Theme, Language
+from .serializers import GuideCreateSerializer, GuideSeralizer, ThemeSerializer, LanguageSerializer
 
 
 class GuideListView(APIView):
@@ -68,6 +68,18 @@ class GuideDetailView(APIView):
         serializer = GuideSeralizer(guide)
         return Response(serializer.data)
 
+class ThemeListView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        themes = Theme.objects.all()
+        serializer = ThemeSerializer(themes, many=True)
+        return Response(serializer.data)
 
-
-
+class LanguageListView(APIView):
+    permission_classes = [AllowAny]
+    
+    def get(self, request):
+        languages = Language.objects.all()
+        serializer = LanguageSerializer(languages, many=True)
+        return Response(serializer.data)
