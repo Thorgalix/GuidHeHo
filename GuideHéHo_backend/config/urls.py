@@ -19,13 +19,21 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from rest_framework.routers import DefaultRouter
+from apps.guides.views import GuideViewSet
+
+router = DefaultRouter()
+router.register(r"guides", GuideViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('users/', include('apps.accounts.urls')),
-    path('guides/', include('apps.guides.urls')),
+  #  path('guides/', include('apps.guides.urls')),
     path('auth/', include('apps.accounts.urls')),
     path("bookings/", include("apps.bookings.urls")),
     path("reviews/", include("apps.reviews.urls")),
+
+
+    path("",include(router.urls)),
 ]

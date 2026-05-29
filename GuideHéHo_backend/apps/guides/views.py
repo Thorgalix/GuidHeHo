@@ -1,8 +1,11 @@
 from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework import viewsets
+
 
 from .models import Guide, Theme, Language
 from .serializers import GuideCreateSerializer, GuideSeralizer, ThemeSerializer, LanguageSerializer
@@ -68,18 +71,6 @@ class GuideDetailView(APIView):
         serializer = GuideSeralizer(guide)
         return Response(serializer.data)
 
-class ThemeListView(APIView):
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        themes = Theme.objects.all()
-        serializer = ThemeSerializer(themes, many=True)
-        return Response(serializer.data)
 
-class LanguageListView(APIView):
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        languages = Language.objects.all()
-        serializer = LanguageSerializer(languages, many=True)
-        return Response(serializer.data)
+
+
