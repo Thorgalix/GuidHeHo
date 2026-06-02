@@ -1,11 +1,42 @@
 from rest_framework import serializers
-from .models import Guide, Language, Theme
+
 from apps.accounts.serializers import UserSerializer
 
+from .models import Guide, Language, Theme, Availability
+
+
+class ThemeSerializer(serializers.ModelSerializer):
+    """Serializer for the `Theme` model (read/write).
+
+    Provides the `id` and `name` fields.
+    """
+
+    class Meta:
+        model = Theme
+        fields = ["name"]
+
+
+class LanguageSerializer(serializers.ModelSerializer):
+    """Serializer for the `Language` model (read/write).
+
+    Provides the `id` and `name` fields.
+    """
+
+    class Meta:
+        model = Language
+        fields = ["name"]
+
 class GuideSeralizer(serializers.ModelSerializer):
-    languages = serializers.StringRelatedField(many=True)
-    themes = serializers.StringRelatedField(many=True)
+    """Read serializer for `Guide`.
+
+    Returns nested `languages`, `themes` and the `user` (read-only).
+    """
+
+    languages = LanguageSerializer(many=True, read_only=True)
+    themes = ThemeSerializer(many=True, read_only=True)
     user = UserSerializer(read_only=True)
+    favorites_count = serializers.SerializerMethodField()
+    is_favorited = serializers.SerializerMethodField()
 
     class Meta:
         model = Guide
@@ -18,10 +49,26 @@ class GuideSeralizer(serializers.ModelSerializer):
             "languages",
             "themes",
             "user",
+            "favorites_count",
+            "is_favorited",
         ]
+
+    def get_favorites_count(self, obj):
+        return obj.favorites.count()
+
+    def get_is_favorited(self, obj):
+        request = self.context.get("request")
+        if not request or request.user.is_anonymous:
+            return False
+        return obj.favorites.filter(pk=request.user.pk).exists()
 
 
 class GuideCreateSerializer(serializers.ModelSerializer):
+    """Write serializer for creating/updating `Guide`.
+
+    Accepts primary keys for `languages` and `themes` and sets the
+    `user` from the request via a HiddenField.
+    """
     languages = serializers.PrimaryKeyRelatedField(
         queryset=Language.objects.all(),
         many=True,
@@ -43,20 +90,16 @@ class GuideCreateSerializer(serializers.ModelSerializer):
             "themes",
         ]
 
-    def create(self, validated_data):
-        languages = validated_data.pop("languages", [])
-        themes = validated_data.pop("themes", [])
-        guide = Guide.objects.create(**validated_data)
-        guide.languages.set(languages)
-        guide.themes.set(themes)
-        return guide
 
-class ThemeSerializer(serializers.ModelSerializer):
+class AvailabilitySerializer(serializers.ModelSerializer):
+    guide = serializers.PrimaryKeyRelatedField(read_only=True)
+
     class Meta:
-        model = Theme
-        fields = ["id", "name"]
-        
-class LanguageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Language
-        fields = ["id", "name"]
+        model = Availability
+        fields = [
+            "id",
+            "guide",
+            "start_datetime",
+            "end_datetime",
+            "is_available",
+        ]

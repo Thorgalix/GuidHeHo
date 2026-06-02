@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 from apps.accounts.models import User
 
 
@@ -24,13 +25,15 @@ class Guide(models.Model):
 
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    
+
     price_per_hour = models.DecimalField(max_digits=8, decimal_places=2)
 
     languages = models.ManyToManyField(Language)
     themes = models.ManyToManyField(Theme)
 
     average_rating = models.FloatField(default=0)
+
+    favorites = models.ManyToManyField(settings.AUTH_USER_MODEL, related_name="favorites_guides", blank=True)
 
     def __str__(self):
         return f"{self.user.first_name} {self.user.last_name}"
