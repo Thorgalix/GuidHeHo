@@ -13,10 +13,14 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 from pathlib import Path
 import os
 from decouple import AutoConfig
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 config = AutoConfig(search_path=BASE_DIR)
+
+# Mapbox Access Token
+MAPBOX_ACCESS_TOKEN = config('MAPBOX_ACCESS_TOKEN', default=config('VITE_MAPBOX_TOKEN', default=''))
 
 
 # Quick-start development settings - unsuitable for production
