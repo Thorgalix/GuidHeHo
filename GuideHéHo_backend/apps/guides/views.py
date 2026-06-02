@@ -1,85 +1,79 @@
-from django.shortcuts import get_object_or_404
-from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
-from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
 
-from .models import Guide, Theme, Language
-from .serializers import GuideCreateSerializer, GuideSeralizer, ThemeSerializer, LanguageSerializer
+from .pagination import GuidePagination
+from .filters import GuideFilter
+from .models import Guide, Availability
+from .permissions import IsAvailabilityOwnerOrReadOnly
+from .serializers import GuideCreateSerializer, GuideSeralizer, AvailabilitySerializer
 
 
-class GuideListView(APIView):
-    def get_permissions(self):
-        if self.request.method == "POST":
-            return [IsAuthenticated()]
-        return [AllowAny()]
+class GuideViewSet(viewsets.ModelViewSet):
+    queryset = Guide.objects.all()
+    serializer_class = GuideSeralizer
+    filter_backends = [DjangoFilterBackend]
+    filterset_class = GuideFilter
+    pagination_class = GuidePagination
 
-    def get(self, request):
-        guides = Guide.objects.all()
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update"]:
+            return GuideCreateSerializer
+        return GuideSeralizer
 
-        city = request.query_params.get("city")
-        price_max = request.query_params.get("price_max")
-        language = request.query_params.get("language")
-        theme = request.query_params.get("theme")
+    @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
+    def favorite(self, request, pk=None):
+        guide = self.get_object()
+        user = request.user
 
-        if city:
-            guides = guides.filter(city__icontains=city)
+        # use exists() to avoid loading the whole relation
+        is_favorited = guide.favorites.filter(pk=user.pk).exists()
+        if is_favorited:
+            guide.favorites.remove(user)
+            is_favorited = False
+            status_text = "removed"
+        else:
+            guide.favorites.add(user)
+            is_favorited = True
+            status_text = "added"
 
-        if price_max:
-            guides = guides.filter(price_per_hour__lte=price_max)
+        favorites_count = guide.favorites.count()
+        return Response({
+            "status": f"{status_text} to favorites",
+            "is_favorited": is_favorited,
+            "favorites_count": favorites_count,
+        })
 
-        if language:
-            guides = guides.filter(languages__id=language)
 
-        if theme:
-            guides = guides.filter(themes__id=theme)
-
-        serializer = GuideSeralizer(guides.distinct(), many=True)
+    @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
+    def favorites(self, request):
+        guides = request.user.favorites_guides.all()
+        serializer = self.get_serializer(guides, many=True, context={"request": request})
         return Response(serializer.data)
 
-    def post(self, request):
-        if request.user.role != "guide":
-            return Response(
-                {"error": "Only guide accounts can create a guide profile."},
-                status=status.HTTP_403_FORBIDDEN,
-            )
 
-        if getattr(request.user, "Guide_profile", None) is not None:
-            return Response(
-                {"error": "Guide profile already exists."},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+class AvailabilityViewSet(viewsets.ModelViewSet):
+    queryset = Availability.objects.select_related("guide", "guide__user").all()
+    serializer_class = AvailabilitySerializer
+    permission_classes = [IsAvailabilityOwnerOrReadOnly]
 
-        serializer = GuideCreateSerializer(
-            data=request.data,
-            context={"request": request},
-        )
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        guide_id = self.request.query_params.get("guide")
+        if guide_id:
+            queryset = queryset.filter(guide_id=guide_id)
+        return queryset
 
-        if serializer.is_valid():
-            guide = serializer.save()
-            return Response(GuideSeralizer(guide).data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    def perform_create(self, serializer):
+        guide = getattr(self.request.user, "Guide_profile", None)
+        if guide is None:
+            raise PermissionDenied("Guide profile not found")
+        serializer.save(guide=guide)
 
 
-class GuideDetailView(APIView):
-    def get(self, request, pk):
-        guide = get_object_or_404(Guide, id=pk)
-        serializer = GuideSeralizer(guide)
-        return Response(serializer.data)
 
-class ThemeListView(APIView):
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        themes = Theme.objects.all()
-        serializer = ThemeSerializer(themes, many=True)
-        return Response(serializer.data)
 
-class LanguageListView(APIView):
-    permission_classes = [AllowAny]
-    
-    def get(self, request):
-        languages = Language.objects.all()
-        serializer = LanguageSerializer(languages, many=True)
-        return Response(serializer.data)
+

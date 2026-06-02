@@ -42,9 +42,11 @@ class CreateReviewView(APIView):
         )
 
         # Met à jour la moyenne du guide après création d'un avis
-        average = Review.objects.filter(guide=guide).aggregate(avg=Avg('rating'))['avg'] or 0
+        reviews = Review.objects.filter(guide=guide)
+        result = reviews.aggregate(avg=Avg('rating'))
+        average = result['avg'] or 0
         guide.average_rating = round(average, 1)
-        guide.save(update_fields=['average_rating'])
+        guide.save()
 
         serializer = ReviewSerializer(review)
 
