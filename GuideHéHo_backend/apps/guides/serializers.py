@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
 from apps.accounts.serializers import UserSerializer
+from .services.mapbox_geocoding import geocode_city
 
 from .models import Guide, Language, Theme, Availability
 
@@ -51,6 +52,8 @@ class GuideSeralizer(serializers.ModelSerializer):
             "user",
             "favorites_count",
             "is_favorited",
+            "latitude",
+            "longitude",
         ]
 
     def get_favorites_count(self, obj):
@@ -85,11 +88,25 @@ class GuideCreateSerializer(serializers.ModelSerializer):
             "user",
             "bio",
             "city",
+            "latitude",
+            "longitude",
             "price_per_hour",
             "languages",
             "themes",
         ]
 
+    def create(self, validated_data):
+        languages = validated_data.pop("languages", [])
+        themes = validated_data.pop("themes", [])
+        latitude, longitude = geocode_city(validated_data["city"])
+        guide = Guide.objects.create(
+            latitude=latitude,
+            longitude=longitude,
+            **validated_data
+        )
+        guide.languages.set(languages)
+        guide.themes.set(themes)
+        return guide
 
 class AvailabilitySerializer(serializers.ModelSerializer):
     guide = serializers.PrimaryKeyRelatedField(read_only=True)

@@ -54,7 +54,6 @@ class GuideViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(guides, many=True, context={"request": request})
         return Response(serializer.data)
 
-
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.select_related("guide", "guide__user").all()
     serializer_class = AvailabilitySerializer
@@ -72,8 +71,5 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         if guide is None:
             raise PermissionDenied("Guide profile not found")
         serializer.save(guide=guide)
-
-
-
 
 
