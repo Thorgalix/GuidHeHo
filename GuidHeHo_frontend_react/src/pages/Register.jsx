@@ -2,15 +2,21 @@ import { useState } from "react"
 import { api } from "../services/api"
 
 export default function Register() {
+
+    // States
+    
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [message, setMessage] = useState("")
 
+    // Comportements
+
     async function handleSubmit(e) {
         e.preventDefault()
 
+        // On envoie les informations nécessaires à la création du compte.
         try {
             await api.post("/users/register/", {
                 email,
@@ -24,6 +30,8 @@ export default function Register() {
             setMessage(err.message)
         }
     }
+
+    // Affichage
 
     return (
         <div>

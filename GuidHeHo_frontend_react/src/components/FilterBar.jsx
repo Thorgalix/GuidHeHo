@@ -2,6 +2,9 @@ import { useState, useEffect } from "react"
 import { api } from "../services/api"
 
 export default function FilterBar({ onSearch }) {
+    
+    // States
+    
     const [city, setCity] = useState("")
     const [theme, setTheme] = useState("")
     const [language, setLanguage] = useState("")
@@ -10,12 +13,15 @@ export default function FilterBar({ onSearch }) {
     const [themes, setThemes] = useState([])
     const [languages, setLanguages] = useState([])
 
+    // Comportements
+
     useEffect(() => {
+        // On charge les options de filtres depuis l'API au montage.
         async function loadFilters() {
             try {
                 const [t, l] = await Promise.all([
-                    api.get("/guides/themes/"),
-                    api.get("/guides/languages/")
+                    api.get("/api/guides/themes/"),
+                    api.get("/api/guides/languages/")
                 ])
 
                 setThemes(t)
@@ -31,13 +37,16 @@ export default function FilterBar({ onSearch }) {
     function handleSubmit(e) {
         e.preventDefault()
 
+        // On transmet les filtres saisis au composant parent.
         onSearch({
             city,
             theme,
             language,
-            price_max: priceMax
+            max_price: priceMax
         })
     }
+
+    // Affichage
 
     return (
         <form onSubmit={handleSubmit}>
@@ -49,8 +58,8 @@ export default function FilterBar({ onSearch }) {
 
             <select value={theme} onChange={(e) => setTheme(e.target.value)}>
                 <option value="">All themes</option>
-                {themes.map((t) => (
-                    <option key={t.id} value={t.id}>
+                {(themes ?? []).map((t, index) => (
+                    <option key={t.id ?? `theme-${index}`} value={t.id}>
                         {t.name}
                     </option>
                 ))}
@@ -58,8 +67,8 @@ export default function FilterBar({ onSearch }) {
 
             <select value={language} onChange={(e) => setLanguage(e.target.value)}>
                 <option value="">All languages</option>
-                {languages.map((l) => (
-                    <option key={l.id} value={l.id}>
+                {(languages ?? []).map((l, index) => (
+                    <option key={l.id ?? `language-${index}`} value={l.id}>
                         {l.name}
                     </option>
                 ))}

@@ -1,89 +1,31 @@
-import { useEffect, useState, useContext } from "react"
-import { api } from "../services/api"
-import { AuthContext } from "../context/AuthContext"
+import { useBecomeGuide } from "../hooks/useBecomeGuide"
 
 export default function BecomeGuide() {
-    const { user, isAuthenticated } = useContext(AuthContext)
+    
+    // States
 
-    const [bio, setBio] = useState("")
-    const [city, setCity] = useState("")
-    const [price, setPrice] = useState("")
-
-    const [themes, setThemes] = useState([])
-    const [languages, setLanguages] = useState([])
-
-    const [selectedThemes, setSelectedThemes] = useState([])
-    const [selectedLanguages, setSelectedLanguages] = useState([])
-
-    const [message, setMessage] = useState("")
-    const [loading, setLoading] = useState(false)
-
-    // 🔽 load options
-    useEffect(() => {
-        async function load() {
-            try {
-                const [t, l] = await Promise.all([
-                    api.get("/guides/themes/"),
-                    api.get("/guides/languages/")
-                ])
-
-                setThemes(t)
-                setLanguages(l)
-            } catch (err) {
-                setMessage(err.message)
-            }
-        }
-
-        load()
-    }, [])
-
-    function toggle(setter, value) {
-        setter((prev) =>
-            prev.includes(value)
-                ? prev.filter((v) => v !== value)
-                : [...prev, value]
-        )
-    }
-
-    async function handleSubmit(e) {
-        e.preventDefault()
-
-        setMessage("")
-        setLoading(true)
-
-        if (!bio || !city || !price) {
-            setMessage("Tous les champs sont requis")
-            setLoading(false)
-            return
-        }
-
-        try {
-            await api.post("/guides/", {
-                bio,
-                city,
-                price_per_hour: Number(price),
-                themes: selectedThemes,
-                languages: selectedLanguages
-            })
-
-            setMessage("Profil guide créé avec succès")
-
-            setBio("")
-            setCity("")
-            setPrice("")
-            setSelectedThemes([])
-            setSelectedLanguages([])
-
-        } catch (err) {
-            setMessage(err.message)
-        } finally {
-            setLoading(false)
-        }
-    }
-
+    const {
+        isAuthenticated,
+        bio, setBio,
+        city, setCity,
+        price, setPrice,
+        themes,
+        languages,
+        selectedThemes, setSelectedThemes,
+        selectedLanguages, setSelectedLanguages,
+        message,
+        submitting,
+        submitSummary,
+        slots, addSlot, removeSlot, updateSlot,
+        toggle,
+        handleSubmit
+    } = useBecomeGuide()
+    
     if (!isAuthenticated) {
         return <p>Tu dois être connecté pour devenir guide.</p>
     }
+
+    // Affichage
 
     return (
         <div>
@@ -110,11 +52,11 @@ export default function BecomeGuide() {
                 />
 
                 <h4>Themes</h4>
-                {themes.map((t) => (
+                {(themes ?? []).map((t) => (
                     <label key={t.id}>
                         <input
                             type="checkbox"
-                            checked={selectedThemes.includes(t.id)}
+                            checked={selectedThemes.includes(Number(t.id))}
                             onChange={() => toggle(setSelectedThemes, t.id)}
                         />
                         {t.name}
@@ -122,23 +64,48 @@ export default function BecomeGuide() {
                 ))}
 
                 <h4>Languages</h4>
-                {languages.map((l) => (
+                {(languages ?? []).map((l) => (
                     <label key={l.id}>
                         <input
                             type="checkbox"
-                            checked={selectedLanguages.includes(l.id)}
+                            checked={selectedLanguages.includes(Number(l.id))}
                             onChange={() => toggle(setSelectedLanguages, l.id)}
                         />
                         {l.name}
                     </label>
                 ))}
 
-                <button type="submit" disabled={loading}>
-                    {loading ? "Création..." : "Become Guide"}
+                <h4>Disponibilités</h4>
+
+                {slots.map((slot, index) => (
+                    <div key={index}>
+                        <input
+                            type="datetime-local"
+                            value={slot.start_datetime}
+                            onChange={(e) => updateSlot(index, "start_datetime", e.target.value)}
+                        />
+                        <input
+                            type="datetime-local"
+                            value={slot.end_datetime}
+                            onChange={(e) => updateSlot(index, "end_datetime", e.target.value)}
+                        />
+                        <button type="button" onClick={() => removeSlot(index)}>
+                            Remove
+                        </button>
+                    </div>
+                ))}
+                
+                <button type="button" onClick={addSlot}>
+                    Add Slot
+                </button>
+
+                <button type="submit" disabled={submitting}>
+                    {submitting ? "Création..." : "Become Guide"}
                 </button>
             </form>
 
             {message && <p>{message}</p>}
+            {submitSummary && <p>{submitSummary}</p>}
         </div>
     )
 }

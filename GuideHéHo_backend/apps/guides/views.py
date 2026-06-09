@@ -7,9 +7,9 @@ from rest_framework.permissions import IsAuthenticated
 
 from .pagination import GuidePagination
 from .filters import GuideFilter
-from .models import Guide, Availability
+from .models import Guide, Availability, Theme, Language
 from .permissions import IsAvailabilityOwnerOrReadOnly
-from .serializers import GuideCreateSerializer, GuideSeralizer, AvailabilitySerializer
+from .serializers import GuideCreateSerializer, GuideSeralizer, AvailabilitySerializer, ThemeSerializer, LanguageSerializer
 
 
 class GuideViewSet(viewsets.ModelViewSet):
@@ -23,6 +23,19 @@ class GuideViewSet(viewsets.ModelViewSet):
         if self.action in ["create", "update", "partial_update"]:
             return GuideCreateSerializer
         return GuideSeralizer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
+
+    @action(detail=False, methods=["get"])
+    def themes(self, request):
+        return Response(ThemeSerializer(Theme.objects.all(), many=True).data)
+
+    @action(detail=False, methods=["get"])
+    def languages(self, request):
+        return Response(LanguageSerializer(Language.objects.all(), many=True).data)
 
     @action(detail=True, methods=["POST"], permission_classes=[IsAuthenticated])
     def favorite(self, request, pk=None):

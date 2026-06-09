@@ -1,50 +1,35 @@
-import { useEffect, useState, useRef } from "react"
-import { api } from "../services/api"
-
+import { useContext, useEffect } from "react"
 import GuideCard from "../components/GuideCard"
 import FilterBar from "../components/FilterBar"
 import GuideMap from "../components/GuideMap"
+import { AuthContext } from "../context/AuthContext"
+import { useSearchGuides } from "../hooks/useSearchGuides"
 
 
 export default function Search() {
-    const [guides, setGuides] = useState([])
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
-    const [hasSearched, setHasSearched] = useState(false)
+    // States
+    const { isAuthenticated } = useContext(AuthContext)
 
-
-    async function fetchGuides(filters = {}) {
-        setLoading(true)
-        setError("")
-
-        try {
-            let url = "/guides/"
-
-
-            const params = new URLSearchParams()
-
-            if (filters.city) params.append("city", filters.city)
-            if (filters.theme) params.append("theme", filters.theme)
-            if (filters.language) params.append("language", filters.language)
-            if (filters.price_max) params.append("price_max", filters.price_max)
-
-            const query = params.toString()
-            if (query) url += `?${query}`
-
-            const data = await api.get(url)
-
-            setGuides(data)
-            setHasSearched(true)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setLoading(false)
-        }
-    }
+    const {
+        guides,
+        loading,
+        error,
+        hasSearched,
+        next,
+        previous,
+        count,
+        fetchGuides,
+    } = useSearchGuides()
 
     useEffect(() => {
-        fetchGuides()
-    }, [])
+        // Après restauration de session (token en localStorage), on refait un fetch
+        // pour obtenir un is_favorited cohérent côté serveur.
+        if (isAuthenticated) {
+            fetchGuides()
+        }
+    }, [isAuthenticated])
+
+    // Affichage
 
     return (
         <div style={{ padding: "20px" }}>
@@ -63,6 +48,23 @@ export default function Search() {
                 {guides.map((guide) => (
                     <GuideCard key={guide.id} guide={guide} />
                 ))}
+            </div>
+            <div style={{ marginTop: "20px", display: "flex", gap: "10px" }}>
+                <button
+                    disabled={!previous}
+                    onClick={() => fetchGuides({}, previous)}
+                >
+                    Previous
+                </button>
+
+                <button
+                    disabled={!next}
+                    onClick={() => fetchGuides({}, next)}
+                >
+                    Next
+                </button>
+
+                <span>Total: {count}</span>
             </div>
             <GuideMap guides={guides} />
         </div>

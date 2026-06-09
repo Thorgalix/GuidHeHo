@@ -5,6 +5,9 @@ import { saveAuth } from "../services/auth"
 import { AuthContext } from "../context/AuthContext"
 
 export default function Login() {
+
+    // States
+
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
     const [loading, setLoading] = useState(false)
@@ -14,6 +17,8 @@ export default function Login() {
     const { login } = useContext(AuthContext)
     const navigate = useNavigate()
 
+    // Comportements
+
     async function handleSubmit(e) {
         e.preventDefault()
 
@@ -21,6 +26,7 @@ export default function Login() {
         setError("")
         setSuccess("")
 
+        // On évite d'envoyer une connexion incomplète.
         if (!email || !password) {
             setError("Tous les champs sont requis")
             return
@@ -34,10 +40,10 @@ export default function Login() {
                 password,
             })
 
-            // 1. localStorage
+            // On sauvegarde d'abord les tokens en localStorage.
             saveAuth(data)
 
-            // 2. context React (IMPORTANT)
+            // Puis on met à jour le contexte React pour rafraîchir l'UI.
             login(data)
 
             setSuccess("Connexion réussie")
@@ -54,6 +60,8 @@ export default function Login() {
             setLoading(false)
         }
     }
+
+    // Affichage
 
     return (
         <div>
