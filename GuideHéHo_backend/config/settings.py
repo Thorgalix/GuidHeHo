@@ -11,10 +11,16 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from decouple import AutoConfig
 from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+config = AutoConfig(search_path=BASE_DIR)
+
+# Mapbox Access Token
+MAPBOX_ACCESS_TOKEN = config('MAPBOX_ACCESS_TOKEN', default=config('VITE_MAPBOX_TOKEN', default=''))
 
 # Mapbox Access Token
 MAPBOX_ACCESS_TOKEN = config('MAPBOX_ACCESS_TOKEN', default=config('VITE_MAPBOX_TOKEN', default=''))
@@ -45,6 +51,7 @@ INSTALLED_APPS = [
     # Third party
     'rest_framework',
     'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
     'django_filters',
     'drf_spectacular',
@@ -151,6 +158,43 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = "static/"
-
-
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+# Email configuration: read from environment when possible.
+# In development, if SMTP credentials are not provided, emails go to the console.
+# code apps Guide : qkvpbkznlhhmhpmc
+EMAIL_HOST = config("EMAIL_HOST", default="smtp.gmail.com")
+EMAIL_PORT = config("EMAIL_PORT", default=587, cast=int)
+EMAIL_USE_TLS = config("EMAIL_USE_TLS", default=True, cast=bool)
+
+EMAIL_HOST_USER = config("EMAIL_HOST_USER", default="")
+EMAIL_HOST_PASSWORD = config("EMAIL_HOST_PASSWORD", default="")
+DEFAULT_FROM_EMAIL = config("DEFAULT_FROM_EMAIL", default=EMAIL_HOST_USER or "no-reply@localhost")
+
+# Choose backend: explicit override via env var `EMAIL_BACKEND`, otherwise
+# use SMTP if creds present, fall back to console backend in DEBUG.
+EMAIL_BACKEND = config("EMAIL_BACKEND", default="")
+if not EMAIL_BACKEND:
+    if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
+        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+    elif DEBUG:
+        EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+    else:
+        # Production without explicit credentials: keep SMTP backend but it will fail until env vars provided
+        EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    "AUTH_HEADER_TYPES": ("Bearer",),
+}

@@ -14,7 +14,7 @@ class ThemeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Theme
-        fields = ["id", "name"]
+        fields = ["id" , "name"]
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -120,3 +120,4 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             "end_datetime",
             "is_available",
         ]
+        read_only_fields = ["is_available"]
