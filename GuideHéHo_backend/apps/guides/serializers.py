@@ -13,7 +13,7 @@ class ThemeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Theme
-        fields = ["name"]
+        fields = ["id" , "name"]
 
 
 class LanguageSerializer(serializers.ModelSerializer):
@@ -24,7 +24,7 @@ class LanguageSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Language
-        fields = ["name"]
+        fields = ["id", "name"]
 
 class GuideSeralizer(serializers.ModelSerializer):
     """Read serializer for `Guide`.
@@ -103,3 +103,4 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             "end_datetime",
             "is_available",
         ]
+        read_only_fields = ["is_available"]

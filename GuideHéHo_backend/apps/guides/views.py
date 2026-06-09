@@ -4,6 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 from .pagination import GuidePagination
 from .filters import GuideFilter
@@ -72,8 +73,5 @@ class AvailabilityViewSet(viewsets.ModelViewSet):
         if guide is None:
             raise PermissionDenied("Guide profile not found")
         serializer.save(guide=guide)
-
-
-
 
 
