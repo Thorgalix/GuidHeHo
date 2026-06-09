@@ -2,9 +2,15 @@ import { useEffect, useState } from "react"
 import { api } from "../services/api"
 
 export default function MyBookings() {
+
+    // States
+
     const [bookings, setBookings] = useState([])
 
+    // Comportements
+
     useEffect(() => {
+        // On charge les réservations de l'utilisateur connecté au montage.
         async function load() {
             try {
                 const data = await api.get("/bookings/my/")
@@ -16,6 +22,8 @@ export default function MyBookings() {
 
         load()
     }, [])
+
+    // Affichage
 
     return (
         <div>

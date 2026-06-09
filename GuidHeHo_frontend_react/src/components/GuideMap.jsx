@@ -1,9 +1,14 @@
 import { useEffect, useRef } from "react"
 
 export default function GuideMap({ guides }) {
+
+    // States
+
     const mapRef = useRef(null)
     const mapInstance = useRef(null)
     const markersRef = useRef([])
+
+    // Comportements
 
     useEffect(() => {
         if (!window.mapboxgl) return
@@ -23,15 +28,20 @@ export default function GuideMap({ guides }) {
     useEffect(() => {
         if (!mapInstance.current) return
 
-        // 🧹 clear markers
+        //  clear markers
         markersRef.current.forEach((m) => m.remove())
         markersRef.current = []
+
+        const bounds = new window.mapboxgl.LngLatBounds()
+        let hasValidPoint = false
 
         guides.forEach((guide) => {
             if (!guide.latitude || !guide.longitude) return
 
+            const lngLat = [guide.longitude, guide.latitude]
+
             const marker = new window.mapboxgl.Marker()
-                .setLngLat([guide.longitude, guide.latitude])
+                .setLngLat(lngLat)
                 .setPopup(
                     new window.mapboxgl.Popup().setHTML(`
                         <strong>${guide.user.first_name}</strong><br/>
@@ -41,9 +51,19 @@ export default function GuideMap({ guides }) {
                 .addTo(mapInstance.current)
 
             markersRef.current.push(marker)
+            bounds.extend(lngLat)
+            hasValidPoint = true
         })
+
+        if (hasValidPoint) {
+            mapInstance.current.fitBounds(bounds, { 
+                padding: 60,
+                maxZoom: 10, 
+            })
+        }
     }, [guides])
 
+    // Affichage
     return (
         <div
             ref={mapRef}

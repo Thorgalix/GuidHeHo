@@ -1,3 +1,4 @@
+// Transforme une réponse d'erreur API en message lisible pour l'interface.
 export function getErrorMessage(result, response = null) {
     if (response?.status === 401) {
         return "Session expirée ou token invalide. Reconnecte-toi puis réessaie."
