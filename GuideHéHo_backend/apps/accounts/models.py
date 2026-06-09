@@ -46,14 +46,13 @@ class User(AbstractUser):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
 
-    # Store the main account role for access and filtering.
     role = models.CharField(max_length=20, choices= ROLE_CHOICES, default="traveler")
 
-    # Optional profile photo shown in the user profile.
     profile_picture = models.ImageField(upload_to="profiles/",blank=True,null=True)
 
-    # Timestamp used for audits and ordering.
     created_at = models.DateTimeField(auto_now_add=True)
+
+    is_verified = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -65,6 +64,25 @@ class User(AbstractUser):
         return self.email
 
 
+import random
+from django.conf import settings
 
 
+class EmailVerification(models.Model):
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE
+    )
+
+    code = models.CharField(max_length=6)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def save(self, *args, **kwargs):
+
+        if not self.code:
+            self.code = str(random.randint(100000, 999999))
+
+        super().save(*args, **kwargs)
 

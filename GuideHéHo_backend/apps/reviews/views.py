@@ -3,6 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Avg
+from django.shortcuts import get_object_or_404
+from django.db import IntegrityError
+
+from rest_framework.pagination import PageNumberPagination
 
 from .models import Review
 from .serializers import ReviewSerializer
@@ -14,14 +18,11 @@ class CreateReviewView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
-
         guide_id = request.data.get("guide")
-        rating = request.data.get("rating")
-        comment = request.data.get("comment")
 
-        guide = Guide.objects.get(id=guide_id)
+        guide = get_object_or_404(Guide, id=guide_id)
 
-        # CHECK: user must have booking
+        # CHECK: user must have booking accepted
         has_booking = Booking.objects.filter(
             traveler=request.user,
             guide=guide,
@@ -34,12 +35,13 @@ class CreateReviewView(APIView):
                 status=status.HTTP_403_FORBIDDEN
             )
 
-        review = Review.objects.create(
-            traveler=request.user,
-            guide=guide,
-            rating=rating,
-            comment=comment
-        )
+        serializer = ReviewSerializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+            # ensure traveler is the requesting user and guide instance used
+            serializer.save(traveler=request.user, guide=guide)
+        except IntegrityError:
+            return Response({"error": "You have already reviewed this guide."}, status=status.HTTP_400_BAD_REQUEST)
 
         # Met à jour la moyenne du guide après création d'un avis
         reviews = Review.objects.filter(guide=guide)
@@ -48,16 +50,18 @@ class CreateReviewView(APIView):
         guide.average_rating = round(average, 1)
         guide.save()
 
-        serializer = ReviewSerializer(review)
-
         return Response(serializer.data, status=201)
 
 class GuideReviewsView(APIView):
 
     def get(self, request, guide_id):
 
-        reviews = Review.objects.filter(guide_id=guide_id)
+        reviews = Review.objects.filter(guide_id=guide_id).order_by('-created_at')
 
-        serializer = ReviewSerializer(reviews, many=True)
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        result_page = paginator.paginate_queryset(reviews, request)
 
-        return Response(serializer.data)
+        serializer = ReviewSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)

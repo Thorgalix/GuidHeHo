@@ -3,6 +3,16 @@ from .models import Review
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    def validate_rating(self, value):
+        if value is None:
+            raise serializers.ValidationError("Rating is required")
+        try:
+            rating = int(value)
+        except (TypeError, ValueError):
+            raise serializers.ValidationError("Rating must be an integer")
+        if rating < 1 or rating > 5:
+            raise serializers.ValidationError("Rating must be between 1 and 5")
+        return rating
 
     class Meta:
         model = Review
