@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.db import transaction
 
 from apps.accounts.serializers import UserSerializer
 from .services.mapbox_geocoding import geocode_city
@@ -99,13 +100,21 @@ class GuideCreateSerializer(serializers.ModelSerializer):
         languages = validated_data.pop("languages", [])
         themes = validated_data.pop("themes", [])
         latitude, longitude = geocode_city(validated_data["city"])
-        guide = Guide.objects.create(
-            latitude=latitude,
-            longitude=longitude,
-            **validated_data
-        )
-        guide.languages.set(languages)
-        guide.themes.set(themes)
+        user = validated_data["user"]
+
+        with transaction.atomic():
+            if user.role != "guide":
+                user.role = "guide"
+                user.save(update_fields=["role"])
+
+            guide = Guide.objects.create(
+                latitude=latitude,
+                longitude=longitude,
+                **validated_data
+            )
+            guide.languages.set(languages)
+            guide.themes.set(themes)
+
         return guide
 
 class AvailabilitySerializer(serializers.ModelSerializer):

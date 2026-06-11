@@ -21,7 +21,7 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
         const trimmedComment = comment.trim()
         setLoading(true)
 
-        if(normalizedRating < 1 || normalizedRating > 5 || !trimmedComment) {
+        if (normalizedRating < 1 || normalizedRating > 5 || !trimmedComment) {
             setError("Please provide a valid rating and comment.")
             setLoading(false)
             return
@@ -59,5 +59,5 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
             {error && <p style={{ color: "red" }}>{error}</p>}
             {success && <p style={{ color: "green" }}>{success}</p>}
         </form>
-        )
+    )
 }

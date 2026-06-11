@@ -101,7 +101,7 @@ export default function GuideDetails() {
                     status={status}
                 />
             )}
-            
+
             <ReviewForm
                 guideId={guide.id}
                 onCreated={reloadReviews}

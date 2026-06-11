@@ -1,12 +1,15 @@
 import { createContext, useState, useEffect } from "react"
-import { getUser, getAccessToken, clearAuth } from "../services/auth"
+import { getUser, getAccessToken, getRefreshToken, clearAuth, saveUser } from "../services/auth"
 
 export const AuthContext = createContext()
+
+const BASE_URL = "http://127.0.0.1:8000"
 
 export function AuthProvider({ children }) {
     // States
     const [user, setUser] = useState(null)
     const [isAuthenticated, setIsAuthenticated] = useState(false)
+    const [authLoading, setAuthLoading] = useState(true)
 
     // Comportements
     useEffect(() => {
@@ -18,6 +21,8 @@ export function AuthProvider({ children }) {
             setUser(storedUser)
             setIsAuthenticated(true)
         }
+
+        setAuthLoading(false)
     }, [])
 
     // On enregistre l'utilisateur dans le contexte après la connexion.
@@ -26,11 +31,32 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true)
     }
 
+    // Met a jour l'utilisateur en memoire et dans le stockage local.
+    function updateUser(nextUser) {
+        setUser(nextUser)
+        saveUser(nextUser)
+    }
+
     // On ferme la session côté UI et côté stockage local.
-    function logout() {
-        clearAuth()
-        setUser(null)
-        setIsAuthenticated(false)
+    async function logout() {
+        const refresh = getRefreshToken()
+
+        try {
+            if (refresh) {
+                await fetch(`${BASE_URL}/users/logout/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        ...(getAccessToken() ? { Authorization: `Bearer ${getAccessToken()}` } : {}),
+                    },
+                    body: JSON.stringify({ refresh }),
+                })
+            }
+        } finally {
+            clearAuth()
+            setUser(null)
+            setIsAuthenticated(false)
+        }
     }
 
     // Affichage
@@ -38,7 +64,9 @@ export function AuthProvider({ children }) {
         <AuthContext.Provider value={{
             user,
             isAuthenticated,
+            authLoading,
             login,
+            updateUser,
             logout
         }}>
             {children}

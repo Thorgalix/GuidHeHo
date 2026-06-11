@@ -4,7 +4,7 @@ import { AuthContext } from "../context/AuthContext"
     
 export function useBecomeGuide() {
     // States
-    const { isAuthenticated } = useContext(AuthContext)
+    const { isAuthenticated, updateUser } = useContext(AuthContext)
 
     const [bio, setBio] = useState("")
     const [city, setCity] = useState("")
@@ -112,6 +112,14 @@ export function useBecomeGuide() {
             themes: selectedThemes,
             languages: selectedLanguages
             })
+
+            // On recharge l'utilisateur pour reflet immediat du role "guide".
+            try {
+                const freshUser = await api.get("/users/me/")
+                updateUser(freshUser)
+            } catch {
+                // Le profil guide est deja cree; l'echec de refresh ne bloque pas le flux.
+            }
 
             // Puis on crée les disponibilités associées.
             if (slots.length > 0) {

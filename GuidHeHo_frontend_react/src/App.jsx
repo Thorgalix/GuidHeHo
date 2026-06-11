@@ -1,29 +1,28 @@
-import { Routes, Route, NavLink } from "react-router-dom"
+import { Routes, Route, NavLink, Navigate, useNavigate } from "react-router-dom"
 import { useContext } from "react"
 import { AuthContext } from "./context/AuthContext"
-import { clearAuth } from "./services/auth"
 
 import Search from "./pages/Search"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import GuideDetails from "./pages/GuideDetails"
 import BecomeGuide from "./pages/BecomeGuide"
-import MyBookings from "./pages/MyBookings"
+import Dashboard from "./pages/Dashboard"
 
 export default function App() {
     // States
-    const { user, isAuthenticated, logout } = useContext(AuthContext)
+    const { user, isAuthenticated, authLoading, logout } = useContext(AuthContext)
+    const navigate = useNavigate()
 
     // Comportements
-    function handleLogout() {
-        // On vide le stockage local puis on met à jour le contexte React.
-        clearAuth()
-        logout()
+    async function handleLogout() {
+        await logout()
+        navigate("/login", { replace: true })
     }
 
     // Affichage
     return (
-        <>
+        <div className="min-h-screen bg-teal-100 dark:bg-teal-950">
             <nav className="
             bg-teal-600 
             shadow-md 
@@ -38,7 +37,19 @@ export default function App() {
         ">
                 <NavLink
                     to="/"
-                    className="flex items-center justify-between text-2xl font-bold tracking-wide text-white bg-teal-700 px-3 py-1 rounded-lg shadow"
+                    className="
+                    flex 
+                    items-center 
+                    justify-between 
+                    text-2xl 
+                    font-bold 
+                    tracking-wide 
+                    text-white 
+                    bg-teal-700 
+                    px-3 
+                    py-1 
+                    rounded-lg 
+                    shadow"
                 >
                     GuidHeHo
                 </NavLink>
@@ -67,28 +78,35 @@ export default function App() {
                     >
                         Become a Guide
                     </NavLink>
-                    <NavLink
-                        to="/bookings"
-                        className={({ isActive }) =>
-                            `px-3 py-2 rounded border transition
-                        ${isActive
-                                ? "bg-teal-800 text-white border-teal-900"
-                                : " text-white border-transparent hover:bg-teal-500/30 hover:border-teal-400 "
-                            }`
-                        }
-                    >
-                        My Bookings
-                    </NavLink>
                 </div>
 
                 <div className="flex gap-4 items-center">
                     {isAuthenticated ? (
                         <>
-                            <span className="px-3 py-2 text-white">
-                                Welcome {user.firstname}!
-                            </span>
+                            <NavLink 
+                            to="/dashboard" 
+                            className={({ isActive }) =>
+                                `px-3 py-2 rounded border transition
+                            ${isActive
+                                    ? "bg-teal-800 text-white border-teal-900"
+                                    : " text-white border-transparent hover:bg-teal-500/30 hover:border-teal-400 "
+                                }`
+                            }
+                            >
+                                Dashboard
+                            </NavLink>
 
-                            <button onClick={handleLogout} className="cursor-pointer text-white px-3 py-2 rounded border border-transparent transition hover:bg-teal-500/30 hover:border-teal-400">
+                            <button onClick={handleLogout} className="
+                            cursor-pointer 
+                            text-white 
+                            px-3 
+                            py-2 
+                            rounded 
+                            border 
+                            border-transparent 
+                            transition 
+                            hover:bg-teal-500/30 
+                            hover:border-teal-400">
                                 Logout
                             </button>
                         </>
@@ -125,8 +143,17 @@ export default function App() {
                 <Route path="/register" element={<Register />} />
                 <Route path="/guides/:id" element={<GuideDetails />} />
                 <Route path="/become-guide" element={<BecomeGuide />} />
-                <Route path="/bookings" element={<MyBookings />} />
+                <Route
+                    path="/dashboard"
+                    element={
+                        authLoading
+                            ? <p>Loading session...</p>
+                            : isAuthenticated
+                                ? <Dashboard />
+                                : <Navigate to="/login" replace />
+                    }
+                />
             </Routes>
-        </>
+        </div>
     )
 }
