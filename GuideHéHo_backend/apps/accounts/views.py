@@ -87,24 +87,37 @@ class LoginView(APIView):
 
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
 
-class UserUpdateAPIView(APIView):
-
     def patch(self, request):
         user = request.user
 
-        serializer = UserUpdateSerializer(user,data=request.data,partial=True)
+        serializer = UserUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True
+        )
+
         if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
+            try:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response(
+                    {"detail": "Error updating user profile"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
         return Response(
             serializer.errors,
             status=status.HTTP_400_BAD_REQUEST
         )
+
+
+
 
 
 class LogoutView(APIView):

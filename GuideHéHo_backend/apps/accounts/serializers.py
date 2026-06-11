@@ -60,6 +60,12 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class UserUpdateSerializer(serializers.ModelSerializer):
 
+    # Validation de l'unicité de l'email (exclure l'utilisateur actuel)
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=User.objects.all())],
+        required=False
+    )
+
     class Meta:
         model = User
         fields = [
