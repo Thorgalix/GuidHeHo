@@ -54,9 +54,25 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
             role="traveler",
         )
-
         return user
 
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    # Validation de l'unicité de l'email (exclure l'utilisateur actuel)
+    email = serializers.EmailField(
+        validators=[UniqueValidator(queryset=User.objects.all())],
+        required=False
+    )
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "first_name",
+            "last_name",
+        ]
 
 class LoginSerializer(serializers.Serializer):
 

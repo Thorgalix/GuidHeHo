@@ -13,15 +13,14 @@ from .utils.email import send_code_email, send_generic_email
 import os
 from .serializers import PasswordChangeSerializer
 
-from .serializers import UserSerializer, LoginSerializer, RegisterSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer
+from .serializers import UserSerializer, LoginSerializer, RegisterSerializer, PasswordResetRequestSerializer, PasswordResetConfirmSerializer, UserUpdateSerializer
 import os
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from .serializers import PasswordResetRequestSerializer, PasswordResetConfirmSerializer
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
-from django.contrib.auth.tokens import PasswordResetTokenGenerator
+
 
 
 
@@ -92,6 +91,34 @@ class MeView(APIView):
     def get(self, request):
         serializer = UserSerializer(request.user)
         return Response(serializer.data)
+
+    def patch(self, request):
+        user = request.user
+
+        serializer = UserUpdateSerializer(
+            user,
+            data=request.data,
+            partial=True
+        )
+
+        if serializer.is_valid():
+            try:
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            except Exception as e:
+                return Response(
+                    {"detail": "Error updating user profile"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
+
+
+
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
@@ -218,6 +245,8 @@ class PasswordResetConfirmView(APIView):
         user.save()
 
         return Response({"detail": "Password has been reset."}, status=status.HTTP_200_OK)
+
+
 
 class UploadProfilePictureView(APIView):
     permission_classes = [IsAuthenticated]
