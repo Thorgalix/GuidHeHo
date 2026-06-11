@@ -96,8 +96,10 @@ async function request(url, options = {}) {
         data = null
     }
 
-    // Gestion globale du 401 avec refresh automatique.
-    if (response.status === 401) {
+    const shouldTryRefresh = response.status === 401 && !options.skipAuthRefresh && !!token && !!getRefreshToken()
+
+    // Gestion globale du 401 avec refresh automatique pour les routes protégées.
+    if (shouldTryRefresh) {
         try {
             const newAccessToken = await refreshAccessToken()
 
@@ -136,18 +138,21 @@ async function request(url, options = {}) {
 // Petit wrapper CRUD pour éviter de répéter fetch partout dans l'UI.
 export const api = {
     get: (url) => request(url),
-    post: (url, body) =>
+    post: (url, body, options = {}) =>
         request(url, {
             method: "POST",
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
+            ...options
         }),
-    put: (url, body) =>
+    put: (url, body, options = {}) =>
         request(url, {
             method: "PUT",
-            body: JSON.stringify(body)
+            body: JSON.stringify(body),
+            ...options
         }),
-    delete: (url) =>
+    delete: (url, options = {}) =>
         request(url, {
-            method: "DELETE"
+            method: "DELETE",
+            ...options
         })
 }

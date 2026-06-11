@@ -1,5 +1,7 @@
 import { useState } from "react"
+import { useContext } from "react"
 import { api } from "../services/api"
+import { AuthContext } from "../context/AuthContext"
 
 export default function Register() {
 
@@ -10,6 +12,7 @@ export default function Register() {
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [message, setMessage] = useState("")
+    const { logout } = useContext(AuthContext)
 
     // Comportements
 
@@ -25,7 +28,9 @@ export default function Register() {
                 last_name: lastName
             })
 
-            setMessage("Inscription réussie")
+            // Ensure the UI is not left authenticated as a previous account.
+            logout()
+            setMessage("Inscription réussie. Vérifie ton email puis connecte-toi.")
         } catch (err) {
             setMessage(err.message)
         }

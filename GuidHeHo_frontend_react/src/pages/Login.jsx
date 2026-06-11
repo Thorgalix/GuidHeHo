@@ -38,7 +38,7 @@ export default function Login() {
             const data = await api.post("/users/login/", {
                 email,
                 password,
-            })
+            }, { skipAuthRefresh: true })
 
             // On sauvegarde d'abord les tokens en localStorage.
             saveAuth(data)

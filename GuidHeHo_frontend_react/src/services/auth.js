@@ -36,6 +36,11 @@ export function getUser() {
     }
 }
 
+// Met à jour l'utilisateur courant dans le localStorage.
+export function saveUser(user) {
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
+}
+
 // Supprime toutes les données d'authentification locales.
 export function clearAuth() {
     localStorage.removeItem(ACCESS_KEY)
