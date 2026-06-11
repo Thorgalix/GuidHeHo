@@ -54,9 +54,19 @@ class RegisterSerializer(serializers.ModelSerializer):
             last_name=validated_data["last_name"],
             role="traveler",
         )
-
         return user
 
+
+
+class UserUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = [
+            "email",
+            "first_name",
+            "last_name",
+        ]
 
 class LoginSerializer(serializers.Serializer):
 
