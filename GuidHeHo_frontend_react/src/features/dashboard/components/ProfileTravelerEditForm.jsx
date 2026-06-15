@@ -1,7 +1,9 @@
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { AuthContext } from "../../../context/AuthContext"
 import { api } from "../../../services/api"
 
 export default function ProfileTravelerEditForm({ user, setIsEditing }) {
+    const { updateUser } = useContext(AuthContext)
 
     const [firstName, setFirstName] = useState(user.first_name)
     const [lastName, setLastName] = useState(user.last_name)
@@ -20,12 +22,23 @@ export default function ProfileTravelerEditForm({ user, setIsEditing }) {
         setSuccess("")
 
         try {
-            await api.patch("/users/me/", {
-                first_name: firstName,
-                last_name: lastName,
-                email,
-            })
+            const data = {}
 
+            if (firstName !== user.first_name) data.first_name = firstName
+            if (lastName !== user.last_name) data.last_name = lastName
+            if (email !== user.email) data.email = email
+
+            if (Object.keys(data).length === 0) {
+                setError("No changes detected.")
+                setLoading(false)
+                return
+            }
+
+
+
+            const updatedUser = await api.patch("/users/me/", data)
+
+            updateUser({...user, ...updatedUser})
             setSuccess("Profile updated successfully!")
             setIsEditing(false)
         } catch (err) {
