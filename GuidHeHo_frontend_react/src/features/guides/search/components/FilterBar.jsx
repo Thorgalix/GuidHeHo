@@ -13,10 +13,12 @@ export default function FilterBar({ onSearch }) {
     const [themes, setThemes] = useState([])
     const [languages, setLanguages] = useState([])
 
+    const [availabilityDate, setAvailabilityDate] = useState("")
+
     // Comportements
 
     useEffect(() => {
-        // On charge les options de filtres depuis l'API au montage.
+        // On charge les options de filtres themes et languages depuis l'API au montage.
         async function loadFilters() {
             try {
                 const [t, l] = await Promise.all([
@@ -42,6 +44,7 @@ export default function FilterBar({ onSearch }) {
             city,
             theme,
             language,
+            availability_date: availabilityDate,
             max_price: priceMax
         })
     }
@@ -53,7 +56,7 @@ export default function FilterBar({ onSearch }) {
             <div className="card-body">
                 <h2 className="card-title">Find your guide</h2>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
 
                     <label className="form-control">
                         <div className="label">
@@ -65,6 +68,19 @@ export default function FilterBar({ onSearch }) {
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
+                        />
+                    </label>
+
+                    <label className="form-control">
+                        <div className="label mb-1">
+                            <span className="label-text dark:text-white">Date</span>
+                        </div>
+
+                        <input
+                            type="date"
+                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            value={availabilityDate}
+                            onChange={(e) => setAvailabilityDate(e.target.value)}
                         />
                     </label>
 

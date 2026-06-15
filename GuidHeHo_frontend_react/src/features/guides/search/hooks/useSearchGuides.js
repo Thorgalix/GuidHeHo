@@ -26,6 +26,7 @@ export function useSearchGuides() {
 
                 // On ne rajoute au query string que les filtres réellement renseignés.
                 if (filters.city) params.append("city", filters.city)
+                if (filters.availability_date) params.append("availability_date", filters.availability_date)
                 if (filters.theme) params.append("theme", filters.theme)
                 if (filters.language) params.append("language", filters.language)
                 if (filters.max_price) params.append("max_price", filters.max_price)
