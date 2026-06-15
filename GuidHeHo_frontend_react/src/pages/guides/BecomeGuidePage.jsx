@@ -41,7 +41,7 @@ export default function BecomeGuidePage() {
     // Affichage
 
     return (
-        <div>
+        <main>
             <h2>Become a Guide</h2>
 
             <form onSubmit={handleSubmit}>
@@ -103,6 +103,6 @@ export default function BecomeGuidePage() {
 
             {message && <p>{message}</p>}
             {submitSummary && <p>{submitSummary}</p>}
-        </div>
+        </main>
     )
 }

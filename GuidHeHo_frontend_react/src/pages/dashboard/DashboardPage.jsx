@@ -10,7 +10,7 @@ export default function DashboardPage() {
     const isGuide = user?.role === "guide"
 
     return (
-        <div>
+        <main>
             <div>
 
                 <DashboardTabs
@@ -26,7 +26,7 @@ export default function DashboardPage() {
         
 
 
-        </div>
+        </main>
     )
 
 }

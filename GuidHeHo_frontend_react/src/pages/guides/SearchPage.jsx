@@ -19,49 +19,87 @@ export default function SearchPage() {
     // Affichage
 
     return (
-        <div style={{ padding: "20px" }}>
+        <main className="px-5 py-5">
+            <h1 className="sr-only">
+                Recherche de guides touristiques
+            </h1>
 
-            <FilterBar onSearch={fetchGuides} />
+            <section aria-labelledby="search-title">
+                <FilterBar onSearch={fetchGuides} />
+            </section>
 
-            {loading && <p>Loading guides...</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
+            <section aria-labelledby="results-title" className="mt-10">
+                <h2 id="results-title" className="sr-only">
+                    Résultats de recherche
+                </h2>
 
-            {!loading && hasSearched && guides.length === 0 && (
-                <p>No guides found for these filters</p>
-            )}
+                {loading && (
+                    <p className="text-slate-700 dark:text-teal-100">
+                        Chargement des guides...
+                    </p>
+                )}
 
-            <div className="my-10 grid gap-6 grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
-                {guides.map((guide) => (
-                    <GuideCard key={guide.id} guide={guide} />
-                ))}
-            </div>
+                {error && (
+                    <p className="text-red-600 dark:text-red-300">
+                        {error}
+                    </p>
+                )}
 
-            {/* Pagination controls */}
-            <div className="join flex justify-center mb-10">
-                <button
-                className="join-item btn"
-                    disabled={!previous}
-                    onClick={() => fetchGuides({}, previous)}
-                >
-                    «
-                </button>
+                {!loading && hasSearched && guides.length === 0 && (
+                    <p className="text-slate-700 dark:text-teal-100">
+                        Aucun guide trouvé pour ces filtres.
+                    </p>
+                )}
 
-                <button 
-                className="join-item btn"
-                >
-                    Page {Math.ceil(count / guides.length) === 0 ? 1 : Math.ceil(count / guides.length)}
-                </button>
+                <div className="my-10 grid gap-6 grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
+                    {guides.map((guide) => (
+                        <GuideCard key={guide.id} guide={guide} />
+                    ))}
+                </div>
 
-                <button
-                className="join-item btn"
-                    disabled={!next}
-                    onClick={() => fetchGuides({}, next)}
-                >
-                    »
-                </button>
-            </div>
+                {(previous || next) && (
+                    <nav
+                        className="join flex justify-center mb-10"
+                        aria-label="Guides pagination"
+                    >
+                        <button
+                            type="button"
+                            className="join-item btn"
+                            disabled={!previous}
+                            onClick={() => fetchGuides({}, previous)}
+                        >
+                            <span aria-hidden="true">«</span>
+                            <span className="sr-only">Page précédente</span>
+                        </button>
 
-            <GuideMap guides={guides} />
-        </div>
+                        <button
+                            type="button"
+                            className="join-item btn"
+                            disabled
+                        >
+                            Page
+                        </button>
+
+                        <button
+                            type="button"
+                            className="join-item btn"
+                            disabled={!next}
+                            onClick={() => fetchGuides({}, next)}
+                        >
+                            <span aria-hidden="true">»</span>
+                            <span className="sr-only">Page suivante</span>
+                        </button>
+                    </nav>
+                )}
+            </section>
+
+            <section aria-labelledby="map-title">
+                <h2 id="map-title" className="sr-only">
+                    Carte des guides
+                </h2>
+
+                <GuideMap guides={guides} />
+            </section>
+        </main>
     )
 }

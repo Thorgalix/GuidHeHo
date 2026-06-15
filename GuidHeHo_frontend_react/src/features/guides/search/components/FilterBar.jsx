@@ -52,9 +52,14 @@ export default function FilterBar({ onSearch }) {
     // Affichage
 
     return (
-        <form onSubmit={handleSubmit} className="card bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600 mt-4">
+        <form
+            onSubmit={handleSubmit}
+            className="card bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600 mt-4"
+        >
             <div className="card-body">
-                <h2 className="card-title">Find your guide</h2>
+                <h2 id="search-title" className="card-title dark:text-white">
+                    Find your guide
+                </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
 
@@ -63,6 +68,7 @@ export default function FilterBar({ onSearch }) {
                             <span className="label-text dark:text-white mb-1">City</span>
                         </div>
                         <input
+                            name="city"
                             type="text"
                             placeholder="ex: Paris ..."
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
@@ -77,6 +83,7 @@ export default function FilterBar({ onSearch }) {
                         </div>
 
                         <input
+                            name="date"
                             type="date"
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={availabilityDate}
@@ -89,6 +96,7 @@ export default function FilterBar({ onSearch }) {
                             <span className="label-text dark:text-white">Theme</span>
                         </div>
                         <select
+                            name="theme"
                             className="select select-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={theme}
                             onChange={(e) => setTheme(e.target.value)}
@@ -107,6 +115,7 @@ export default function FilterBar({ onSearch }) {
                             <span className="label-text dark:text-white">Language</span>
                         </div>
                         <select
+                            name="language"
                             className="select select-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
@@ -126,6 +135,7 @@ export default function FilterBar({ onSearch }) {
                         </div>
                         <input
                             type="number"
+                            name="priceMax"
                             placeholder="100"
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={priceMax}
@@ -136,8 +146,7 @@ export default function FilterBar({ onSearch }) {
                     <div className="flex items-end">
                         <button
                             type="submit"
-                            className="
-                         btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
+                            className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
                         >
                             Search
                         </button>

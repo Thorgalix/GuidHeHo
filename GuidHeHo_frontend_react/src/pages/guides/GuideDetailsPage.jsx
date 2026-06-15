@@ -73,7 +73,7 @@ export default function GuideDetailsPage() {
     // Affichage
 
     return (
-        <div style={{ padding: "20px" }}>
+        <main style={{ padding: "20px" }}>
             <GuideHeader guide={guide} />
             {isAuthenticated && (
                 <button onClick={() => setShowBooking(true)} disabled={availabilities.length === 0}>
@@ -111,7 +111,7 @@ export default function GuideDetailsPage() {
             <ReviewList reviews={reviews ?? []} loading={reviewsLoading} error={reviewsError} />
 
             <GuideDetailMap guide={guide} />
-        </div>
+        </main>
     )
 }
 

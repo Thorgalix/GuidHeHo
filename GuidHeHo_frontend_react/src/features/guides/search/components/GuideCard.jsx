@@ -11,7 +11,6 @@ export default function GuideCard({ guide }) {
 
     const {
         isFavorited,
-        favoritesCount,
         loading,
         error,
         toggleFavorite,
@@ -33,10 +32,8 @@ export default function GuideCard({ guide }) {
     // Affichage
 
     return (
-        <>
-
-            <div
-                className="
+        <article
+            className="
                     card bg-teal-50 dark:bg-teal-900
                     w-full
                     border border-teal-600 
@@ -46,49 +43,48 @@ export default function GuideCard({ guide }) {
                     hover:border-teal-300
                     hover:-translate-y-0.5
                     "
-            >
-                <div className="card-body">
+        >
 
-                    <div className="flex justify-between items-start w-full gap-2">
-                        <h2 className="card-title flex-1 min-w-0">
-                            {guide.user.first_name} {guide.user.last_name}
-                        </h2>
+            <div className="card-body">
+                <div className="flex justify-between items-start w-full gap-2">
+                    <h2 className="card-title flex-1 min-w-0">
+                        {guide.user.first_name} {guide.user.last_name}
+                    </h2>
 
-                        {isAuthenticated && (
-                            <button
-                                type="button"
-                                onClick={handleToggleFavorite}
-                                disabled={loading}
-                                className="btn btn-ghost btn-sm btn-circle cursor-pointer"
-                            >
-                                {isFavorited ? (
-                                    <FaHeart className="text-xl text-red-500" />
-                                ) : (
-                                    <FaRegHeart className="text-xl text-red-500" />
-                                )}
-                            </button>
-                        )}
-                    </div>
-
-                    <GuideProfileSummary guide={guide} />
-
-                    {error && (
-                        <p className="text-error text-sm">
-                            {error}
-                        </p>
-                    )}
-
-                    <div className="card-actions justify-end">
-                        <Link
-                            to={`/guides/${guide.id}`}
-                            className="btn bg-teal-500 hover:bg-teal-600 text-white border-none"
+                    {isAuthenticated && (
+                        <button
+                            type="button"
+                            onClick={handleToggleFavorite}
+                            disabled={loading}
+                            className="btn btn-ghost btn-sm btn-circle cursor-pointer"
+                            aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
                         >
-                            View More
-                        </Link>
-                    </div>
+                            {isFavorited ? (
+                                <FaHeart className="text-xl text-red-500" />
+                            ) : (
+                                <FaRegHeart className="text-xl text-red-500" />
+                            )}
+                        </button>
+                    )}
+                </div>
 
+                <GuideProfileSummary guide={guide} />
+
+                {error && (
+                    <p className="text-error text-sm">
+                        {error}
+                    </p>
+                )}
+
+                <div className="card-actions justify-end">
+                    <Link
+                        to={`/guides/${guide.id}`}
+                        className="btn bg-teal-500 hover:bg-teal-600 text-white border-none"
+                    >
+                        View More
+                    </Link>
                 </div>
             </div>
-        </>
+        </article>
     )
 }
