@@ -1,58 +1,61 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 
 export default function GuideBookingForm({ availabilities, onSubmit, status }) {
-    const [selectedAvailabilityId, setSelectedAvailabilityId] = useState("") // choix utilisateur
     const [date, setDate] = useState("")
+    const [selectedAvailabilityId, setSelectedAvailabilityId] = useState("")
     const [people, setPeople] = useState("")
     const [message, setMessage] = useState("")
 
+    // On récupère toutes les dates disponibles.
+    // new Set permet de supprimer les doublons.
+    const availableDates = [...new Set(
+        availabilities.map((availability) =>
+            availability.start_datetime.slice(0, 10)
+        )
+    )].sort()
+
+    // On récupère seulement les créneaux du jour sélectionné.
+    const availabilitiesForSelectedDate = availabilities.filter((availability) => {
+        const availabilityDate = availability.start_datetime.slice(0, 10)
+        return availabilityDate === date
+    })
+
+    // On récupère le créneau actuellement sélectionné.
     const selectedAvailability = availabilities.find(
-        (a) => a.id === Number(selectedAvailabilityId)
+        (availability) => availability.id === Number(selectedAvailabilityId)
     )
 
-    const minDate = selectedAvailability
-        ? selectedAvailability.start_datetime.slice(0, 10)
-        : undefined
+    // Affiche une date propre pour l'utilisateur.
+    function formatDateLabel(dateString) {
+        const date = new Date(`${dateString}T00:00:00`)
 
-    const maxDate = selectedAvailability
-        ? selectedAvailability.end_datetime.slice(0, 10)
-        : undefined
+        return new Intl.DateTimeFormat("fr-FR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        }).format(date)
+    }
 
-    // On récupère le créneau actuellement sélectionné pour borner la date.
-    function formatAvailabilityLabel(availability) {
+    // Affiche seulement les horaires du créneau.
+    function formatTimeSlotLabel(availability) {
         const start = new Date(availability.start_datetime)
         const end = new Date(availability.end_datetime)
-
-        const dateFormatter = new Intl.DateTimeFormat("fr-FR", {
-            weekday: "short",
-            day: "2-digit",
-            month: "short",
-        })
 
         const timeFormatter = new Intl.DateTimeFormat("fr-FR", {
             hour: "2-digit",
             minute: "2-digit",
         })
 
-        const sameDay = start.toDateString() === end.toDateString()
-
-        if (sameDay) {
-            return `${dateFormatter.format(start)} · ${timeFormatter.format(start)} → ${timeFormatter.format(end)}`
-        }
-
-        return `${dateFormatter.format(start)} · ${timeFormatter.format(start)} → ${dateFormatter.format(end)} · ${timeFormatter.format(end)}`
+        return `${timeFormatter.format(start)} → ${timeFormatter.format(end)}`
     }
 
-    // Quand le créneau change, on réinitialise la date si elle devient invalide.
-    useEffect(() => {
-        if (!selectedAvailabilityId) {
-            setDate("")
-            return
-        }
-        if (date && (date < minDate || date > maxDate)) {
-            setDate("")
-        }
-    }, [selectedAvailabilityId, date, minDate, maxDate])
+    function handleDateChange(e) {
+        setDate(e.target.value)
+
+        // Quand on change de date, on vide le créneau sélectionné.
+        setSelectedAvailabilityId("")
+    }
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -61,7 +64,7 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
             availability: Number(selectedAvailabilityId),
             booking_date: date,
             number_of_people: Number(people),
-            message: message.trim()
+            message: message.trim(),
         })
 
         setDate("")
@@ -72,26 +75,42 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
 
     return (
         <form onSubmit={handleSubmit}>
+            {availabilities.length === 0 && (
+                <p>No availability for this guide.</p>
+            )}
+
             <label>
-                Choose Availability:
+                Choose a date:
                 <select
-                    value={selectedAvailabilityId}
-                    onChange={(e) => setSelectedAvailabilityId(e.target.value)}
+                    value={date}
+                    disabled={availableDates.length === 0}
+                    onChange={handleDateChange}
                 >
-                    <option value="">Select an availability</option>
-                    {availabilities.map((availability) => (
-                        <option key={availability.id} value={availability.id}>
-                            {formatAvailabilityLabel(availability)}
+                    <option value="">Select a date</option>
+
+                    {availableDates.map((availableDate) => (
+                        <option key={availableDate} value={availableDate}>
+                            {formatDateLabel(availableDate)}
                         </option>
                     ))}
                 </select>
             </label>
-            {availabilities.length === 0 && (<p>No availability for this guide.</p>)}
-
 
             <label>
-                Date:
-                <input type="date" value={date} min={minDate} max={maxDate} disabled={!selectedAvailabilityId} onChange={(e) => setDate(e.target.value)} />
+                Choose a time slot:
+                <select
+                    value={selectedAvailabilityId}
+                    disabled={!date || availabilitiesForSelectedDate.length === 0}
+                    onChange={(e) => setSelectedAvailabilityId(e.target.value)}
+                >
+                    <option value="">Select a time slot</option>
+
+                    {availabilitiesForSelectedDate.map((availability) => (
+                        <option key={availability.id} value={availability.id}>
+                            {formatTimeSlotLabel(availability)}
+                        </option>
+                    ))}
+                </select>
             </label>
 
             <label>
@@ -100,6 +119,8 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                     type="number"
                     value={people}
                     min="1"
+                    max={selectedAvailability?.remaining_places}
+                    disabled={!selectedAvailabilityId}
                     onChange={(e) => setPeople(e.target.value)}
                 />
             </label>
@@ -110,12 +131,14 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                 onChange={(e) => setMessage(e.target.value)}
             />
 
-            <button type="submit" disabled={!selectedAvailabilityId || !date || !people}>
+            <button
+                type="submit"
+                disabled={!date || !selectedAvailabilityId || !people}
+            >
                 Confirm booking
             </button>
 
             {status && <p>{status}</p>}
         </form>
     )
-
 }
