@@ -117,6 +117,30 @@ class GuideCreateSerializer(serializers.ModelSerializer):
 
         return guide
 
+    def update(self, instance, validated_data):
+        languages = validated_data.pop("languages", None)
+        themes = validated_data.pop("themes", None)
+        validated_data.pop("user", None)
+
+        city = validated_data.pop("city", None)
+        if city is not None:
+            latitude, longitude = geocode_city(city)
+            instance.city = city
+            instance.latitude = latitude
+            instance.longitude = longitude
+
+        for attr, value in validated_data.items():
+            setattr(instance, attr, value)
+
+        with transaction.atomic():
+            instance.save()
+            if languages is not None:
+                instance.languages.set(languages)
+            if themes is not None:
+                instance.themes.set(themes)
+
+        return instance
+
 class AvailabilitySerializer(serializers.ModelSerializer):
     guide = serializers.PrimaryKeyRelatedField(read_only=True)
 

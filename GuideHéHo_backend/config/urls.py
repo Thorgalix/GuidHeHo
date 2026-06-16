@@ -25,6 +25,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+from apps.guides.views import GuideMeView
 
 
 
@@ -38,9 +39,12 @@ urlpatterns = [
     path("reviews/", include("apps.reviews.urls")),
     path("contact/", include("apps.messaging.urls")),
 
+    path("api/guide/me/", GuideMeView.as_view()),
+    path("api/guides/me/", GuideMeView.as_view()),
+
 
     path("api/",include('apps.guides.router')),
-    
+
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

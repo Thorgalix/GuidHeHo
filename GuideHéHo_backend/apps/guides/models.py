@@ -42,6 +42,7 @@ class Availability(models.Model):
 
     start_datetime = models.DateTimeField()
     end_datetime = models.DateTimeField()
+    max_people = models.PositiveIntegerField(null=True, blank=True)
 
     is_available = models.BooleanField(default=True)
 

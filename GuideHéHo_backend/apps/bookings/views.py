@@ -84,3 +84,18 @@ class BookingsStatusUpdateView(APIView):
         serializer = BookingSerializer(booking)
 
         return Response(serializer.data)
+
+    def delete(self, request, pk):
+
+        try:
+            booking = Booking.objects.get(id=pk)
+        except Booking.DoesNotExist:
+            return Response({"error": "Booking not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        if booking.traveler != request.user:
+            return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
+
+        booking.status = "cancelled"
+        booking.save(update_fields=["status"])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
