@@ -30,7 +30,7 @@ export default function RegisterPage() {
 
             // Ensure the UI is not left authenticated as a previous account.
             logout()
-            setMessage("Inscription réussie. Vérifie ton email puis connecte-toi.")
+            setMessage("Registration successful. Please log in.")
         } catch (err) {
             setMessage(err.message)
         }
