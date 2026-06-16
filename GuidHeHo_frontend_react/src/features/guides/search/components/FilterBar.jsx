@@ -14,6 +14,7 @@ export default function FilterBar({ onSearch }) {
     const [languages, setLanguages] = useState([])
 
     const [availabilityDate, setAvailabilityDate] = useState("")
+    const [numberOfPeople, setNumberOfPeople] = useState("")
 
     // Comportements
 
@@ -42,10 +43,11 @@ export default function FilterBar({ onSearch }) {
         // On transmet les filtres saisis au composant parent.
         onSearch({
             city,
+            date: availabilityDate,
             theme,
             language,
-            availability_date: availabilityDate,
-            max_price: priceMax
+            max_price: priceMax,
+            number_of_people: numberOfPeople,
         })
     }
 
@@ -131,12 +133,26 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
+                            <span className="label-text dark:text-white">Number of people</span>
+                        </div>
+                        <input
+                            type="number"
+                            name="numberOfPeople"
+                            placeholder="ex: 2"
+                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            value={numberOfPeople}
+                            onChange={(e) => setNumberOfPeople(e.target.value)}
+                        />
+                    </label>
+
+                    <label className="form-control">
+                        <div className="label mb-1">
                             <span className="label-text dark:text-white">Max price (€)</span>
                         </div>
                         <input
                             type="number"
                             name="priceMax"
-                            placeholder="100"
+                            placeholder="ex: 100"
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={priceMax}
                             onChange={(e) => setPriceMax(e.target.value)}

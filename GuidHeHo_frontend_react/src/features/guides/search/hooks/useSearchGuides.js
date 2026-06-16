@@ -10,6 +10,7 @@ export function useSearchGuides() {
     const [next, setNext] = useState(null)
     const [previous, setPrevious] = useState(null)
     const [count, setCount] = useState(0)
+    
 
     // Comportements
 
@@ -26,10 +27,11 @@ export function useSearchGuides() {
 
                 // On ne rajoute au query string que les filtres réellement renseignés.
                 if (filters.city) params.append("city", filters.city)
-                if (filters.availability_date) params.append("availability_date", filters.availability_date)
+                if (filters.date) params.append("date", filters.date)
                 if (filters.theme) params.append("theme", filters.theme)
                 if (filters.language) params.append("language", filters.language)
                 if (filters.max_price) params.append("max_price", filters.max_price)
+                if (filters.number_of_people) params.append("number_of_people", filters.number_of_people)
 
                 const query = params.toString()
                 if (query) url += `?${query}`
