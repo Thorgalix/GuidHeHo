@@ -3,13 +3,13 @@ import { api } from "../../../../services/api"
 import { AuthContext } from "../../../../context/AuthContext"
 
 const WEEK_DAYS = [
-    { index: 0, label: "Lundi" },
-    { index: 1, label: "Mardi" },
-    { index: 2, label: "Mercredi" },
-    { index: 3, label: "Jeudi" },
-    { index: 4, label: "Vendredi" },
-    { index: 5, label: "Samedi" },
-    { index: 6, label: "Dimanche" }
+    { index: 0, label: "Monday" },
+    { index: 1, label: "Tuesday" },
+    { index: 2, label: "Wednesday" },
+    { index: 3, label: "Thursday" },
+    { index: 4, label: "Friday" },
+    { index: 5, label: "Saturday" },
+    { index: 6, label: "Sunday" }
 ]
 
 function createInterval() {
@@ -85,6 +85,7 @@ export function useBecomeGuide() {
     const [weekTemplate, setWeekTemplate] = useState(createWeekTemplate())
     const [submitting, setSubmitting] = useState(false)
     const [submitSummary, setSubmitSummary] = useState("")
+    const [maxPeople, setMaxPeople] = useState("")
 
     // Comportements
 
@@ -274,7 +275,7 @@ export function useBecomeGuide() {
         setSubmitting(true)
         // Validation
         try {
-            if (!bio || !city || !price) {
+            if (!bio || !city || !price || !maxPeople || selectedThemes.length === 0 || selectedLanguages.length === 0) {
                 setMessage("Tous les champs sont requis")
                 return
             }
@@ -290,7 +291,7 @@ export function useBecomeGuide() {
                 city,
                 price_per_hour: Number(price),
                 themes: selectedThemes,
-                languages: selectedLanguages
+                languages: selectedLanguages,
             })
 
             // On recharge l'utilisateur pour reflet immediat du role "guide".
@@ -308,7 +309,8 @@ export function useBecomeGuide() {
                         api.post("/api/availabilities/", {
                             start_datetime: new Date(slot.start_datetime).toISOString(),
                             end_datetime: new Date(slot.end_datetime).toISOString(),
-                            is_available: true
+                            is_available: true,
+                            max_people: Number(maxPeople)
                         })
                     )
                 )
@@ -327,6 +329,7 @@ export function useBecomeGuide() {
             setBio("")
             setCity("")
             setPrice("")
+            setMaxPeople("")
             setSelectedThemes([])
             setSelectedLanguages([])
             setAvailabilityMode("week")
@@ -345,6 +348,7 @@ export function useBecomeGuide() {
         bio, setBio,
         city, setCity,
         price, setPrice,
+        maxPeople, setMaxPeople,
         themes,
         languages,
         selectedThemes, setSelectedThemes,

@@ -5,6 +5,7 @@ import LanguageSelector from "../../features/guides/become-guide/components/Lang
 import AvailabilitySelector from "../../features/guides/become-guide/components/AvailabilitySelector"
 import WeeklyEditor from "../../features/guides/become-guide/components/WeeklyEditor"
 import DayEditor from "../../features/guides/become-guide/components/DayEditor"
+import CapacitySelector from "../../features/guides/become-guide/components/CapacitySelector"
 
 export default function BecomeGuidePage() {
     
@@ -17,6 +18,7 @@ export default function BecomeGuidePage() {
         price, setPrice,
         themes,
         languages,
+        maxPeople, setMaxPeople,
         selectedThemes, setSelectedThemes,
         selectedLanguages, setSelectedLanguages,
         message,
@@ -52,6 +54,13 @@ export default function BecomeGuidePage() {
                     setCity={setCity}
                     price={price}
                     setPrice={setPrice}
+                    maxPeople={maxPeople}
+
+                />
+
+                <CapacitySelector
+                    maxPeople={maxPeople}
+                    setMaxPeople={setMaxPeople}
                 />
 
                 <ThemeSelector

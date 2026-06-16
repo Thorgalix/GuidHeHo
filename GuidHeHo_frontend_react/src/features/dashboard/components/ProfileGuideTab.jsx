@@ -11,6 +11,7 @@ export default function ProfileGuideTab({ guide }) {
     const isGuide = guide !== null
     const {
         message, submitting, submitSummary,
+        maxPeople, setMaxPeople,
         availabilityMode, setAvailabilityMode,
         weekStartDate, setWeekStartDate,
         weekTemplate, updateWeekDay, addWeekInterval, updateWeekInterval, removeWeekInterval,
@@ -43,6 +44,8 @@ export default function ProfileGuideTab({ guide }) {
                     <AvailabilitySelector
                         availabilityMode={availabilityMode}
                         setAvailabilityMode={setAvailabilityMode}
+                        maxPeople={maxPeople}
+                        setMaxPeople={setMaxPeople}
                     />
                     <WeeklyEditor
                         availabilityMode={availabilityMode}

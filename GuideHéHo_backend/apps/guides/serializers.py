@@ -152,5 +152,6 @@ class AvailabilitySerializer(serializers.ModelSerializer):
             "start_datetime",
             "end_datetime",
             "is_available",
+            "max_people",
         ]
         read_only_fields = ["is_available"]

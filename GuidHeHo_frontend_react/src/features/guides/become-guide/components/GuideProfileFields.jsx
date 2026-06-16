@@ -1,4 +1,4 @@
-export default function GuideProfileFields({ bio, setBio, city, setCity, price, setPrice }) {
+export default function GuideProfileFields({ bio, setBio, city, setCity, price, setPrice, maxPeople, setMaxPeople }) {
 
 
     return (
@@ -19,6 +19,7 @@ export default function GuideProfileFields({ bio, setBio, city, setCity, price, 
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                 />
+
             </div>
         </div>
     )

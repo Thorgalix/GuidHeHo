@@ -1,5 +1,5 @@
 import { useState } from "react"
-
+import { api } from "../../../services/api"
 
 const WEEK_DAYS = [
     { index: 0, label: "Lundi" },
@@ -75,6 +75,7 @@ export function useGuideAvailabilitiesManager() {
     const [weekTemplate, setWeekTemplate] = useState(createWeekTemplate())
     const [submitting, setSubmitting] = useState(false)
     const [submitSummary, setSubmitSummary] = useState("")
+    const [maxPeople, setMaxPeople] = useState("")
 
 
     function updateWeekDay(index, field, value) {
@@ -216,6 +217,7 @@ async function handleSubmitAvailabilities(e) {
                     start_datetime: slot.start_datetime,
                     end_datetime: slot.end_datetime,
                     is_available: true,
+                    max_people: Number(maxPeople)
                 })
             )
         )
@@ -236,6 +238,7 @@ async function handleSubmitAvailabilities(e) {
     return {
         message,
         availabilityMode, setAvailabilityMode,
+        maxPeople, setMaxPeople,
         weekStartDate, setWeekStartDate,
         weekTemplate,
         updateWeekDay, addWeekInterval, updateWeekInterval, removeWeekInterval,
