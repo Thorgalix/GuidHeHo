@@ -2,11 +2,14 @@ from datetime import date, datetime
 
 from django.test import TestCase
 from django.utils import timezone
-from rest_framework.test import APIRequestFactory
+from rest_framework.test import APIRequestFactory, force_authenticate
+from rest_framework import status
 
 from apps.accounts.models import User
 from apps.guides.models import Availability, Guide
 
+from .models import Booking
+from .views import BookingsStatusUpdateView
 from .serializers import BookingSerializer
 
 
@@ -52,6 +55,17 @@ class BookingAvailabilityTests(TestCase):
 			role="traveler",
 		)
 
+	def _create_booking(self, traveler, status_value="pending"):
+		return Booking.objects.create(
+			traveler=traveler,
+			guide=self.guide,
+			availability=self.availability,
+			Booking_date=timezone.localdate(),
+			number_of_people=2,
+			status=status_value,
+			message="Test booking",
+		)
+
 	def test_multiple_bookings_same_date_are_allowed_and_availability_stays_open(self):
 		request = self.factory.post("/bookings/")
 		request.user = self.traveler
@@ -93,3 +107,27 @@ class BookingAvailabilityTests(TestCase):
 		self.assertTrue(self.availability.is_available)
 		self.assertEqual(self.availability.start_datetime, timezone.make_aware(datetime(2026, 6, 10, 9, 0)))
 		self.assertEqual(self.availability.end_datetime, timezone.make_aware(datetime(2026, 6, 12, 18, 0)))
+
+	def test_traveler_can_cancel_booking_with_delete(self):
+		booking = self._create_booking(self.traveler)
+
+		request = self.factory.delete(f"/bookings/{booking.id}/")
+		force_authenticate(request, user=self.traveler)
+
+		response = BookingsStatusUpdateView.as_view()(request, pk=booking.id)
+
+		self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+		booking.refresh_from_db()
+		self.assertEqual(booking.status, "cancelled")
+
+	def test_only_traveler_can_cancel_booking(self):
+		booking = self._create_booking(self.traveler)
+
+		request = self.factory.delete(f"/bookings/{booking.id}/")
+		force_authenticate(request, user=self.second_traveler)
+
+		response = BookingsStatusUpdateView.as_view()(request, pk=booking.id)
+
+		self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+		booking.refresh_from_db()
+		self.assertEqual(booking.status, "pending")

@@ -1,7 +1,8 @@
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets
+from rest_framework import generics, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import NotFound
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
@@ -67,6 +68,26 @@ class GuideViewSet(viewsets.ModelViewSet):
         guides = request.user.favorites_guides.all()
         serializer = self.get_serializer(guides, many=True, context={"request": request})
         return Response(serializer.data)
+
+
+class GuideMeView(generics.RetrieveUpdateAPIView):
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        guide = getattr(self.request.user, "Guide_profile", None)
+        if guide is None:
+            raise NotFound("Guide profile not found")
+        return guide
+
+    def get_serializer_class(self):
+        if self.request.method == "PATCH":
+            return GuideCreateSerializer
+        return GuideSeralizer
+
+    def get_serializer_context(self):
+        context = super().get_serializer_context()
+        context["request"] = self.request
+        return context
 
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.select_related("guide", "guide__user").all()
