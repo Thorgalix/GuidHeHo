@@ -39,7 +39,6 @@ urlpatterns = [
     path("reviews/", include("apps.reviews.urls")),
     path("contact/", include("apps.messaging.urls")),
 
-    path("api/guide/me/", GuideMeView.as_view()),
     path("api/guides/me/", GuideMeView.as_view()),
 
 
