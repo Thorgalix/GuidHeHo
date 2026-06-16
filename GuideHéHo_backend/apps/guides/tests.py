@@ -41,7 +41,7 @@ class GuideMeViewTests(TestCase):
 		self.guide.themes.add(self.theme)
 
 	def test_connected_guide_can_get_profile(self):
-		request = self.factory.get("/api/guide/me/")
+		request = self.factory.get("/api/guides/me/")
 		force_authenticate(request, user=self.guide_user)
 
 		response = GuideMeView.as_view()(request)
@@ -53,7 +53,7 @@ class GuideMeViewTests(TestCase):
 	@patch("apps.guides.serializers.geocode_city", return_value=(45.7640, 4.8357))
 	def test_connected_guide_can_patch_profile(self, mocked_geocode):
 		request = self.factory.patch(
-			"/api/guide/me/",
+			"/api/guides/me/",
 			{
 				"bio": "Updated bio",
 				"city": "Lyon",

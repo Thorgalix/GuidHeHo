@@ -95,7 +95,6 @@ class BookingsStatusUpdateView(APIView):
         if booking.traveler != request.user:
             return Response({"error": "Unauthorized"}, status=status.HTTP_403_FORBIDDEN)
 
-        booking.status = "cancelled"
-        booking.save(update_fields=["status"])
+        booking.delete()
 
         return Response(status=status.HTTP_204_NO_CONTENT)
