@@ -29,13 +29,14 @@ function createWeekTemplate() {
 }
 
 function addDaysToDate(dateString, days) {
-    const base = new Date(`${dateString}T00:00:00`)
-    base.setDate(base.getDate() + days)
-    return base.toISOString().split("T")[0]
+    const [year, month, day] = dateString.split("-").map(Number)
+    const baseUtc = new Date(Date.UTC(year, month - 1, day))
+    baseUtc.setUTCDate(baseUtc.getUTCDate() + days)
+    return baseUtc.toISOString().slice(0, 10)
 }
 
 function toIso(date, time) {
-    return new Date(`${date}T${time}`).toISOString()
+    return new Date(`${date}T${time}:00`).toISOString()
 }
 
 function getOverlapError(intervals) {
@@ -307,8 +308,8 @@ export function useBecomeGuide() {
                 const results = await Promise.allSettled(
                     slots.map((slot) =>
                         api.post("/api/availabilities/", {
-                            start_datetime: new Date(slot.start_datetime).toISOString(),
-                            end_datetime: new Date(slot.end_datetime).toISOString(),
+                            start_datetime: slot.start_datetime,
+                            end_datetime: slot.end_datetime,
                             is_available: true,
                             max_people: Number(maxPeople)
                         })

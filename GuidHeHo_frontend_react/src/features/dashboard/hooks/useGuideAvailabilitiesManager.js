@@ -28,13 +28,14 @@ function createWeekTemplate() {
 }
 
 function addDaysToDate(dateString, days) {
-    const base = new Date(`${dateString}T00:00:00`)
-    base.setDate(base.getDate() + days)
-    return base.toISOString().split("T")[0]
+    const [year, month, day] = dateString.split("-").map(Number)
+    const baseUtc = new Date(Date.UTC(year, month - 1, day))
+    baseUtc.setUTCDate(baseUtc.getUTCDate() + days)
+    return baseUtc.toISOString().slice(0, 10)
 }
 
 function toIso(date, time) {
-    return new Date(`${date}T${time}`).toISOString()
+    return new Date(`${date}T${time}:00`).toISOString()
 }
 
 function getOverlapError(intervals) {

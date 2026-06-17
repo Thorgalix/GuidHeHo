@@ -4,7 +4,7 @@ import { useGuideAvailabilitiesManager } from "../hooks/useGuideAvailabilitiesMa
 import AvailabilitySelector from "../../guides/become-guide/components/AvailabilitySelector"
 import WeeklyEditor from "../../guides/become-guide/components/WeeklyEditor"
 import DayEditor from "../../guides/become-guide/components/DayEditor"
-
+import CapacitySelector from "../../guides/become-guide/components/CapacitySelector"
 
 export default function ProfileGuideTab({ guide }) {
     const [isEditing, setIsEditing] = useState(false)
@@ -34,12 +34,22 @@ export default function ProfileGuideTab({ guide }) {
             <h2>Guide Dashboard</h2>
             <h3>My Profile</h3>
             <div className="card border">
-
-
-
+                <p>Bio: {guide.bio}</p>
+                <p>City: {guide.city}</p>
+                <p>Languages: {guide.languages.join(', ')}</p>
+                <p>Themes: {guide.themes.join(', ')}</p>
+                <p>Price: {guide.price}</p>
             </div>
+
             <div>
                 <h3>Add Disponibilities</h3>
+            </div>
+            <CapacitySelector
+                maxPeople={maxPeople}
+                setMaxPeople={setMaxPeople}
+            />
+            <div>
+
                 <form onSubmit={handleSubmitAvailabilities}>
                     <AvailabilitySelector
                         availabilityMode={availabilityMode}

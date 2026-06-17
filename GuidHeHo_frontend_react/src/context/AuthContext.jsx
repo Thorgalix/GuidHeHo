@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
 
     // Comportements
     useEffect(() => {
-        // Au chargement, on reconstruit la session depuis le localStorage.
+        // Au chargement, on tente de restaurer la session en mémoire (même onglet).
         const storedUser = getUser()
         const token = getAccessToken()
 
@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
         saveUser(nextUser)
     }
 
-    // On ferme la session côté UI et côté stockage local.
+    // On ferme la session côté UI et côté mémoire.
     async function logout() {
         const refresh = getRefreshToken()
 

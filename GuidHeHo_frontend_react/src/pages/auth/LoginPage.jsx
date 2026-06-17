@@ -40,7 +40,7 @@ export default function LoginPage() {
                 password,
             }, { skipAuthRefresh: true })
 
-            // On sauvegarde d'abord les tokens en localStorage.
+            // On sauvegarde la session en mémoire (pas de stockage navigateur).
             saveAuth(data)
 
             // Puis on met à jour le contexte React pour rafraîchir l'UI.
