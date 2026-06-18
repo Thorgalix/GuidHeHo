@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true)
     }
 
-    // Met a jour l'utilisateur en memoire et dans le stockage local.
+    // Met a jour l'utilisateur en memoire.
     function updateUser(nextUser) {
         setUser(nextUser)
         saveUser(nextUser)

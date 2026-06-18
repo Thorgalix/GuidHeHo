@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../services/api";
 
-export default function ProfileGuideBookingsTab({ bookings }) {
+export default function ProfileGuideBookingsTab() {
     const [bookingsData, setBookingsData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");

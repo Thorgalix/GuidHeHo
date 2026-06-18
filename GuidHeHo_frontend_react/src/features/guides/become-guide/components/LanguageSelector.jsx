@@ -1,3 +1,4 @@
+
 export default function LanguageSelector({
     languages,
     selectedLanguages,
@@ -21,7 +22,3 @@ export default function LanguageSelector({
         </div>
     )
 }
-
-
-
-

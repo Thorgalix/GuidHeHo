@@ -1,13 +1,28 @@
 import { useState } from "react"
 import ProfileTravelerEditForm from "./ProfileTravelerEditForm"
 import ProfileTravelerBookingsTab from "./ProfileTravelerBookingsTab"
+import { useTravelerProfile } from "../hooks/useTravelerProfile"
 
 
 export default function ProfileTravelerTab({ user }) {
     const [isEditing, setIsEditing] = useState(false)
+    const {
+        traveler,
+        loading,
+        error,
+        updateTravelerProfile,
+    } = useTravelerProfile(user)
 
     if (!user) {
-        return <p>Loading...</p>
+        return <p>Please login to access your traveler dashboard.</p>
+    }
+
+    if (loading) {
+        return <p>Loading traveler profile...</p>
+    }
+
+    if (!traveler) {
+        return <p>{error || "Unable to load traveler profile for now."}</p>
     }
 
     return (
@@ -15,10 +30,10 @@ export default function ProfileTravelerTab({ user }) {
             <h2>Traveler Dashboard</h2>
             <h3>My profile</h3>
             <div className="card border">
-                <p>First Name: {user.first_name}</p>
-                <p>Last Name: {user.last_name}</p>
-                <p>Role: {user.role}</p>
-                <p>Email: {user.email}</p>
+                <p>First Name: {traveler.first_name}</p>
+                <p>Last Name: {traveler.last_name}</p>
+                <p>Role: {traveler.role}</p>
+                <p>Email: {traveler.email}</p>
 
                 <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
                     {isEditing ? "Close profile editor" : "Edit profile"}
@@ -26,7 +41,13 @@ export default function ProfileTravelerTab({ user }) {
             </div>
 
 
-            {isEditing && <ProfileTravelerEditForm user={user} setIsEditing={setIsEditing} />}
+            {isEditing && (
+                <ProfileTravelerEditForm
+                    user={traveler}
+                    setIsEditing={setIsEditing}
+                    onUserUpdated={updateTravelerProfile}
+                />
+            )}
 
             <ProfileTravelerBookingsTab />
         </div>

@@ -2,7 +2,7 @@ import { useState, useContext } from "react"
 import { AuthContext } from "../../../context/AuthContext"
 import { api } from "../../../services/api"
 
-export default function ProfileTravelerEditForm({ user, setIsEditing }) {
+export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpdated }) {
     const { updateUser } = useContext(AuthContext)
 
     const [firstName, setFirstName] = useState(user.first_name)
@@ -38,7 +38,9 @@ export default function ProfileTravelerEditForm({ user, setIsEditing }) {
 
             const updatedUser = await api.patch("/users/me/", data)
 
-            updateUser({...user, ...updatedUser})
+            const mergedUser = { ...user, ...updatedUser }
+            updateUser(mergedUser)
+            if (onUserUpdated) onUserUpdated(mergedUser)
             setSuccess("Profile updated successfully!")
             setIsEditing(false)
         } catch (err) {

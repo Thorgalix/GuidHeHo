@@ -1,14 +1,16 @@
-import { useState } from "react"
 import ProfileGuideBookingsTab from "./ProfileGuideBookingsTab"
 import { useGuideAvailabilitiesManager } from "../hooks/useGuideAvailabilitiesManager"
+import { useGuideProfile } from "../hooks/useGuideProfile"
 import AvailabilitySelector from "../../guides/become-guide/components/AvailabilitySelector"
 import WeeklyEditor from "../../guides/become-guide/components/WeeklyEditor"
 import DayEditor from "../../guides/become-guide/components/DayEditor"
 import CapacitySelector from "../../guides/become-guide/components/CapacitySelector"
+import ProfileGuideEditForm from "./ProfileGuideEditForm"
+import { useState } from "react"
 
-export default function ProfileGuideTab({ guide }) {
+export default function ProfileGuideTab({ user }) {
+    const { isGuide, guide, setGuide, loading, error } = useGuideProfile(user)
     const [isEditing, setIsEditing] = useState(false)
-    const isGuide = guide !== null
     const {
         message, submitting, submitSummary,
         maxPeople, setMaxPeople,
@@ -28,6 +30,24 @@ export default function ProfileGuideTab({ guide }) {
         )
     }
 
+    if (loading) {
+        return (
+            <div>
+                <h2>Guide Dashboard</h2>
+                <p>Loading guide profile...</p>
+            </div>
+        )
+    }
+
+    if (!guide) {
+        return (
+            <div>
+                <h2>Guide Dashboard</h2>
+                <p>{error || "Unable to load guide profile for now."}</p>
+            </div>
+        )
+    }
+
 
     return (
         <div>
@@ -36,10 +56,22 @@ export default function ProfileGuideTab({ guide }) {
             <div className="card border">
                 <p>Bio: {guide.bio}</p>
                 <p>City: {guide.city}</p>
-                <p>Languages: {guide.languages.join(', ')}</p>
-                <p>Themes: {guide.themes.join(', ')}</p>
-                <p>Price: {guide.price}</p>
+                <p>Languages: {(guide.languages || []).map((language) => language.name).join(", ")}</p>
+                <p>Themes: {(guide.themes || []).map((theme) => theme.name).join(", ")}</p>
+                <p>Price: {guide.price_per_hour}</p>
+            
+                <button type="button" onClick={() => setIsEditing(prev => !prev)}>
+                    {isEditing ? "Close profile editor" : "Edit profile"}
+                </button>
             </div>
+
+            {isEditing && (
+                <ProfileGuideEditForm
+                    guide={guide}
+                    setIsEditing={setIsEditing}
+                    onGuideUpdated={setGuide}
+                />
+            )}
 
             <div>
                 <h3>Add Disponibilities</h3>
