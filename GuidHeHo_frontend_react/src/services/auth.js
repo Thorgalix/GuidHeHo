@@ -1,49 +1,45 @@
-const ACCESS_KEY = "guidheho_access_token"
-const REFRESH_KEY = "guidheho_refresh_token"
-const USER_KEY = "guidheho_user"
+// Store d'auth en mémoire uniquement (jamais persistant dans le navigateur).
+const authState = {
+    access: null,
+    refresh: null,
+    user: null,
+}
 
-// Sauvegarde la session complète après connexion.
+// Sauvegarde la session complète après connexion, en mémoire.
 export function saveAuth(data) {
-    localStorage.setItem(ACCESS_KEY, data.access)
-    localStorage.setItem(REFRESH_KEY, data.refresh)
-    localStorage.setItem(USER_KEY, JSON.stringify(data.user))
+    authState.access = data?.access ?? null
+    authState.refresh = data?.refresh ?? null
+    authState.user = data?.user ?? null
 }
 
 // Récupère le token d'accès courant.
 export function getAccessToken() {
-    return localStorage.getItem(ACCESS_KEY)
+    return authState.access
 }
 
 // Récupère le refresh token courant.
 export function getRefreshToken() {
-    return localStorage.getItem(REFRESH_KEY)
+    return authState.refresh
 }
 
 // Met à jour uniquement le token d'accès.
 export function saveAccessToken(token) {
-    localStorage.setItem(ACCESS_KEY, token)
+    authState.access = token ?? null
 }
 
-// Récupère l'utilisateur sauvegardé en localStorage.
+// Récupère l'utilisateur courant en mémoire.
 export function getUser() {
-    const user = localStorage.getItem(USER_KEY)
-    if (!user) return null
-
-    try {
-        return JSON.parse(user)
-    } catch {
-        return null
-    }
+    return authState.user
 }
 
-// Met à jour l'utilisateur courant dans le localStorage.
+// Met à jour l'utilisateur courant en mémoire.
 export function saveUser(user) {
-    localStorage.setItem(USER_KEY, JSON.stringify(user))
+    authState.user = user ?? null
 }
 
-// Supprime toutes les données d'authentification locales.
+// Supprime toutes les données d'authentification en mémoire.
 export function clearAuth() {
-    localStorage.removeItem(ACCESS_KEY)
-    localStorage.removeItem(REFRESH_KEY)
-    localStorage.removeItem(USER_KEY)
+    authState.access = null
+    authState.refresh = null
+    authState.user = null
 }

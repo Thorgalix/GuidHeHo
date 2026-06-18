@@ -13,7 +13,7 @@ export function AuthProvider({ children }) {
 
     // Comportements
     useEffect(() => {
-        // Au chargement, on reconstruit la session depuis le localStorage.
+        // Au chargement, on tente de restaurer la session en mémoire (même onglet).
         const storedUser = getUser()
         const token = getAccessToken()
 
@@ -31,13 +31,13 @@ export function AuthProvider({ children }) {
         setIsAuthenticated(true)
     }
 
-    // Met a jour l'utilisateur en memoire et dans le stockage local.
+    // Met a jour l'utilisateur en memoire.
     function updateUser(nextUser) {
         setUser(nextUser)
         saveUser(nextUser)
     }
 
-    // On ferme la session côté UI et côté stockage local.
+    // On ferme la session côté UI et côté mémoire.
     async function logout() {
         const refresh = getRefreshToken()
 
@@ -63,6 +63,7 @@ export function AuthProvider({ children }) {
     return (
         <AuthContext.Provider value={{
             user,
+            setUser,
             isAuthenticated,
             authLoading,
             login,
