@@ -6,6 +6,8 @@ export function useTravelerProfile(user) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [reviews, setReviews] = useState([])
+    const [reviewsLoading, setReviewsLoading] = useState(true)
+    const [reviewsError, setReviewsError] = useState("")
 
     useEffect(() => {
         let isMounted = true
@@ -20,10 +22,16 @@ export function useTravelerProfile(user) {
 
             try {
                 const response = await api.get("/reviews/traveler/")
-                if (isMounted) setReviews(response)
+                if (isMounted) {
+                    setReviews(response)
+                    setReviewsLoading(false)
+                    setReviewsError("")
+                }
             } catch {
                 if (isMounted) {
                     setReviews([])
+                    setReviewsLoading(false)
+                    setReviewsError("Unable to load traveler reviews for now.")
                 }
             }
         }
@@ -82,5 +90,8 @@ export function useTravelerProfile(user) {
         loading,
         error,
         updateTravelerProfile,
+        reviews,
+        reviewsLoading,
+        reviewsError,
     }
 }

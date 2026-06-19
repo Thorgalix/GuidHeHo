@@ -12,6 +12,9 @@ export default function ProfileTravelerTab({ user }) {
         loading,
         error,
         updateTravelerProfile,
+        reviews,
+        reviewsLoading,
+        reviewsError,
     } = useTravelerProfile(user)
 
     const BACKEND_URL = "http://127.0.0.1:8000"
@@ -62,7 +65,7 @@ export default function ProfileTravelerTab({ user }) {
             )}
 
             <ProfileTravelerBookingsTab />
-            <ProfileTravelerReviewsTab user={traveler} />
+            <ProfileTravelerReviewsTab reviews={reviews} loading={reviewsLoading} error={reviewsError} />
         </div>
     )
 }
