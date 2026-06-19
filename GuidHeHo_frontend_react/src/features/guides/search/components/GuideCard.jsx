@@ -5,7 +5,7 @@ import { AuthContext } from "../../../../context/AuthContext"
 import GuideProfileSummary from "../../details/components/GuideProfileSummary"
 import { useToggleFavorite } from "../../details/hooks/useToggleFavorite"
 
-export default function GuideCard({ guide }) {
+export default function GuideCard({ guide, onFavoriteRemoved }) {
 
     const { isAuthenticated } = useContext(AuthContext)
 
@@ -28,13 +28,17 @@ export default function GuideCard({ guide }) {
             : `${BACKEND_URL}${guide.user.profile_picture.startsWith("/") ? "" : "/"}${guide.user.profile_picture}`
         : null
 
-    function handleToggleFavorite(e) {
-        e.preventDefault() // Empêche la navigation vers la page du guide
-        e.stopPropagation() // Empêche la propagation de l'événement au parent Link
+    async function handleToggleFavorite(e) {
+        e.preventDefault()
+        e.stopPropagation()
 
         if (!isAuthenticated || loading) return
 
-        toggleFavorite().catch(() => { })
+        const data = await toggleFavorite()
+
+        if (data && data.is_favorited === false) {
+            onFavoriteRemoved?.(guide.id)
+        }
     }
 
     // Affichage

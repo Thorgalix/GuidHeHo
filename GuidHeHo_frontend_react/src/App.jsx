@@ -11,6 +11,7 @@ import GuideDetailsPage from "./pages/guides/GuideDetailsPage"
 import SearchPage from "./pages/guides/SearchPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
+import FavoriteGuidesPage from "./pages/guides/FavoriteGuidesPage"
 
 export default function App() {
     // States
@@ -34,7 +35,7 @@ export default function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
-                
+
                 <Route path="/guides/:id" element={<GuideDetailsPage />} />
                 <Route path="/become-guide" element={<BecomeGuidePage />} />
                 <Route
@@ -46,6 +47,14 @@ export default function App() {
                                 ? <DashboardPage />
                                 : <Navigate to="/login" replace />
                     }
+                />
+                <Route path="/favourites" element={
+                    authLoading
+                        ? <p>Loading session...</p>
+                        : isAuthenticated
+                            ? <FavoriteGuidesPage />
+                            : <Navigate to="/login" replace />
+                }
                 />
             </Routes>
         </div>

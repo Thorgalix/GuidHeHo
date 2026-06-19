@@ -34,6 +34,10 @@ export default function AppNavbar({ isAuthenticated, onLogout }) {
                             Dashboard
                         </NavLink>
 
+                        <NavLink to="/favourites" className={({ isActive }) => getNavLinkClassName(isActive)}>
+                            My Favourites
+                        </NavLink>
+
                         <button
                             onClick={onLogout}
                             className="cursor-pointer text-white px-3 py-2 rounded border border-transparent transition hover:bg-teal-500/30 hover:border-teal-400"
