@@ -1,6 +1,7 @@
 import { useState } from "react"
 import ProfileTravelerEditForm from "./ProfileTravelerEditForm"
 import ProfileTravelerBookingsTab from "./ProfileTravelerBookingsTab"
+import ProfileTravelerReviewsTab from "./ProfileTravelerReviewsTab"
 import { useTravelerProfile } from "../hooks/useTravelerProfile"
 
 
@@ -61,6 +62,7 @@ export default function ProfileTravelerTab({ user }) {
             )}
 
             <ProfileTravelerBookingsTab />
+            <ProfileTravelerReviewsTab user={traveler} />
         </div>
     )
 }

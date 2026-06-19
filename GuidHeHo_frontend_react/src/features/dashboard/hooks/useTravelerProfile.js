@@ -5,6 +5,35 @@ export function useTravelerProfile(user) {
     const [traveler, setTraveler] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const [reviews, setReviews] = useState([])
+
+    useEffect(() => {
+        let isMounted = true
+
+        async function loadTravelerReviews() {
+            if (!user) {
+                if (isMounted) {
+                    setReviews([])
+                }
+                return
+            }
+
+            try {
+                const response = await api.get("/reviews/traveler/")
+                if (isMounted) setReviews(response)
+            } catch {
+                if (isMounted) {
+                    setReviews([])
+                }
+            }
+        }
+
+        loadTravelerReviews()
+
+        return () => {
+            isMounted = false
+        }
+    }, [user])
 
     useEffect(() => {
         let isMounted = true

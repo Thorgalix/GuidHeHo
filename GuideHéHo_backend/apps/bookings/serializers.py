@@ -6,10 +6,15 @@ from apps.guides.serializers import GuideSeralizer
 from apps.guides.models import Availability, Guide
 from .models import Booking
 
+class BookingTravelerSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    first_name = serializers.CharField()
+    last_name = serializers.CharField()
 
 class BookingSerializer(serializers.ModelSerializer):
 
     guide = GuideSeralizer(read_only=True)
+    traveler = BookingTravelerSerializer(read_only=True)
     # Frontend envoie booking_date
     booking_date = serializers.DateField(source="Booking_date")
 

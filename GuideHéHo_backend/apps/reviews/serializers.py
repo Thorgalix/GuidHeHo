@@ -1,8 +1,11 @@
 from rest_framework import serializers
 from .models import Review
+from apps.accounts.serializers import UserSerializer
 
 
 class ReviewSerializer(serializers.ModelSerializer):
+    traveler = UserSerializer(read_only=True)
+    
     def validate_rating(self, value):
         if value is None:
             raise serializers.ValidationError("Rating is required")

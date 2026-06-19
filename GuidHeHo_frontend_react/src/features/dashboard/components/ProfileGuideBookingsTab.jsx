@@ -12,6 +12,7 @@ export default function ProfileGuideBookingsTab() {
                 setLoading(true);
                 setError("");
                 const data = await api.get("/bookings/guide/");
+
                 setBookingsData(data);
             } catch (err) {
                 setError("Failed to load bookings.");

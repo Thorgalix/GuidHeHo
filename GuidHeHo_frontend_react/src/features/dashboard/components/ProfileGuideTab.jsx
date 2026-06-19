@@ -6,10 +6,11 @@ import WeeklyEditor from "../../guides/become-guide/components/WeeklyEditor"
 import DayEditor from "../../guides/become-guide/components/DayEditor"
 import CapacitySelector from "../../guides/become-guide/components/CapacitySelector"
 import ProfileGuideEditForm from "./ProfileGuideEditForm"
+import ProfileGuideReviewsTab from "./ProfileGuideReviewsTab"
 import { useState } from "react"
 
 export default function ProfileGuideTab({ user }) {
-    const { isGuide, guide, setGuide, loading, error } = useGuideProfile(user)
+    const { isGuide, guide, setGuide, reviews, loading, reviewsLoading, error, reviewsError } = useGuideProfile(user)
     const [isEditing, setIsEditing] = useState(false)
     const {
         message, submitting, submitSummary,
@@ -118,6 +119,10 @@ export default function ProfileGuideTab({ user }) {
             </div>
             <div>
                 <ProfileGuideBookingsTab />
+                <ProfileGuideReviewsTab 
+                reviews={reviews} 
+                loading={reviewsLoading} 
+                error={reviewsError} />
             </div>
         </div>
     )
