@@ -1,5 +1,12 @@
 export default function GuideProfileSummary({ guide }) {
+
     if (!guide) return null
+
+    const visibleLanguages = guide.languages?.slice(0, 3) || []
+    const hiddenLanguagesCount = (guide.languages?.length || 0) - visibleLanguages.length
+
+    const visibleThemes = guide.themes?.slice(0, 3) || []
+    const hiddenThemesCount = (guide.themes?.length || 0) - visibleThemes.length
 
     return (
         <dl className="space-y-1 text-slate-700 dark:text-teal-100">
@@ -7,19 +14,61 @@ export default function GuideProfileSummary({ guide }) {
                 <dt className="font-semibold inline">City : </dt>
                 <dd className="inline">{guide.city}</dd>
             </div>
-            
-
 
             <div>
-                <dt className="font-semibold inline">Languages : </dt>
-                <dd className="inline">{guide.languages?.map((lang) => lang.name).join(", ") || "No languages"}</dd>
+                <dt className="font-semibold block mb-1">Languages : </dt>
+
+                <dd className="flex flex-wrap gap-1">
+                    {visibleLanguages.length > 0 ? (
+                        <>
+                            {visibleLanguages.map((language) => (
+                                <span
+                                    key={language.id}
+                                    className="badge badge-outline border-teal-600"
+                                >
+                                    {language.name}
+                                </span>
+                            ))}
+
+                            {hiddenLanguagesCount > 0 && (
+                                <span className="badge bg-teal-100 dark:bg-teal-800 border-teal-600">
+                                    +{hiddenLanguagesCount}
+                                </span>
+                            )}
+                        </>
+                    ) : (
+                        <span>No languages</span>
+                    )}
+                </dd>
             </div>
 
             <div>
-                <dt className="font-semibold inline">Themes : </dt>
-                <dd className="inline">{guide.themes?.map((theme) => theme.name).join(", ") || "No themes"}</dd>
+                <dt className="font-semibold block mb-1">Themes :</dt>
+
+                <dd className="flex flex-wrap gap-1">
+                    {visibleThemes.length > 0 ? (
+                        <>
+                            {visibleThemes.map((theme) => (
+                                <span
+                                    key={theme.id}
+                                    className="badge badge-outline border-teal-600"
+                                >
+                                    {theme.name}
+                                </span>
+                            ))}
+
+                            {hiddenThemesCount > 0 && (
+                                <span className="badge bg-teal-100 dark:bg-teal-800 border-teal-600">
+                                    +{hiddenThemesCount}
+                                </span>
+                            )}
+                        </>
+                    ) : (
+                        <span>No themes</span>
+                    )}
+                </dd>
             </div>
-            
+
             <div>
                 <dt className="font-semibold inline">Price : </dt>
                 <dd className="inline">{guide.price_per_hour}€/hour</dd>

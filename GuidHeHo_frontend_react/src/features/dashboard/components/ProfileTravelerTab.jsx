@@ -13,6 +13,14 @@ export default function ProfileTravelerTab({ user }) {
         updateTravelerProfile,
     } = useTravelerProfile(user)
 
+    const BACKEND_URL = "http://127.0.0.1:8000"
+
+    const profilePictureUrl = traveler?.profile_picture
+        ? traveler.profile_picture.startsWith("http")
+            ? traveler.profile_picture
+            : `${BACKEND_URL}${traveler.profile_picture.startsWith("/") ? "" : "/"}${traveler.profile_picture}`
+        : null
+
     if (!user) {
         return <p>Please login to access your traveler dashboard.</p>
     }
@@ -30,6 +38,9 @@ export default function ProfileTravelerTab({ user }) {
             <h2>Traveler Dashboard</h2>
             <h3>My profile</h3>
             <div className="card border">
+                {profilePictureUrl && (
+                    <img src={profilePictureUrl} alt="Profile" className="h-40 w-40 rounded-xl object-cover" />
+                )}
                 <p>First Name: {traveler.first_name}</p>
                 <p>Last Name: {traveler.last_name}</p>
                 <p>Role: {traveler.role}</p>

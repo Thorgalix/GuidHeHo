@@ -69,16 +69,19 @@ function normalizeResponse(data) {
 async function request(url, options = {}) {
     // On injecte automatiquement le token d'accès courant.
     const token = getAccessToken()
+    const isFormData = options.body instanceof FormData
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
+    const headers = { ...(options.headers || {}) }
+
+    if (!isFormData) {
+        headers["Content-Type"] = "application/json"
+    } else {
+        // Pour les formulaires multipart/form-data, on laisse le navigateur gérer le Content-Type.
+        delete headers["Content-Type"]
     }
 
     // auto injection token
-    if (token) {
-        headers.Authorization = `Bearer ${token}`
-    }
+    if (token) {headers.Authorization = `Bearer ${token}`}
 
     const finalUrl = url.startsWith("http") ? url : BASE_URL + url
 
@@ -144,6 +147,14 @@ export const api = {
             body: JSON.stringify(body),
             ...options
         }),
+    // Helper pour envoyer des formulaires multipart/form-data (ex: upload de fichiers).
+    postFormData: (url, formData, options = {}) =>
+        request(url, {
+            method: "POST",
+            body: formData,
+            ...options
+        }),
+
     put: (url, body, options = {}) =>
         request(url, {
             method: "PUT",

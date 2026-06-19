@@ -11,6 +11,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [selectedFile, setSelectedFile] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
@@ -43,6 +44,34 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
             if (onUserUpdated) onUserUpdated(mergedUser)
             setSuccess("Profile updated successfully!")
             setIsEditing(false)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    async function handleUploadProfilePicture(e) {
+        e.preventDefault()
+        setLoading(true)
+        setError("")
+        setSuccess("")
+
+        if (!selectedFile) {
+            setError("Please select a file to upload.")
+            setLoading(false)
+            return
+        }
+
+        const formData = new FormData()
+        formData.append("profile_picture", selectedFile)
+
+        try {
+            const updatedUser = await api.postFormData("/users/upload-profile/", formData)
+            const refreshedUser = await api.get("/users/me/") // Fetch the updated user data
+            updateUser(refreshedUser)
+            if (onUserUpdated) onUserUpdated(refreshedUser)
+            setSuccess("Profile picture updated successfully!")
         } catch (err) {
             setError(err.message)
         } finally {
@@ -111,6 +140,13 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                     {success && <p style={{ color: "green" }}>{success}</p>}
                 </div>
 
+                <div>
+                    <label htmlFor="profile_picture">Profile Picture: </label>
+                    <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} />
+                    <button type="button" onClick={handleUploadProfilePicture} disabled={loading}>
+                        {loading ? "Uploading..." : "Upload Picture"}
+                    </button>
+                </div>
 
                 <div>
                     <label htmlFor="oldpassword">Old Password: </label>
