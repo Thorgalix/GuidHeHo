@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { api } from "../../../../services/api"
 
 export function useSearchGuides() {
@@ -62,21 +62,6 @@ export function useSearchGuides() {
             setLoading(false)
         }
     }
-
-    useEffect(() => {
-        let isCancelled = false
-
-        // On charge la première page dès l'ouverture de l'écran.
-        async function loadFirstPage() {
-            await fetchGuides({}, null, () => !isCancelled)
-        }
-
-        loadFirstPage()
-
-        return () => {
-            isCancelled = true
-        }
-    }, [])
 
     return {
         guides,
