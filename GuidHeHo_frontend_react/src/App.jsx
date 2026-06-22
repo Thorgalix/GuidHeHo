@@ -12,6 +12,7 @@ import SearchPage from "./pages/guides/SearchPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
 import FavoriteGuidesPage from "./pages/guides/FavoriteGuidesPage"
+import VerifyEmailPage from "./pages/auth/VerifyEmailPage"
 
 export default function App() {
     // States
@@ -35,6 +36,7 @@ export default function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
 
                 <Route path="/guides/:id" element={<GuideDetailsPage />} />
                 <Route path="/become-guide" element={<BecomeGuidePage />} />
