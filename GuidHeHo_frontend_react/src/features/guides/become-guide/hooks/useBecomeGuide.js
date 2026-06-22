@@ -39,6 +39,29 @@ function toIso(date, time) {
     return new Date(`${date}T${time}:00`).toISOString()
 }
 
+function sanitizePositiveInteger(value) {
+    const digits = String(value).replace(/\D/g, "")
+
+    if (!digits) return ""
+
+    return String(Math.max(Number(digits), 1))
+}
+
+function sanitizePositiveDecimal(value) {
+    const normalizedValue = String(value).replace(",", ".").replace(/[^\d.]/g, "")
+    const [integerPart, ...decimalParts] = normalizedValue.split(".")
+
+    if (!integerPart && decimalParts.length === 0) return ""
+
+    const decimalPart = decimalParts.join("").slice(0, 2)
+    const normalizedNumber = decimalPart ? `${integerPart || "0"}.${decimalPart}` : integerPart
+    const number = Number(normalizedNumber)
+
+    if (!Number.isFinite(number)) return ""
+
+    return decimalPart ? String(Math.max(number, 1)) : String(Math.max(Math.trunc(number), 1))
+}
+
 function getOverlapError(intervals) {
     const normalized = intervals.map((it) => ({
         start: it.start_time,
@@ -280,6 +303,14 @@ export function useBecomeGuide() {
                 setMessage("Tous les champs sont requis")
                 return
             }
+            const sanitizedPrice = sanitizePositiveDecimal(price)
+            const sanitizedMaxPeople = sanitizePositiveInteger(maxPeople)
+
+            if (!sanitizedPrice || !sanitizedMaxPeople) {
+                setMessage("Le prix et le nombre de personnes doivent être valides")
+                return
+            }
+
             const { error: slotError, slots } = buildAvailabilitySlots()
             if (slotError) {
                 setMessage(slotError)
@@ -290,7 +321,7 @@ export function useBecomeGuide() {
             await api.post("/api/guides/", {
                 bio,
                 city,
-                price_per_hour: Number(price),
+                price_per_hour: Number(sanitizedPrice),
                 themes: selectedThemes,
                 languages: selectedLanguages,
             })
@@ -311,7 +342,7 @@ export function useBecomeGuide() {
                             start_datetime: slot.start_datetime,
                             end_datetime: slot.end_datetime,
                             is_available: true,
-                            max_people: Number(maxPeople)
+                            max_people: Number(sanitizedMaxPeople)
                         })
                     )
                 )

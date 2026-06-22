@@ -54,8 +54,6 @@ export default function BecomeGuidePage() {
                     setCity={setCity}
                     price={price}
                     setPrice={setPrice}
-                    maxPeople={maxPeople}
-
                 />
 
                 <CapacitySelector

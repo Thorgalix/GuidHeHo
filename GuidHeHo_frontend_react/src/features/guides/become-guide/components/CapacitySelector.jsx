@@ -1,30 +1,28 @@
 export default function CapacitySelector({ maxPeople, setMaxPeople }) {
     const handleChange = (e) => {
-        const value = e.target.value
+        const digits = e.target.value.replace(/\D/g, "")
 
-        if (value === "") {
+        if (!digits) {
             setMaxPeople("")
             return
         }
 
-        const number = Number(value)
+        setMaxPeople(String(Math.max(Number(digits), 1)))
+    }
 
-        if (isNaN(number)) {
-            return
+    const handleKeyDown = (e) => {
+        if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+            e.preventDefault()
         }
-
-        if (number < 1) {
-            setMaxPeople("1")
-        }
-
-        setMaxPeople(number)
     }
 
     return (
         <div>
             <h4>Number of people</h4>
             <input
-                type="number"
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
                 name="maxpeople"
                 min="1"
                 step="1"
@@ -32,11 +30,7 @@ export default function CapacitySelector({ maxPeople, setMaxPeople }) {
                 className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                 value={maxPeople}
                 onChange={handleChange}
-                onKeyDown={(e) => {
-                    if (e.key === "-" || e.key === "e" || e.key === "+") {
-                        e.preventDefault()
-                    }
-                }}
+                onKeyDown={handleKeyDown}
             />
         </div>
     )

@@ -10,6 +10,8 @@ export function useSearchGuides() {
     const [next, setNext] = useState(null)
     const [previous, setPrevious] = useState(null)
     const [count, setCount] = useState(0)
+    const [currentPage, setCurrentPage] = useState(1)
+    const pageSize = 8
     
 
     // Comportements
@@ -46,7 +48,13 @@ export function useSearchGuides() {
             setNext(data.next ?? null)
             setPrevious(data.previous ?? null)
             setCount(data.count ?? data.length ?? 0)
+            let nextCurrentPage = 1
+            if (urlOverride) {
+                const parsedUrl = new URL(urlOverride)
+                nextCurrentPage = Number(parsedUrl.searchParams.get("page") || 1)
+            }
 
+            setCurrentPage(nextCurrentPage)
             setHasSearched(true)
         } catch (err) {
             setError(err.message)
@@ -78,6 +86,8 @@ export function useSearchGuides() {
         next,
         previous,
         count,
+        currentPage,
+        pageSize,
         fetchGuides,
     }
 }

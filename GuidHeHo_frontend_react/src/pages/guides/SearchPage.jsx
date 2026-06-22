@@ -13,9 +13,11 @@ export default function SearchPage() {
         next,
         previous,
         count,
+        currentPage,
+        pageSize,
         fetchGuides,
     } = useSearchGuides()
-
+    const totalPages = Math.ceil(count / pageSize)
     // Affichage
 
     return (
@@ -69,7 +71,7 @@ export default function SearchPage() {
                             onClick={() => fetchGuides({}, previous)}
                         >
                             <span aria-hidden="true">«</span>
-                            <span className="sr-only">Page précédente</span>
+                            <span className="sr-only">Previous page</span>
                         </button>
 
                         <button
@@ -77,7 +79,7 @@ export default function SearchPage() {
                             className="join-item btn"
                             disabled
                         >
-                            Page
+                            Page {currentPage} on {totalPages}
                         </button>
 
                         <button
@@ -87,7 +89,7 @@ export default function SearchPage() {
                             onClick={() => fetchGuides({}, next)}
                         >
                             <span aria-hidden="true">»</span>
-                            <span className="sr-only">Page suivante</span>
+                            <span className="sr-only">Next page</span>
                         </button>
                     </nav>
                 )}
@@ -95,7 +97,7 @@ export default function SearchPage() {
 
             <section aria-labelledby="map-title">
                 <h2 id="map-title" className="sr-only">
-                    Carte des guides
+                    Guide map
                 </h2>
 
                 <GuideMap guides={guides} />

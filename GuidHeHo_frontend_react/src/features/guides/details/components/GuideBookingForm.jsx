@@ -57,13 +57,32 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
         setSelectedAvailabilityId("")
     }
 
+    function sanitizePeople(value) {
+        const digits = value.replace(/\D/g, "")
+
+        if (!digits) return ""
+
+        const max = selectedAvailability?.remaining_places
+        const number = Math.max(Number(digits), 1)
+
+        return String(max ? Math.min(number, max) : number)
+    }
+
+    function handlePeopleKeyDown(e) {
+        if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+            e.preventDefault()
+        }
+    }
+
     async function handleSubmit(e) {
         e.preventDefault()
+
+        const sanitizedPeople = sanitizePeople(people)
 
         await onSubmit({
             availability: Number(selectedAvailabilityId),
             booking_date: date,
-            number_of_people: Number(people),
+            number_of_people: Number(sanitizedPeople),
             message: message.trim(),
         })
 
@@ -116,12 +135,15 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
             <label>
                 Number of people:
                 <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={people}
                     min="1"
                     max={selectedAvailability?.remaining_places}
                     disabled={!selectedAvailabilityId}
-                    onChange={(e) => setPeople(e.target.value)}
+                    onChange={(e) => setPeople(sanitizePeople(e.target.value))}
+                    onKeyDown={handlePeopleKeyDown}
                 />
             </label>
 

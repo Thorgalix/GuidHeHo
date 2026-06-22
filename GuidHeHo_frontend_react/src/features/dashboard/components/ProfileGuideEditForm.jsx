@@ -51,6 +51,29 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
         })
     }
 
+    function sanitizePrice(value, allowTrailingDecimal = true) {
+        const normalizedValue = String(value).replace(",", ".").replace(/[^\d.]/g, "")
+        const [integerPart, ...decimalParts] = normalizedValue.split(".")
+
+        if (!integerPart && decimalParts.length === 0) return ""
+
+        const decimalPart = decimalParts.join("").slice(0, 2)
+        const normalizedNumber = decimalPart ? `${integerPart || "0"}.${decimalPart}` : integerPart
+        const number = Number(normalizedNumber)
+
+        if (!Number.isFinite(number)) return ""
+        if (allowTrailingDecimal && normalizedValue.endsWith(".") && decimalParts.length > 0) {
+            return `${Math.max(Math.trunc(number), 1)}.`
+        }
+
+        return decimalPart ? String(Math.max(number, 1)) : String(Math.max(Math.trunc(number), 1))
+    }
+
+    function handlePriceKeyDown(e) {
+        if (["e", "E", "+", "-"].includes(e.key)) {
+            e.preventDefault()
+        }
+    }
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -60,10 +83,17 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
 
         try {
             const data = {}
+            const sanitizedPricePerHour = sanitizePrice(pricePerHour, false)
 
             if (bio !== guide.bio) data.bio = bio
             if (city !== guide.city) data.city = city
-            if (pricePerHour !== guide.price_per_hour) data.price_per_hour = pricePerHour
+            if (!sanitizedPricePerHour) {
+                setError("Price per hour must be valid.")
+                return
+            }
+            if (sanitizedPricePerHour !== String(guide.price_per_hour)) {
+                data.price_per_hour = Number(sanitizedPricePerHour)
+            }
 
             const initialLanguageIds = guide.languages.map((language) => language.id)
             const initialThemeIds = guide.themes.map((theme) => theme.id)
@@ -80,7 +110,7 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
                 return
             }
 
-            const updatedGuide = await api.patch("/api/guides/me/", data)
+            await api.patch("/api/guides/me/", data)
 
             const refreshedGuide = await api.get("/api/guides/me/")
 
@@ -107,16 +137,14 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
 
                     <label htmlFor="price_per_hour">Price per Hour: </label>
                     <input
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         id="price_per_hour"
                         name="price_per_hour"
                         min="1"
-                        onChange={(e) => setPricePerHour(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "-" || e.key === "e" || e.key === "+") {
-                                e.preventDefault()
-                            }
-                        }}
+                        value={pricePerHour}
+                        onChange={(e) => setPricePerHour(sanitizePrice(e.target.value))}
+                        onKeyDown={handlePriceKeyDown}
                     />
 
                                 < LanguageSelector

@@ -56,11 +56,11 @@ export default function RegisterPage() {
             <section className="card w-full max-w-md bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600">
                 <div className="card-body">
                     <h1 className="card-title text-2xl text-slate-900 dark:text-white">
-                        Inscription
+                        Register
                     </h1>
 
                     <p className="text-sm text-slate-700 dark:text-teal-100">
-                        Crée ton compte, puis vérifie ton email avec le code reçu.
+                        Create your account, then verify your email with the code you receive.
                     </p>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                             to="/login"
                             className="link text-teal-700 hover:text-teal-900 dark:text-teal-200 dark:hover:text-white text-sm"
                         >
-                            J'ai déjà un compte
+                            I already have an account
                         </Link>
                     </div>
                 </div>

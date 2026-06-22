@@ -22,11 +22,11 @@ export default function VerifyEmailPage() {
         setSuccess("");
 
         if (!code) {
-            setError("Entre le code de vérification reçu par email.");
+            setError("Please enter the verification code sent to your email.");
             return;
         }
         if (code.length !== 6) {
-            setError("Le code doit contenir 6 chiffres.");
+            setError("The code must contain 6 digits.");
             return;
         }
 
@@ -34,14 +34,14 @@ export default function VerifyEmailPage() {
 
         try {
             const data = await api.post("/users/verify-email/", { code }, { skipAuthRefresh: true });
-            setSuccess(data.detail || "Ton email a bien été vérifié. Redirection vers la connexion...");
+            setSuccess(data.detail || "Your email has been verified. Redirecting to login...");
             setCode("");
 
             setTimeout(() => {
                 navigate("/login", { replace: true });
             }, 800);
         } catch (err) {
-            setError(err.message || "Une erreur est survenue pendant la vérification.");
+            setError(err.message || "An error occurred while verifying your email.");
         } finally {
             setLoading(false);
         }
@@ -52,17 +52,17 @@ export default function VerifyEmailPage() {
             <section className="card w-full max-w-md bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600">
                 <div className="card-body">
                     <h1 className="card-title text-2xl text-slate-900 dark:text-white">
-                        Vérification email
+                        Email verification
                     </h1>
 
                     <p className="text-sm text-slate-700 dark:text-teal-100">
-                        Entre le code à 6 chiffres envoyé par email après ton inscription.
+                        Enter the 6-digit code sent to your email after registration.
                     </p>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                         <label className="form-control">
                             <div className="label">
-                                <span className="label-text dark:text-white">Code de vérification</span>
+                                <span className="label-text dark:text-white">Verification code</span>
                             </div>
                             <input
                                 type="text"
@@ -81,7 +81,7 @@ export default function VerifyEmailPage() {
                             className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
                             disabled={loading}
                         >
-                            {loading ? "Vérification..." : "Vérifier mon compte"}
+                            {loading ? "Verifying..." : "Verify my account"}
                         </button>
 
                         {error && <p className="text-sm text-red-600 dark:text-red-300">{error}</p>}
@@ -93,7 +93,7 @@ export default function VerifyEmailPage() {
                             to="/login"
                             className="link text-teal-700 hover:text-teal-900 dark:text-teal-200 dark:hover:text-white text-sm"
                         >
-                            Retour à la connexion
+                            Back to login
                         </Link>
                     </div>
                 </div>
