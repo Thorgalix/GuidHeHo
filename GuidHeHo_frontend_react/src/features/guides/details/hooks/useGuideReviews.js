@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import { fetchGuideReviews } from "../../../../services/reviews"
 
 export function useGuideReviews(guideId) {
@@ -8,7 +8,7 @@ export function useGuideReviews(guideId) {
     const [error, setError] = useState("")
     const isMountedRef = useRef(true)
 
-    const loadReviews = async () => {
+    const loadReviews = useCallback(async () => {
         try {
             if (!guideId) {
                 if (isMountedRef.current) {
@@ -52,16 +52,16 @@ export function useGuideReviews(guideId) {
                 setLoading(false)
             }
         }
-    }
+    }, [guideId])
 
     useEffect(() => {
         isMountedRef.current = true
         const cleanup = () => {
             isMountedRef.current = false
         }
-        loadReviews()
+        Promise.resolve().then(loadReviews)
         return cleanup
-    }, [guideId])
+    }, [loadReviews])
 
 
     const reload = () => {

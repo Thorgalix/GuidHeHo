@@ -7,13 +7,13 @@ export default function GuideMap({ guides }) {
     const mapRef = useRef(null)
     const mapInstance = useRef(null)
     const markersRef = useRef([])
-    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
 
     // Comportements
 
     useEffect(() => {
         if (!window.mapboxgl) return
 
+        const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         window.mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
 
         mapInstance.current = new window.mapboxgl.Map({

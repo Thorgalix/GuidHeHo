@@ -1,29 +1,15 @@
-import { createContext, useState, useEffect } from "react"
+import { useState } from "react"
 import { getUser, getAccessToken, getRefreshToken, clearAuth, saveUser } from "../services/auth"
+import { AuthContext } from "./auth-context"
+import { API_BASE_URL } from "../config/apiConfig"
 
-export const AuthContext = createContext()
-
-const BASE_URL = "http://127.0.0.1:8000"
+const BASE_URL = API_BASE_URL
 
 export function AuthProvider({ children }) {
     // States
-    const [user, setUser] = useState(null)
-    const [isAuthenticated, setIsAuthenticated] = useState(false)
-    const [authLoading, setAuthLoading] = useState(true)
-
-    // Comportements
-    useEffect(() => {
-        // Au chargement, on tente de restaurer la session en mémoire (même onglet).
-        const storedUser = getUser()
-        const token = getAccessToken()
-
-        if (storedUser && token) {
-            setUser(storedUser)
-            setIsAuthenticated(true)
-        }
-
-        setAuthLoading(false)
-    }, [])
+    const [user, setUser] = useState(() => getUser())
+    const [isAuthenticated, setIsAuthenticated] = useState(() => Boolean(getUser() && getAccessToken()))
+    const [authLoading] = useState(false)
 
     // On enregistre l'utilisateur dans le contexte après la connexion.
     function login(userData) {

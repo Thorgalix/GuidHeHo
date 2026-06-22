@@ -1,5 +1,5 @@
 import { useState, useContext } from "react"
-import { AuthContext } from "../../../context/AuthContext"
+import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
 
 export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpdated }) {
@@ -67,7 +67,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
         formData.append("profile_picture", selectedFile)
 
         try {
-            const updatedUser = await api.postFormData("/users/upload-profile/", formData)
+            await api.postFormData("/users/upload-profile/", formData)
             const refreshedUser = await api.get("/users/me/") // Fetch the updated user data
             updateUser(refreshedUser)
             if (onUserUpdated) onUserUpdated(refreshedUser)

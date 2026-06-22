@@ -14,7 +14,7 @@ export default function ProfileTravelerBookingsTab() {
                 const data = await api.get("/bookings/my/");
                 setBookings(data);
             } catch (err) {
-                setError("Failed to load bookings.");
+                setError(err.message || "Failed to load bookings.");
             } finally {
                 setLoading(false);
             }
@@ -32,7 +32,7 @@ export default function ProfileTravelerBookingsTab() {
             await api.delete(`/bookings/${bookingId}/`);
             setBookings((prev) => prev.filter((b) => b.id !== bookingId));
         } catch (err) {
-            alert("Failed to cancel booking.");
+            alert(err.message || "Failed to cancel booking.");
         }
     }
 

@@ -1,7 +1,7 @@
 import { useState, useContext } from "react";
 import ProfileTravelerTab from "../../features/dashboard/components/ProfileTravelerTab";
 import DashboardTabs from "../../features/dashboard/components/DashboardTabs";
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "../../context/auth-context";
 import ProfileGuideTab from "../../features/dashboard/components/ProfileGuideTab";
 
 export default function DashboardPage() {

@@ -16,7 +16,7 @@ export function useFavoriteGuides() {
 
             setFavoriteGuides(data.results ?? data);
         } catch (err) {
-            setError(err);
+            setError(err.message || "Unable to load favorite guides.");
         } finally {
             setLoading(false);
         }
@@ -31,7 +31,7 @@ export function useFavoriteGuides() {
     useEffect(() => {
         let isCancelled = false;
 
-        fetchFavoriteGuides(() => !isCancelled);
+        Promise.resolve().then(() => fetchFavoriteGuides(() => !isCancelled));
 
         return () => {
             isCancelled = true;
@@ -46,4 +46,3 @@ export function useFavoriteGuides() {
         removeFavoriteGuide
     };
 }
-

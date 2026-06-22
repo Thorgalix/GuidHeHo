@@ -3,6 +3,7 @@ import ProfileTravelerEditForm from "./ProfileTravelerEditForm"
 import ProfileTravelerBookingsTab from "./ProfileTravelerBookingsTab"
 import ProfileTravelerReviewsTab from "./ProfileTravelerReviewsTab"
 import { useTravelerProfile } from "../hooks/useTravelerProfile"
+import { API_BASE_URL } from "../../../config/apiConfig"
 
 
 export default function ProfileTravelerTab({ user }) {
@@ -17,7 +18,7 @@ export default function ProfileTravelerTab({ user }) {
         reviewsError,
     } = useTravelerProfile(user)
 
-    const BACKEND_URL = "http://127.0.0.1:8000"
+    const BACKEND_URL = API_BASE_URL
 
     const profilePictureUrl = traveler?.profile_picture
         ? traveler.profile_picture.startsWith("http")

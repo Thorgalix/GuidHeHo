@@ -4,11 +4,19 @@ export default function DashboardTabs({ activeTab, setActiveTab, isGuide }) {
     
     return (
         <div>
-            <button onClick={() => setActiveTab("traveler")}>
+            <button
+                type="button"
+                aria-pressed={activeTab === "traveler"}
+                onClick={() => setActiveTab("traveler")}
+            >
                 Traveler
             </button>
             {isGuide ? (
-                <button onClick={() => setActiveTab("guide")}>
+                <button
+                    type="button"
+                    aria-pressed={activeTab === "guide"}
+                    onClick={() => setActiveTab("guide")}
+                >
                     Guide
                 </button>
             ) : (

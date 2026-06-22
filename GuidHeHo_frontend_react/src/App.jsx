@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom"
 import { useContext } from "react"
-import { AuthContext } from "./context/AuthContext"
+import { AuthContext } from "./context/auth-context"
 
 import AppNavbar from "./components/layout/AppNavbar"
 import LoginPage from "./pages/auth/LoginPage"

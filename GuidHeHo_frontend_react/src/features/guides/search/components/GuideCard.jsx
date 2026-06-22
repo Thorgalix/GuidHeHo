@@ -1,7 +1,7 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa"
 import { useContext } from "react"
 import { Link } from "react-router-dom"
-import { AuthContext } from "../../../../context/AuthContext"
+import { AuthContext } from "../../../../context/auth-context"
 import GuideProfileSummary from "../../details/components/GuideProfileSummary"
 import { useToggleFavorite } from "../../details/hooks/useToggleFavorite"
 

@@ -4,13 +4,13 @@ export default function GuideDetailMap({ guide }) {
     // States
     const mapRef = useRef(null)
     const mapInstance = useRef(null)
-    const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
 
     // Comportements
     useEffect(() => {
         // On attend d'avoir le guide et Mapbox avant d'initialiser la carte.
         if (!guide || !window.mapboxgl || !mapRef.current) return
 
+        const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
         window.mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
 
         mapInstance.current = new window.mapboxgl.Map({

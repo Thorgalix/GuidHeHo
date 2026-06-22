@@ -15,7 +15,7 @@ export default function ProfileGuideBookingsTab() {
 
                 setBookingsData(data);
             } catch (err) {
-                setError("Failed to load bookings.");
+                setError(err.message ||"Failed to load bookings.");
             } finally {
                 setLoading(false);
             }
@@ -31,7 +31,7 @@ export default function ProfileGuideBookingsTab() {
                 prev.map((b) => (b.id === bookingId ? { ...b, status: newStatus } : b))
             );
         } catch (err) {
-            setError("Failed to update booking status.");
+            setError(err.message || "Failed to update booking status.");
         }
     }
 

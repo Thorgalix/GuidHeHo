@@ -7,11 +7,16 @@ import DayEditor from "../../guides/become-guide/components/DayEditor"
 import CapacitySelector from "../../guides/become-guide/components/CapacitySelector"
 import ProfileGuideEditForm from "./ProfileGuideEditForm"
 import ProfileGuideReviewsTab from "./ProfileGuideReviewsTab"
-import { useState } from "react"
+import { useState, useContext } from "react"
+import { AuthContext } from "../../../context/auth-context"
+import { api } from "../../../services/api"
 
 export default function ProfileGuideTab({ user }) {
     const { isGuide, guide, setGuide, reviews, loading, reviewsLoading, error, reviewsError } = useGuideProfile(user)
     const [isEditing, setIsEditing] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState("")
+    const [deleteSuccess, setDeleteSuccess] = useState("")
     const {
         message, submitting, submitSummary,
         maxPeople, setMaxPeople,
@@ -21,6 +26,28 @@ export default function ProfileGuideTab({ user }) {
         singleDays, addSingleDay, removeSingleDay, updateSingleDay, addSingleDayInterval, updateSingleDayInterval, removeSingleDayInterval,
         handleSubmitAvailabilities
     } = useGuideAvailabilitiesManager()
+    const { updateUser } = useContext(AuthContext)
+
+    async function handleDeleteGuide() {
+        const confirmed = window.confirm("Are you sure you want to delete your guide profile? This action cannot be undone.")
+        if (!confirmed || !guide?.id || isDeleting) return
+
+        setIsDeleting(true)
+        setDeleteError("")
+        setDeleteSuccess("")
+
+        try {
+            await api.delete(`/api/guides/${guide.id}/`)
+            setDeleteSuccess("Guide profile deleted successfully.")
+            setGuide(null)
+            updateUser({ ...user, role: "traveler" })
+            setIsEditing(false)
+        } catch (error) {
+            setDeleteError(error.message || "Failed to delete guide profile. Please try again later.")
+        } finally {
+            setIsDeleting(false)
+        }
+    }
 
     if (!isGuide) {
         return (
@@ -64,6 +91,17 @@ export default function ProfileGuideTab({ user }) {
                 <button type="button" onClick={() => setIsEditing(prev => !prev)}>
                     {isEditing ? "Close profile editor" : "Edit profile"}
                 </button>
+                <button
+                    type="button"
+                    onClick={handleDeleteGuide}
+                    disabled={isDeleting}
+                >
+                    {isDeleting ? "Deleting..." : "Delete profile"}
+                </button>
+
+                {deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
+                {deleteSuccess && <p style={{ color: "green" }}>{deleteSuccess}</p>}
+
             </div>
 
             {isEditing && (

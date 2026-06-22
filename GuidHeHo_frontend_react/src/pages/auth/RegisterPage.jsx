@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useContext } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import { api } from "../../services/api"
-import { AuthContext } from "../../context/AuthContext"
+import { AuthContext } from "../../context/auth-context"
 
 export default function RegisterPage() {
 
