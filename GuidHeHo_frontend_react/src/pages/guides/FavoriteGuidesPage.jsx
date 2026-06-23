@@ -7,6 +7,12 @@ export default function FavoriteGuidesPage() {
         loading,
         error,
         removeFavoriteGuide,
+        next,
+        previous,
+        count,
+        currentPage,
+        pageSize,
+        fetchFavoriteGuides,
     } = useFavoriteGuides();
 
     return (
@@ -49,7 +55,7 @@ export default function FavoriteGuidesPage() {
                 )}
 
                 {favoriteGuides.length > 0 && (
-                    <div className="grid gap-6 grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
+                    <div className="my-10 grid gap-6 grid-cols-[repeat(auto-fit,minmax(350px,1fr))]">
                         {favoriteGuides.map((guide) => (
                             <GuideCard
                                 key={guide.id}
@@ -59,8 +65,37 @@ export default function FavoriteGuidesPage() {
                         ))}
                     </div>
                 )}
+
+                {(previous || next) && (
+                    <nav
+                        className="join flex justify-center mb-10"
+                        aria-label="Favorite Guides Pagination"
+                    >
+                        <button
+                            type="button"
+                            className="join-item btn"
+                            disabled={!previous}
+                            onClick={() => fetchFavoriteGuides(previous)}
+                        >
+                            <span aria-hidden="true">«</span>
+                            <span className="sr-only">Page précédente</span>
+                        </button>
+                        <span className="join-item btn btn-disabled">
+                            Page {currentPage} sur {Math.ceil(count / pageSize)}
+                        </span>
+                        <button
+                            type="button"
+                            className="join-item btn"
+                            disabled={!next}
+                            onClick={() => fetchFavoriteGuides(next)}
+                        >
+                            <span aria-hidden="true">»</span>
+                            <span className="sr-only">Page suivante</span>
+                        </button>
+                    </nav>
+                )}
             </section>
         </main>
-    )
+    );
 }
 
