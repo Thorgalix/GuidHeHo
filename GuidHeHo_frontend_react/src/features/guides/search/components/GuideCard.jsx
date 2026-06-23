@@ -87,7 +87,7 @@ export default function GuideCard({ guide, onFavoriteRemoved }) {
                             onClick={handleToggleFavorite}
                             disabled={loading}
                             className="btn btn-ghost btn-sm btn-circle cursor-pointer shrink-0"
-                            aria-label={isFavorited ? "Remove from favorites" : "Add to favorites"}
+                            aria-label={isFavorited ? "Retirer des favoris" : "Ajouter aux favoris"}
                         >
                             {isFavorited ? (
                                 <FaHeart className="text-xl text-red-500" />
@@ -113,7 +113,7 @@ export default function GuideCard({ guide, onFavoriteRemoved }) {
                         to={`/guides/${guide.id}`}
                         className="btn bg-teal-500 hover:bg-teal-600 text-white border-none"
                     >
-                        View More
+                        Voir le profil
                     </Link>
                 </div>
             </div>

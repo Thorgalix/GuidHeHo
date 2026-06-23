@@ -33,12 +33,12 @@ export default function GuideProfileFields({ bio, setBio, city, setCity, price, 
                 />
 
 
-                <input placeholder="City"
+                <input placeholder="Ville"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
                 />
 
-                <input type="text" inputMode="decimal" placeholder="Price per hour"
+                <input type="text" inputMode="decimal" placeholder="Prix par heure"
                     value={price}
                     onChange={(e) => setPrice(sanitizePrice(e.target.value))}
                     onKeyDown={handlePriceKeyDown}

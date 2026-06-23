@@ -8,7 +8,7 @@ export default function LanguageSelector({
 
     return (
         <div>
-            <h4>Languages</h4>
+            <h4>Langues</h4>
             {(languages ?? []).map((l) => (
                 <label key={l.id}>
                     <input

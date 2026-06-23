@@ -18,7 +18,7 @@ export default function CapacitySelector({ maxPeople, setMaxPeople }) {
 
     return (
         <div>
-            <h4>Number of people</h4>
+            <h4>Nombre de personnes</h4>
             <input
                 type="text"
                 inputMode="numeric"

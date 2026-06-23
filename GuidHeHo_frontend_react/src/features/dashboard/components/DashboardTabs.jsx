@@ -9,7 +9,7 @@ export default function DashboardTabs({ activeTab, setActiveTab, isGuide }) {
                 aria-pressed={activeTab === "traveler"}
                 onClick={() => setActiveTab("traveler")}
             >
-                Traveler
+                Voyageur
             </button>
             {isGuide ? (
                 <button
@@ -21,7 +21,7 @@ export default function DashboardTabs({ activeTab, setActiveTab, isGuide }) {
                 </button>
             ) : (
                 <button className="opacity-70"><NavLink to="/become-guide">
-                    Guide (Become guide)
+                    Guide (devenir guide)
                 </NavLink></button>
             )}
         </div>

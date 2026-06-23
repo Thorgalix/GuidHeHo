@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../services/api";
 
+const STATUS_LABELS = {
+    pending: "En attente",
+    accepted: "Acceptée",
+    rejected: "Refusée",
+    cancelled: "Annulée",
+}
+
 export default function ProfileTravelerBookingsTab() {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -14,7 +21,7 @@ export default function ProfileTravelerBookingsTab() {
                 const data = await api.get("/bookings/my/");
                 setBookings(data);
             } catch (err) {
-                setError(err.message || "Failed to load bookings.");
+                setError(err.message || "Impossible de charger les réservations.");
             } finally {
                 setLoading(false);
             }
@@ -24,7 +31,7 @@ export default function ProfileTravelerBookingsTab() {
     }, []);
 
     async function handleCancelBooking(bookingId) {
-        if (!window.confirm("Are you sure you want to cancel this booking?")) {
+        if (!window.confirm("Voulez-vous vraiment annuler cette réservation ?")) {
             return;
         }
 
@@ -32,12 +39,12 @@ export default function ProfileTravelerBookingsTab() {
             await api.delete(`/bookings/${bookingId}/`);
             setBookings((prev) => prev.filter((b) => b.id !== bookingId));
         } catch (err) {
-            alert(err.message || "Failed to cancel booking.");
+            alert(err.message || "Impossible d’annuler la réservation.");
         }
     }
 
     if (loading) {
-        return <p>Loading your bookings...</p>;
+        return <p>Chargement de vos réservations...</p>;
     }
 
     if (error) {
@@ -45,20 +52,20 @@ export default function ProfileTravelerBookingsTab() {
     }
 
     if (!loading && error === "" && bookings.length === 0) {
-        return <p>You have no bookings yet.</p>;
+        return <p>Vous n’avez pas encore de réservation.</p>;
     }
 
     return (
         <div>
-            <h2>My Bookings</h2>
+            <h2>Mes réservations</h2>
             {bookings.map((b) => (
                 <div className="card border" key={b.id}>
                     <p>Guide : {b.guide.user.first_name} {b.guide.user.last_name}</p>
-                    <p>City : {b.guide.city}</p>
+                    <p>Ville : {b.guide.city}</p>
                     <p>Date : {b.booking_date}</p>
-                    <p>Status : {b.status}</p>
+                    <p>Statut : {STATUS_LABELS[b.status] || b.status}</p>
                     <p>Message : {b.message}</p>
-                    <button type="button" onClick={() => handleCancelBooking(b.id)}>Cancel Booking</button>
+                    <button type="button" onClick={() => handleCancelBooking(b.id)}>Annuler la réservation</button>
                 </div>
             ))}
         </div>

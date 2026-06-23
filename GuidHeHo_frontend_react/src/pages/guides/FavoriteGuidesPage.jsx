@@ -14,7 +14,7 @@ export default function FavoriteGuidesPage() {
             <section className="max-w-7xl mx-auto">
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-slate-800 dark:text-teal-100">
-                        My Favourites
+                        Mes favoris
                     </h1>
 
                     <p className="mt-2 text-slate-700 dark:text-teal-100">

@@ -6,18 +6,18 @@ import { useSearchGuides } from "../../features/guides/search/hooks/useSearchGui
 
 const steps = [
     {
-        title: "Search",
-        text: "Indicate your city, a date, a theme, a language, or your budget.",
+        title: "Rechercher",
+        text: "Indiquez une ville, une date, un thème, une langue ou votre budget.",
         Icon: FaSearchLocation,
     },
     {
-        title: "Compare",
-        text: "Check profiles, rates, availability, and traveler reviews.",
+        title: "Comparer",
+        text: "Consultez les profils, tarifs, disponibilités et avis des voyageurs.",
         Icon: FaStar,
     },
     {
-        title: "Meet",
-        text: "Choose the local guide that best matches your way of traveling.",
+        title: "Rencontrer",
+        text: "Choisissez le guide local qui correspond le mieux à votre façon de voyager.",
         Icon: FaCalendarCheck,
     },
 ]
@@ -48,10 +48,10 @@ export default function SearchPage() {
                             GuidHeHo
                         </p>
                         <h1 className="mt-3 text-4xl font-bold text-slate-900 dark:text-white md:text-5xl">
-                            Find a local guide to discover the city differently.
+                            Trouvez un guide local pour découvrir la ville autrement.
                         </h1>
                         <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-700 dark:text-teal-50">
-                            Search based on your destination, desires, and budget, then compare available guides before planning your visit.
+                            Recherchez selon votre destination, vos envies et votre budget, puis comparez les guides disponibles avant de planifier votre visite.
                         </p>
                     </div>
 
@@ -59,7 +59,7 @@ export default function SearchPage() {
                         <div className="flex items-center gap-3 text-teal-700 dark:text-teal-100">
                             <FaMapMarkedAlt className="text-3xl" aria-hidden="true" />
                             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
-                                How it works?
+                                Comment ça marche ?
                             </h2>
                         </div>
 
@@ -92,12 +92,12 @@ export default function SearchPage() {
                 <>
                     <section aria-labelledby="results-title" className="mx-auto mt-10 max-w-6xl">
                         <h2 id="results-title" className="sr-only">
-                            Search Results
+                            Résultats de recherche
                         </h2>
 
                         {loading && (
                             <p className="text-slate-700 dark:text-teal-100">
-                                Loading guides...
+                                Chargement des guides...
                             </p>
                         )}
 
@@ -109,7 +109,7 @@ export default function SearchPage() {
 
                         {!loading && hasSearched && guides.length === 0 && (
                             <p className="text-slate-700 dark:text-teal-100">
-                                No guides found for these filters.
+                                Aucun guide trouvé pour ces filtres.
                             </p>
                         )}
 
@@ -131,7 +131,7 @@ export default function SearchPage() {
                                     onClick={() => fetchGuides({}, previous)}
                                 >
                                     <span aria-hidden="true">«</span>
-                                    <span className="sr-only">Previous page</span>
+                                    <span className="sr-only">Page précédente</span>
                                 </button>
 
                                 <button
@@ -139,7 +139,7 @@ export default function SearchPage() {
                                     className="join-item btn"
                                     disabled
                                 >
-                                    Page {currentPage} of {totalPages}
+                                    Page {currentPage} sur {totalPages}
                                 </button>
 
                                 <button
@@ -149,7 +149,7 @@ export default function SearchPage() {
                                     onClick={() => fetchGuides({}, next)}
                                 >
                                     <span aria-hidden="true">»</span>
-                                    <span className="sr-only">Next page</span>
+                                    <span className="sr-only">Page suivante</span>
                                 </button>
                             </nav>
                         )}
@@ -158,7 +158,7 @@ export default function SearchPage() {
                     {guides.length > 0 && (
                         <section aria-labelledby="map-title" className="mx-auto max-w-6xl">
                             <h2 id="map-title" className="sr-only">
-                                Guides Map
+                                Carte des guides
                             </h2>
 
                             <GuideMap guides={guides} />
@@ -167,7 +167,7 @@ export default function SearchPage() {
                 </>
             ) : (
                 <p className="mx-auto mt-6 max-w-6xl text-sm text-slate-700 dark:text-teal-100">
-                    Start a search to display available guides.
+                    Lancez une recherche pour afficher les guides disponibles.
                 </p>
             )}
         </main>

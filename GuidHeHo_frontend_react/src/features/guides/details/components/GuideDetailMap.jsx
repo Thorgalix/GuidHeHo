@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react"
+import { loadMapbox } from "../../../../shared/mapbox/loadMapbox"
 
 export default function GuideDetailMap({ guide }) {
     // States
@@ -7,24 +8,34 @@ export default function GuideDetailMap({ guide }) {
 
     // Comportements
     useEffect(() => {
-        // On attend d'avoir le guide et Mapbox avant d'initialiser la carte.
-        if (!guide || !window.mapboxgl || !mapRef.current) return
+        if (!guide) return
 
-        const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
-        window.mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
+        let isCancelled = false
 
-        mapInstance.current = new window.mapboxgl.Map({
-            container: mapRef.current,
-            style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
-            center: [guide.longitude, guide.latitude],
-            zoom: 11,
-        })
+        loadMapbox()
+            .then((mapboxgl) => {
+                if (isCancelled || !mapRef.current) return
 
-        new window.mapboxgl.Marker()
-            .setLngLat([guide.longitude, guide.latitude])
-            .addTo(mapInstance.current)
+                const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+                mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
 
-        return () => mapInstance.current?.remove()
+                mapInstance.current = new mapboxgl.Map({
+                    container: mapRef.current,
+                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
+                    center: [guide.longitude, guide.latitude],
+                    zoom: 11,
+                })
+
+                new mapboxgl.Marker()
+                    .setLngLat([guide.longitude, guide.latitude])
+                    .addTo(mapInstance.current)
+            })
+            .catch(() => {})
+
+        return () => {
+            isCancelled = true
+            mapInstance.current?.remove()
+        }
     }, [guide])
 
 

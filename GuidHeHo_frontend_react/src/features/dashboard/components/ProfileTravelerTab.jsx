@@ -25,34 +25,35 @@ export default function ProfileTravelerTab({ user }) {
             ? traveler.profile_picture
             : `${BACKEND_URL}${traveler.profile_picture.startsWith("/") ? "" : "/"}${traveler.profile_picture}`
         : null
+    const roleLabel = traveler?.role === "guide" ? "Guide" : "Voyageur"
 
     if (!user) {
-        return <p>Please login to access your traveler dashboard.</p>
+        return <p>Veuillez vous connecter pour accéder à votre espace voyageur.</p>
     }
 
     if (loading) {
-        return <p>Loading traveler profile...</p>
+        return <p>Chargement du profil voyageur...</p>
     }
 
     if (!traveler) {
-        return <p>{error || "Unable to load traveler profile for now."}</p>
+        return <p>{error || "Impossible de charger le profil voyageur pour le moment."}</p>
     }
 
     return (
         <div>
-            <h2>Traveler Dashboard</h2>
-            <h3>My profile</h3>
+            <h2>Espace voyageur</h2>
+            <h3>Mon profil</h3>
             <div className="card border">
                 {profilePictureUrl && (
-                    <img src={profilePictureUrl} alt="Profile" className="h-40 w-40 rounded-xl object-cover" />
+                    <img src={profilePictureUrl} alt="Profil" className="h-40 w-40 rounded-xl object-cover" />
                 )}
-                <p>First Name: {traveler.first_name}</p>
-                <p>Last Name: {traveler.last_name}</p>
-                <p>Role: {traveler.role}</p>
-                <p>Email: {traveler.email}</p>
+                <p>Prénom : {traveler.first_name}</p>
+                <p>Nom : {traveler.last_name}</p>
+                <p>Rôle : {roleLabel}</p>
+                <p>Email : {traveler.email}</p>
 
                 <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
-                    {isEditing ? "Close profile editor" : "Edit profile"}
+                    {isEditing ? "Fermer l’édition du profil" : "Modifier le profil"}
                 </button>
             </div>
 

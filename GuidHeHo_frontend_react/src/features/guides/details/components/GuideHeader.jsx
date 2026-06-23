@@ -23,7 +23,7 @@ export default function GuideHeader({ guide }) {
                 {guide.user.first_name} {guide.user.last_name}
             </h2>
 
-            <p>Bio: {guide.bio}</p>
+            <p>Bio : {guide.bio}</p>
             <GuideProfileSummary guide={guide} />
 
         </div>

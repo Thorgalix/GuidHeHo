@@ -2,7 +2,7 @@ export default function AvailabilitySelector({ availabilityMode, setAvailability
 
     return (
         <div>
-            <h4>Disponibilities</h4>
+            <h4>Disponibilités</h4>
 
             <label>
                 <input

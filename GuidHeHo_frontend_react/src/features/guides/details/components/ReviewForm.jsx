@@ -13,7 +13,7 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
         return null
     }
 
-    async function handleSubmit(e) {
+    async function handleEnvoyer(e) {
         e.preventDefault()
         setError("")
         setSuccess("")
@@ -22,30 +22,30 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
         setLoading(true)
 
         if (normalizedRating < 1 || normalizedRating > 5 || !trimmedComment) {
-            setError("Please provide a valid rating and comment.")
+            setError("Veuillez saisir une note valide et un commentaire.")
             setLoading(false)
             return
         }
         try {
             await createReview(guideId, normalizedRating, trimmedComment)
-            setSuccess("Review submitted successfully!")
+            setSuccess("Avis envoyé avec succès !")
             setRating(5)
             setComment("")
             if (onCreated) {
                 await onCreated()
             }
         } catch (err) {
-            setError(err.message || "Failed to submit review.")
+            setError(err.message || "Impossible d’envoyer l’avis.")
         } finally {
             setLoading(false)
         }
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <h3>Leave a Review</h3>
+        <form onEnvoyer={handleEnvoyer}>
+            <h3>Laisser un avis</h3>
 
-            <label htmlFor="rating">Rating</label>
+            <label htmlFor="rating">Note</label>
             <select name="rating" id="rating" value={rating} disabled={loading} onChange={(e) => setRating(Number(e.target.value))}>
                 <option value={1}>1</option>
                 <option value={2}>2</option>
@@ -53,9 +53,9 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
                 <option value={4}>4</option>
                 <option value={5}>5</option>
             </select>
-            <label htmlFor="comment">Comment</label>
+            <label htmlFor="comment">Commentaire</label>
             <textarea name="comment" id="comment" required value={comment} disabled={loading} onChange={(e) => setComment(e.target.value)}></textarea>
-            <button type="submit" disabled={loading}>{loading ? "Submitting..." : "Submit"}</button>
+            <button type="submit" disabled={loading}>{loading ? "Envoi..." : "Envoyer"}</button>
             {error && <p style={{ color: "red" }}>{error}</p>}
             {success && <p style={{ color: "green" }}>{success}</p>}
         </form>

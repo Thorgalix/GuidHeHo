@@ -13,7 +13,7 @@ export default function WeeklyEditor({
         <div>
             {availabilityMode === "week" && (
                 <div>
-                    <p>Choose the reference Monday and then add time slots on the useful days.</p>
+                    <p>Choisissez le lundi de référence, puis ajoutez des créneaux sur les jours utiles.</p>
                     <input
                         type="date"
                         value={weekStartDate}
@@ -54,13 +54,13 @@ export default function WeeklyEditor({
                                                 onClick={() => removeWeekInterval(dayIndex, intervalIndex)}
                                                 disabled={day.intervals.length === 1}
                                             >
-                                                Remove interval
+                                                Supprimer le créneau
                                             </button>
                                         </div>
                                     ))}
 
                                     <button type="button" onClick={() => addWeekInterval(dayIndex)}>
-                                        Add interval
+                                        Ajouter un créneau
                                     </button>
                                 </div>
                             )}

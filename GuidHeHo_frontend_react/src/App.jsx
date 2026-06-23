@@ -44,7 +44,7 @@ export default function App() {
                     path="/dashboard"
                     element={
                         authLoading
-                            ? <p>Loading session...</p>
+                            ? <p>Chargement de la session...</p>
                             : isAuthenticated
                                 ? <DashboardPage />
                                 : <Navigate to="/login" replace />
@@ -52,7 +52,7 @@ export default function App() {
                 />
                 <Route path="/favourites" element={
                     authLoading
-                        ? <p>Loading session...</p>
+                        ? <p>Chargement de la session...</p>
                         : isAuthenticated
                             ? <FavoriteGuidesPage />
                             : <Navigate to="/login" replace />

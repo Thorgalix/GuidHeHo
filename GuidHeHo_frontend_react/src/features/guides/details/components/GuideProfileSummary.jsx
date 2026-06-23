@@ -11,12 +11,12 @@ export default function GuideProfileSummary({ guide }) {
     return (
         <dl className="space-y-1 text-slate-700 dark:text-teal-100">
             <div>
-                <dt className="font-semibold inline">City : </dt>
+                <dt className="font-semibold inline">Ville : </dt>
                 <dd className="inline">{guide.city}</dd>
             </div>
 
             <div>
-                <dt className="font-semibold block mb-1">Languages : </dt>
+                <dt className="font-semibold block mb-1">Langues : </dt>
 
                 <dd className="flex flex-wrap gap-1">
                     {visibleLanguages.length > 0 ? (
@@ -37,13 +37,13 @@ export default function GuideProfileSummary({ guide }) {
                             )}
                         </>
                     ) : (
-                        <span>No languages</span>
+                        <span>Aucune langue</span>
                     )}
                 </dd>
             </div>
 
             <div>
-                <dt className="font-semibold block mb-1">Themes :</dt>
+                <dt className="font-semibold block mb-1">Thèmes :</dt>
 
                 <dd className="flex flex-wrap gap-1">
                     {visibleThemes.length > 0 ? (
@@ -64,14 +64,14 @@ export default function GuideProfileSummary({ guide }) {
                             )}
                         </>
                     ) : (
-                        <span>No themes</span>
+                        <span>Aucun thème</span>
                     )}
                 </dd>
             </div>
 
             <div>
-                <dt className="font-semibold inline">Price : </dt>
-                <dd className="inline">{guide.price_per_hour}€/hour</dd>
+                <dt className="font-semibold inline">Prix : </dt>
+                <dd className="inline">{guide.price_per_hour}€/heure</dd>
             </div>
         </dl>
     )

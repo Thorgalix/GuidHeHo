@@ -31,7 +31,7 @@ export function useTravelerProfile(user) {
                 if (isMounted) {
                     setReviews([])
                     setReviewsLoading(false)
-                    setReviewsError("Unable to load traveler reviews for now.")
+                    setReviewsError("Impossible de charger les avis voyageur pour le moment.")
                 }
             }
         }
@@ -67,7 +67,7 @@ export function useTravelerProfile(user) {
             } catch {
                 if (isMounted) {
                     setTraveler(null)
-                    setError("Unable to load traveler profile for now.")
+                    setError("Impossible de charger le profil voyageur pour le moment.")
                 }
             } finally {
                 if (isMounted) setLoading(false)

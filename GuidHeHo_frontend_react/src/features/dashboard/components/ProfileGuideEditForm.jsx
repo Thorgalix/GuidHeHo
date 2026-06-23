@@ -88,7 +88,7 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
             if (bio !== guide.bio) data.bio = bio
             if (city !== guide.city) data.city = city
             if (!sanitizedPricePerHour) {
-                setError("Price per hour must be valid.")
+                setError("Le prix par heure doit être valide.")
                 return
             }
             if (sanitizedPricePerHour !== String(guide.price_per_hour)) {
@@ -106,7 +106,7 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
             }
 
             if (Object.keys(data).length === 0) {
-                setError("No changes detected.")
+                setError("Aucune modification détectée.")
                 return
             }
 
@@ -115,7 +115,7 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
             const refreshedGuide = await api.get("/api/guides/me/")
 
             if (onGuideUpdated) onGuideUpdated(refreshedGuide)
-            setSuccess("Profile updated successfully!")
+            setSuccess("Profil mis à jour avec succès !")
             setIsEditing(false)
 
         } catch (err) {
@@ -127,15 +127,15 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
     return (
         <div>
             <form action="" onSubmit={handleSubmit}>
-                <h3>Edit Guide Profile</h3>
+                <h3>Modifier le profil guide</h3>
                 <div>
-                    <label htmlFor="bio">Bio: </label>
+                    <label htmlFor="bio">Bio : </label>
                     <input type="text" id="bio" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
 
-                    <label htmlFor="city">City: </label>
+                    <label htmlFor="city">Ville : </label>
                     <input type="text" id="city" name="city" value={city} onChange={(e) => setCity(e.target.value)} />
 
-                    <label htmlFor="price_per_hour">Price per Hour: </label>
+                    <label htmlFor="price_per_hour">Prix par heure : </label>
                     <input
                         type="text"
                         inputMode="decimal"
@@ -147,12 +147,12 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
                         onKeyDown={handlePriceKeyDown}
                     />
 
-                                < LanguageSelector
-                            languages = { languages }
-                            selectedLanguages = { selectedLanguages }
-                            setSelectedLanguages = { setSelectedLanguages }
-                            toggle = { toggle }
-                                />
+                    < LanguageSelector
+                        languages={languages}
+                        selectedLanguages={selectedLanguages}
+                        setSelectedLanguages={setSelectedLanguages}
+                        toggle={toggle}
+                    />
 
                     <ThemeSelector
                         themes={themes}
@@ -163,10 +163,10 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
 
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Saving..." : "Save Changes"}
+                        {loading ? "Enregistrement..." : "Enregistrer les modifications"}
                     </button>
-                            { error && <p style={{ color: "red" }}>{error}</p> }
-                            { success && <p style={{ color: "green" }}>{success}</p> }
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {success && <p style={{ color: "green" }}>{success}</p>}
                 </div>
 
             </form>

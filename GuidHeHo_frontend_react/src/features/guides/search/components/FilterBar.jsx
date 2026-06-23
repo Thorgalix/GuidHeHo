@@ -97,14 +97,14 @@ export default function FilterBar({ onSearch }) {
         >
             <div className="card-body">
                 <h2 id="search-title" className="card-title dark:text-white">
-                    Find your guide
+                    Trouvez votre guide
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
 
                     <label className="form-control">
                         <div className="label">
-                            <span className="label-text dark:text-white mb-1">City</span>
+                            <span className="label-text dark:text-white mb-1">Ville</span>
                         </div>
                         <input
                             name="city"
@@ -133,7 +133,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Theme</span>
+                            <span className="label-text dark:text-white">Thème</span>
                         </div>
                         <select
                             name="theme"
@@ -141,7 +141,7 @@ export default function FilterBar({ onSearch }) {
                             value={theme}
                             onChange={(e) => setTheme(e.target.value)}
                         >
-                            <option value="">All themes</option>
+                            <option value="">Tous les thèmes</option>
                             {themes.map((t) => (
                                 <option key={t.id} value={t.id}>
                                     {t.name}
@@ -152,7 +152,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Language</span>
+                            <span className="label-text dark:text-white">Langue</span>
                         </div>
                         <select
                             name="language"
@@ -160,7 +160,7 @@ export default function FilterBar({ onSearch }) {
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
                         >
-                            <option value="">All languages</option>
+                            <option value="">Toutes les langues</option>
                             {languages.map((l) => (
                                 <option key={l.id} value={l.id}>
                                     {l.name}
@@ -171,7 +171,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Number of people</span>
+                            <span className="label-text dark:text-white">Nombre de personnes</span>
                         </div>
                         <input
                             type="text"
@@ -188,7 +188,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Max price (€)</span>
+                            <span className="label-text dark:text-white">Prix maximum (€)</span>
                         </div>
                         <input
                             type="text"

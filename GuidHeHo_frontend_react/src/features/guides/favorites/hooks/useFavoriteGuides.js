@@ -16,7 +16,7 @@ export function useFavoriteGuides() {
 
             setFavoriteGuides(data.results ?? data);
         } catch (err) {
-            setError(err.message || "Unable to load favorite guides.");
+            setError(err.message || "Impossible de charger les guides favoris.");
         } finally {
             setLoading(false);
         }

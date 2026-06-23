@@ -44,7 +44,7 @@ export default function BecomeGuidePage() {
 
     return (
         <main>
-            <h2>Become a Guide</h2>
+            <h2>Devenir guide</h2>
 
             <form onSubmit={handleSubmit}>
                 <GuideProfileFields
@@ -104,7 +104,7 @@ export default function BecomeGuidePage() {
 
 
                 <button type="submit" disabled={submitting}>
-                    {submitting ? "Création..." : "Become Guide"}
+                    {submitting ? "Création..." : "Devenir guide"}
                 </button>
             </form>
 

@@ -52,23 +52,23 @@ export default function GuideDetailsPage() {
 
     async function handleBookingSubmit(payload) {
         try {
-            setStatus("Sending...")
+            setStatus("Envoi...")
 
             await api.post("/bookings/", {
                 guide: guide.id,
                 ...payload,
             })
 
-            setStatus("Booking sent!")
+            setStatus("Demande de réservation envoyée !")
             setShowBooking(false)
         } catch (err) {
             setStatus(err.message)
         }
     }
 
-    if (loading) return <p>Loading...</p>
+    if (loading) return <p>Chargement...</p>
     if (error) return <p style={{ color: "red" }}>{error}</p>
-    if (!guide) return <p>No guide found</p>
+    if (!guide) return <p>Aucun guide trouvé</p>
 
     // Affichage
 
@@ -77,16 +77,16 @@ export default function GuideDetailsPage() {
             <GuideHeader guide={guide} />
             {isAuthenticated && (
                 <button onClick={() => setShowBooking(true)} disabled={availabilities.length === 0}>
-                    Book this guide
+                    Réserver ce guide
                 </button>
             )}
             {isAuthenticated && (
                 <button type="button" onClick={toggleFavorite} disabled={favoriteLoading}>
                     {favoriteLoading
-                        ? "Updating..."
+                        ? "Mise à jour..."
                         : isFavorited
-                            ? `Remove favorite`
-                            : `Add to favorites`}
+                            ? `Retirer des favoris`
+                            : `Ajouter aux favoris`}
                 </button>
             )}
             {isAuthenticated && favoriteError && (

@@ -29,7 +29,7 @@ export default function ProfileGuideTab({ user }) {
     const { updateUser } = useContext(AuthContext)
 
     async function handleDeleteGuide() {
-        const confirmed = window.confirm("Are you sure you want to delete your guide profile? This action cannot be undone.")
+        const confirmed = window.confirm("Voulez-vous vraiment supprimer votre profil guide ? Cette action est irréversible.")
         if (!confirmed || !guide?.id || isDeleting) return
 
         setIsDeleting(true)
@@ -38,12 +38,12 @@ export default function ProfileGuideTab({ user }) {
 
         try {
             await api.delete(`/api/guides/${guide.id}/`)
-            setDeleteSuccess("Guide profile deleted successfully.")
+            setDeleteSuccess("Profil guide supprimé avec succès.")
             setGuide(null)
             updateUser({ ...user, role: "traveler" })
             setIsEditing(false)
         } catch (error) {
-            setDeleteError(error.message || "Failed to delete guide profile. Please try again later.")
+            setDeleteError(error.message || "Impossible de supprimer le profil guide. Veuillez réessayer plus tard.")
         } finally {
             setIsDeleting(false)
         }
@@ -52,8 +52,8 @@ export default function ProfileGuideTab({ user }) {
     if (!isGuide) {
         return (
             <div>
-                <h2>Guide Dashboard</h2>
-                <p>You are not a guide yet. Please apply to become a guide to access this dashboard.</p>
+                <h2>Espace guide</h2>
+                <p>Vous n’êtes pas encore guide. Devenez guide pour accéder à cet espace.</p>
             </div>
         )
     }
@@ -61,8 +61,8 @@ export default function ProfileGuideTab({ user }) {
     if (loading) {
         return (
             <div>
-                <h2>Guide Dashboard</h2>
-                <p>Loading guide profile...</p>
+                <h2>Espace guide</h2>
+                <p>Chargement du profil guide...</p>
             </div>
         )
     }
@@ -70,8 +70,8 @@ export default function ProfileGuideTab({ user }) {
     if (!guide) {
         return (
             <div>
-                <h2>Guide Dashboard</h2>
-                <p>{error || "Unable to load guide profile for now."}</p>
+                <h2>Espace guide</h2>
+                <p>{error || "Impossible de charger le profil guide pour le moment."}</p>
             </div>
         )
     }
@@ -79,24 +79,24 @@ export default function ProfileGuideTab({ user }) {
 
     return (
         <div>
-            <h2>Guide Dashboard</h2>
-            <h3>My Profile</h3>
+            <h2>Espace guide</h2>
+            <h3>Mon profil</h3>
             <div className="card border">
-                <p>Bio: {guide.bio}</p>
-                <p>City: {guide.city}</p>
-                <p>Languages: {(guide.languages || []).map((language) => language.name).join(", ")}</p>
-                <p>Themes: {(guide.themes || []).map((theme) => theme.name).join(", ")}</p>
-                <p>Price: {guide.price_per_hour}</p>
+                <p>Bio : {guide.bio}</p>
+                <p>Ville : {guide.city}</p>
+                <p>Langues : {(guide.languages || []).map((language) => language.name).join(", ")}</p>
+                <p>Thèmes : {(guide.themes || []).map((theme) => theme.name).join(", ")}</p>
+                <p>Prix : {guide.price_per_hour}</p>
             
                 <button type="button" onClick={() => setIsEditing(prev => !prev)}>
-                    {isEditing ? "Close profile editor" : "Edit profile"}
+                    {isEditing ? "Fermer l’édition du profil" : "Modifier le profil"}
                 </button>
                 <button
                     type="button"
                     onClick={handleDeleteGuide}
                     disabled={isDeleting}
                 >
-                    {isDeleting ? "Deleting..." : "Delete profile"}
+                    {isDeleting ? "Suppression..." : "Supprimer le profil"}
                 </button>
 
                 {deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
@@ -113,7 +113,7 @@ export default function ProfileGuideTab({ user }) {
             )}
 
             <div>
-                <h3>Add Disponibilities</h3>
+                <h3>Ajouter des disponibilités</h3>
             </div>
             <CapacitySelector
                 maxPeople={maxPeople}

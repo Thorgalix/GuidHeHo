@@ -38,7 +38,7 @@ export function useGuideProfile(user) {
             } catch {
                 if (isMounted) {
                     setGuide(null)
-                    setError("Unable to load guide profile for now.")
+                    setError("Impossible de charger le profil guide pour le moment.")
                 }
             } finally {
                 if (isMounted) {
@@ -79,7 +79,7 @@ export function useGuideProfile(user) {
             } catch {
                 if (isMounted) {
                     setReviews([])
-                    setReviewsError("Unable to load guide reviews for now.")
+                    setReviewsError("Impossible de charger les avis guide pour le moment.")
                 }
             } finally {
                 if (isMounted) {

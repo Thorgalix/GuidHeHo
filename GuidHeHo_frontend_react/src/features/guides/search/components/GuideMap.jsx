@@ -1,4 +1,5 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
+import { loadMapbox } from "../../../../shared/mapbox/loadMapbox"
 
 export default function GuideMap({ guides }) {
 
@@ -7,33 +8,46 @@ export default function GuideMap({ guides }) {
     const mapRef = useRef(null)
     const mapInstance = useRef(null)
     const markersRef = useRef([])
+    const [mapboxgl, setMapboxgl] = useState(null)
 
     // Comportements
 
     useEffect(() => {
-        if (!window.mapboxgl) return
+        let isCancelled = false
 
-        const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
-        window.mapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
+        loadMapbox()
+            .then((loadedMapboxgl) => {
+                if (isCancelled || !mapRef.current) return
 
-        mapInstance.current = new window.mapboxgl.Map({
-            container: mapRef.current,
-            style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
-            center: [2.3522, 48.8566], // Paris
-            zoom: 5
-        })
+                const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches
+                loadedMapboxgl.accessToken = import.meta.env.VITE_MAPBOX_TOKEN
 
-        return () => mapInstance.current?.remove()
+                mapInstance.current = new loadedMapboxgl.Map({
+                    container: mapRef.current,
+                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
+                    center: [2.3522, 48.8566], // Paris
+                    zoom: 5
+                })
+                setMapboxgl(loadedMapboxgl)
+            })
+            .catch(() => {})
+
+        return () => {
+            isCancelled = true
+            markersRef.current.forEach((m) => m.remove())
+            markersRef.current = []
+            mapInstance.current?.remove()
+        }
     }, [])
 
     useEffect(() => {
-        if (!mapInstance.current) return
+        if (!mapInstance.current || !mapboxgl) return
 
         //  clear markers
         markersRef.current.forEach((m) => m.remove())
         markersRef.current = []
 
-        const bounds = new window.mapboxgl.LngLatBounds()
+        const bounds = new mapboxgl.LngLatBounds()
         let hasValidPoint = false
 
         guides.forEach((guide) => {
@@ -41,10 +55,10 @@ export default function GuideMap({ guides }) {
 
             const lngLat = [guide.longitude, guide.latitude]
 
-            const marker = new window.mapboxgl.Marker()
+            const marker = new mapboxgl.Marker()
                 .setLngLat(lngLat)
                 .setPopup(
-                    new window.mapboxgl.Popup().setHTML(`
+                    new mapboxgl.Popup().setHTML(`
                         <strong>${guide.user.first_name}</strong><br/>
                         ${guide.city}
                     `)
@@ -62,7 +76,7 @@ export default function GuideMap({ guides }) {
                 maxZoom: 10, 
             })
         }
-    }, [guides])
+    }, [guides, mapboxgl])
 
     // Affichage
     return (

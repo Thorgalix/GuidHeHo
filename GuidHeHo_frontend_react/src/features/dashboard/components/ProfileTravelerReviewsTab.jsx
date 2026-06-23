@@ -2,16 +2,16 @@
 export default function ProfileTravelerReviewsTab({ reviews, loading, error }) {
 
     if (loading) {
-        return <p>Loading traveler profile...</p>
+        return <p>Chargement du profil voyageur...</p>
     }
 
     if (error) {
-        return <p>{error || "Unable to load traveler profile for now."}</p>
+        return <p>{error || "Impossible de charger le profil voyageur pour le moment."}</p>
     }
 
     return (
         <div>
-            <h2>Traveler Reviews</h2>
+            <h2>Avis reçus comme voyageur</h2>
 
             {reviews && reviews.length > 0 ? (
                 <ul>
@@ -24,13 +24,13 @@ export default function ProfileTravelerReviewsTab({ reviews, loading, error }) {
                         return (
                             <li key={review.id}>
                                 <strong>{guideName}</strong>
-                                : {review.comment} — Rating: {review.rating}
+                                : {review.comment} — Note : {review.rating}
                             </li>
                         )
                     })}
                 </ul>
             ) : (
-                <p>No reviews available.</p>
+                <p>Aucun avis disponible.</p>
             )}
         </div>
     )

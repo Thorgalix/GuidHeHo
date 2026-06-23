@@ -39,13 +39,13 @@ export function useGuideReviews(guideId) {
             } else {
                 if (isMountedRef.current) {
                     setReviews([])
-                    setError("Invalid response format")
+                    setError("Format de réponse invalide")
                 }
             }
 
         } catch (err) {
             if (isMountedRef.current) {
-                setError(err?.message || "Failed to load reviews")
+                setError(err?.message || "Impossible de charger les avis")
             }
         } finally {
             if (isMountedRef.current) {

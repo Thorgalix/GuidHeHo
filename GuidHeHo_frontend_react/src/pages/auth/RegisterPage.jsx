@@ -24,7 +24,7 @@ export default function RegisterPage() {
         setMessage("")
 
         if (!email || !password || !firstName || !lastName) {
-            setMessage("All fields are required.")
+            setMessage("Tous les champs sont requis.")
             return
         }
 
@@ -39,7 +39,7 @@ export default function RegisterPage() {
                 last_name: lastName
             })
 
-            // Ensure the UI is not left authenticated as a previous account.
+            // On évite de conserver une session précédente dans l’interface.
             await logout()
             navigate("/verify-email", { replace: true })
         } catch (err) {
@@ -56,21 +56,21 @@ export default function RegisterPage() {
             <section className="card w-full max-w-md bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600">
                 <div className="card-body">
                     <h1 className="card-title text-2xl text-slate-900 dark:text-white">
-                        Register
+                        Inscription
                     </h1>
 
                     <p className="text-sm text-slate-700 dark:text-teal-100">
-                        Create your account, then verify your email with the code you receive.
+                        Créez votre compte, puis vérifiez votre adresse email avec le code reçu.
                     </p>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                         <label className="form-control">
                             <div className="label">
-                                <span className="label-text dark:text-white">First Name</span>
+                                <span className="label-text dark:text-white">Prénom</span>
                             </div>
                             <input
                                 className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
-                                placeholder="First Name"
+                                placeholder="Prénom"
                                 value={firstName}
                                 onChange={(e) => setFirstName(e.target.value)}
                             />
@@ -79,11 +79,11 @@ export default function RegisterPage() {
 
                         <label className="form-control">
                             <div className="label">
-                                <span className="label-text dark:text-white">Last Name</span>
+                                <span className="label-text dark:text-white">Nom</span>
                             </div>
                             <input
                                 className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
-                                placeholder="Last Name"
+                                placeholder="Nom"
                                 value={lastName}
                                 onChange={(e) => setLastName(e.target.value)}
                             />
@@ -107,13 +107,13 @@ export default function RegisterPage() {
 
                         <label className="form-control">
                             <div className="label">
-                                <span className="label-text dark:text-white">Password</span>
+                                <span className="label-text dark:text-white">Mot de passe</span>
                             </div>
                             <input
                                 type="password"
                                 autoComplete="new-password"
                                 className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
-                                placeholder="Password"
+                                placeholder="Mot de passe"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                             />
@@ -125,7 +125,7 @@ export default function RegisterPage() {
                             className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
                             disabled={loading}
                         >
-                            {loading ? "Registering..." : "Create my account"}
+                            {loading ? "Inscription..." : "Créer mon compte"}
                         </button>
 
                         {message && <p className="text-sm text-red-600 dark:text-red-300">{message}</p>}
@@ -136,7 +136,7 @@ export default function RegisterPage() {
                             to="/login"
                             className="link text-teal-700 hover:text-teal-900 dark:text-teal-200 dark:hover:text-white text-sm"
                         >
-                            I already have an account
+                            J’ai déjà un compte
                         </Link>
                     </div>
                 </div>
