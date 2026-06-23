@@ -6,10 +6,12 @@ from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django.db import IntegrityError
 
+
 from rest_framework.pagination import PageNumberPagination
 
 from .models import Review
 from .serializers import ReviewSerializer
+from apps.accounts.models import User
 from apps.bookings.models import Booking
 from apps.guides.models import Guide
 
@@ -57,6 +59,22 @@ class GuideReviewsView(APIView):
     def get(self, request, guide_id):
 
         reviews = Review.objects.filter(guide_id=guide_id).order_by('-created_at')
+
+        paginator = PageNumberPagination()
+        paginator.page_size = 10
+        result_page = paginator.paginate_queryset(reviews, request)
+
+        serializer = ReviewSerializer(result_page, many=True)
+
+        return paginator.get_paginated_response(serializer.data)
+
+
+class TravelerReviewsView(APIView):
+
+    def get(self, request, traveler_id):
+        get_object_or_404(User, pk=traveler_id)
+
+        reviews = Review.objects.filter(traveler_id=traveler_id).order_by('-created_at')
 
         paginator = PageNumberPagination()
         paginator.page_size = 10
