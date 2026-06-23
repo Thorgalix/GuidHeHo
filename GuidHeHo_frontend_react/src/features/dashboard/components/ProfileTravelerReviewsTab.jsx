@@ -11,7 +11,7 @@ export default function ProfileTravelerReviewsTab({ reviews, loading, error }) {
 
     return (
         <div>
-            <h2>Avis reçus comme voyageur</h2>
+            <h2>Avis émis.</h2>
 
             {reviews && reviews.length > 0 ? (
                 <ul>
@@ -30,7 +30,7 @@ export default function ProfileTravelerReviewsTab({ reviews, loading, error }) {
                     })}
                 </ul>
             ) : (
-                <p>Aucun avis disponible.</p>
+                <p>Aucun avis émis.</p>
             )}
         </div>
     )

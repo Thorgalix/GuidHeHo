@@ -23,6 +23,13 @@ export function AuthProvider({ children }) {
         saveUser(nextUser)
     }
 
+    // Nettoie la session sans appeler le backend.
+    function clearSession() {
+        clearAuth()
+        setUser(null)
+        setIsAuthenticated(false)
+    }
+
     // On ferme la session côté UI et côté mémoire.
     async function logout() {
         const refresh = getRefreshToken()
@@ -39,9 +46,7 @@ export function AuthProvider({ children }) {
                 })
             }
         } finally {
-            clearAuth()
-            setUser(null)
-            setIsAuthenticated(false)
+            clearSession()
         }
     }
 
@@ -54,6 +59,7 @@ export function AuthProvider({ children }) {
             authLoading,
             login,
             updateUser,
+            clearSession,
             logout
         }}>
             {children}

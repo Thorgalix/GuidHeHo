@@ -16,8 +16,9 @@ import VerifyEmailPage from "./pages/auth/VerifyEmailPage"
 
 export default function App() {
     // States
-    const { isAuthenticated, authLoading, logout } = useContext(AuthContext)
+    const { user, isAuthenticated, authLoading, logout } = useContext(AuthContext)
     const navigate = useNavigate()
+    const isGuide = user?.role === "guide"
 
     // Comportements
     async function handleLogout() {
@@ -39,7 +40,14 @@ export default function App() {
                 <Route path="/verify-email" element={<VerifyEmailPage />} />
 
                 <Route path="/guides/:id" element={<GuideDetailsPage />} />
-                <Route path="/become-guide" element={<BecomeGuidePage />} />
+                <Route
+                    path="/become-guide"
+                    element={
+                        isGuide
+                            ? <Navigate to="/dashboard" replace />
+                            : <BecomeGuidePage />
+                    }
+                />
                 <Route
                     path="/dashboard"
                     element={

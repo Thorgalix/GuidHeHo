@@ -21,7 +21,7 @@ export function useTravelerProfile(user) {
             }
 
             try {
-                const response = await api.get("/reviews/traveler/")
+                const response = await api.get(`/reviews/traveler/${user.id}/`)
                 if (isMounted) {
                     setReviews(response)
                     setReviewsLoading(false)

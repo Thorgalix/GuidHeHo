@@ -11,7 +11,7 @@ export function useSearchGuides() {
     const [previous, setPrevious] = useState(null)
     const [count, setCount] = useState(0)
     const [currentPage, setCurrentPage] = useState(1)
-    const pageSize = 8
+    const pageSize = 6
     
 
     // Comportements

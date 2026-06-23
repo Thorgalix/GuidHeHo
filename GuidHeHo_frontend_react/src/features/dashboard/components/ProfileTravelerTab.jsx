@@ -1,13 +1,20 @@
-import { useState } from "react"
+import { useContext, useState } from "react"
+import { AuthContext } from "../../../context/auth-context"
 import ProfileTravelerEditForm from "./ProfileTravelerEditForm"
 import ProfileTravelerBookingsTab from "./ProfileTravelerBookingsTab"
 import ProfileTravelerReviewsTab from "./ProfileTravelerReviewsTab"
 import { useTravelerProfile } from "../hooks/useTravelerProfile"
 import { API_BASE_URL } from "../../../config/apiConfig"
+import { api } from "../../../services/api"
 
 
 export default function ProfileTravelerTab({ user }) {
     const [isEditing, setIsEditing] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const [deleteError, setDeleteError] = useState("")
+    const [deleteSuccess, setDeleteSuccess] = useState("")
+    const { clearSession } = useContext(AuthContext)
+
     const {
         traveler,
         loading,
@@ -27,6 +34,24 @@ export default function ProfileTravelerTab({ user }) {
         : null
     const roleLabel = traveler?.role === "guide" ? "Guide" : "Voyageur"
 
+    async function handleDeleteTraveler() {
+        const confirmed = window.confirm("Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible et supprimera toutes vos données.")
+        if (!confirmed || !traveler?.id) return
+
+        setIsDeleting(true)
+        setDeleteError("")
+        setDeleteSuccess("")
+
+        try {
+            await api.delete(`/users/me/`)
+            setDeleteSuccess("Compte supprimé avec succès.")
+            clearSession()
+        } catch {
+            setDeleteError("Impossible de supprimer le compte pour le moment.")
+        } finally {
+            setIsDeleting(false)
+        }
+    }
     if (!user) {
         return <p>Veuillez vous connecter pour accéder à votre espace voyageur.</p>
     }
@@ -55,6 +80,11 @@ export default function ProfileTravelerTab({ user }) {
                 <button type="button" onClick={() => setIsEditing((prev) => !prev)}>
                     {isEditing ? "Fermer l’édition du profil" : "Modifier le profil"}
                 </button>
+                <button type="button" onClick={handleDeleteTraveler} disabled={isDeleting}>
+                    {isDeleting ? "Suppression en cours..." : "Supprimer votre compte"}
+                </button>
+                {deleteError && <p className="text-red-500">{deleteError}</p>}
+                {deleteSuccess && <p className="text-green-500">{deleteSuccess}</p>}
             </div>
 
 
