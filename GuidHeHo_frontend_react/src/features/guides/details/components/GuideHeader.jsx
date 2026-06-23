@@ -17,7 +17,7 @@ export default function GuideHeader({ guide }) {
         <div>
 
             {profilePictureUrl && (
-                <img src={profilePictureUrl} alt={`${guide.user.first_name} ${guide.user.last_name}`} className="h-30 w-30" />
+                <img src={profilePictureUrl} alt={`${guide.user.first_name} ${guide.user.last_name}`} className="h-30 w-30 rounded-2xl" />
             )}
             <h2>
                 {guide.user.first_name} {guide.user.last_name}

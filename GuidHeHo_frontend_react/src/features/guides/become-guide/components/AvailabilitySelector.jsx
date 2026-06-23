@@ -8,20 +8,20 @@ export default function AvailabilitySelector({ availabilityMode, setAvailability
                 <input
                     type="radio"
                     name="availability_mode"
-                    checked={availabilityMode === "week"}
-                    onChange={() => setAvailabilityMode("week")}
+                    checked={availabilityMode === "Semaines"}
+                    onChange={() => setAvailabilityMode("Semaines")}
                 />
-                Weeks
+                Semaines
             </label>
 
             <label>
                 <input
                     type="radio"
                     name="availability_mode"
-                    checked={availabilityMode === "day"}
-                    onChange={() => setAvailabilityMode("day")}
+                    checked={availabilityMode === "Jours"}
+                    onChange={() => setAvailabilityMode("Jours")}
                 />
-                Days
+                Jours
             </label>
         </div>
     )

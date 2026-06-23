@@ -24,7 +24,7 @@ export default function GuideMap({ guides }) {
 
                 mapInstance.current = new loadedMapboxgl.Map({
                     container: mapRef.current,
-                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
+                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v12",
                     center: [2.3522, 48.8566], // Paris
                     zoom: 5
                 })

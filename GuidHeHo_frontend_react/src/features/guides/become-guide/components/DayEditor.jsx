@@ -12,7 +12,7 @@ export default function DayEditor({
 
     return (
         <div>
-            {availabilityMode === "day" && (
+            {availabilityMode === "Jours" && (
                 <div>
                     <p>Ajoute une ou plusieurs journées, chacune avec plusieurs créneaux.</p>
 

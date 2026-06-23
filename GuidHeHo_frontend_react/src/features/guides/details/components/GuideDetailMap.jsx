@@ -21,7 +21,7 @@ export default function GuideDetailMap({ guide }) {
 
                 mapInstance.current = new mapboxgl.Map({
                     container: mapRef.current,
-                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v11",
+                    style: isDarkMode ? "mapbox://styles/mapbox/dark-v11" : "mapbox://styles/mapbox/streets-v12",
                     center: [guide.longitude, guide.latitude],
                     zoom: 11,
                 })

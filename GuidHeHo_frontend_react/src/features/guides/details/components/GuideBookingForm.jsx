@@ -181,7 +181,7 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                 placeholder="Message (facultatif)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full rounded-md border border-teal-700 px-3 py-6"
+                className="w-full h-25 rounded-md border border-teal-700 py-2 px-3"
             />
 
             <button

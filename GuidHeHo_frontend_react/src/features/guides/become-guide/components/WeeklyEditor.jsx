@@ -11,7 +11,7 @@ export default function WeeklyEditor({
 
     return (
         <div>
-            {availabilityMode === "week" && (
+            {availabilityMode === "Semaines" && (
                 <div>
                     <p>Choisissez le lundi de référence, puis ajoutez des créneaux sur les jours utiles.</p>
                     <input
