@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
 
-from .pagination import GuidePagination
+from .pagination import GuidePagination, AvaibilityPagination, FavoritesPagination
 from .filters import GuideFilter
 from .models import Guide, Availability, Theme, Language
 from .permissions import IsAvailabilityOwnerOrReadOnly
@@ -66,6 +66,13 @@ class GuideViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["get"], permission_classes=[IsAuthenticated])
     def favorites(self, request):
         guides = request.user.favorites_guides.all()
+        original_pagination_class = self.pagination_class
+        self.pagination_class = FavoritesPagination
+        page = self.paginate_queryset(guides)
+        self.pagination_class = original_pagination_class
+        if page is not None:
+            serializer = self.get_serializer(page, many=True, context={"request": request})
+            return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(guides, many=True, context={"request": request})
         return Response(serializer.data)
 
@@ -92,6 +99,7 @@ class GuideMeView(generics.RetrieveUpdateAPIView):
 class AvailabilityViewSet(viewsets.ModelViewSet):
     queryset = Availability.objects.select_related("guide", "guide__user").all()
     serializer_class = AvailabilitySerializer
+    pagination_class = AvaibilityPagination
     permission_classes = [IsAvailabilityOwnerOrReadOnly]
 
     def get_queryset(self):
