@@ -1,37 +1,43 @@
 
-export default function ProfileTravelerReviewsTab({ reviews, loading, error }) {
+import ReviewList from "../../reviews/components/ReviewList"
+import ReviewsPagination from "../../reviews/components/ReviewsPagination"
+import { useTravelerReviews } from "../../reviews/hooks/useTravelerReviews"
 
-    if (loading) {
-        return <p>Chargement du profil voyageur...</p>
-    }
+export default function ProfileTravelerReviewsTab({ travelerId }) {
+    const {
+        reviews,
+        loading,
+        error,
+        page,
+        totalPages,
+        next,
+        previous,
+        setPage,
+    } = useTravelerReviews(travelerId)
 
-    if (error) {
-        return <p>{error || "Impossible de charger le profil voyageur pour le moment."}</p>
-    }
 
     return (
         <div>
-            <h2>Avis émis.</h2>
+            <ReviewList
+                title="Avis émis."
+                reviews={reviews}
+                loading={loading}
+                error={error}
+                emptyMessage="Aucun avis émis."
+                getAuthorLabel={(review) =>
+                    review.guide?.user
+                        ? `${review.guide.user.first_name} ${review.guide.user.last_name}`
+                        : review.guide_name || "Guide"
+                }
+            />
 
-            {reviews && reviews.length > 0 ? (
-                <ul>
-                    {reviews.map((review) => {
-                        const guideName =
-                            review.guide?.user
-                                ? `${review.guide.user.first_name} ${review.guide.user.last_name}`
-                                : review.guide_name || "Guide"
-
-                        return (
-                            <li key={review.id}>
-                                <strong>{guideName}</strong>
-                                : {review.comment} — Note : {review.rating}
-                            </li>
-                        )
-                    })}
-                </ul>
-            ) : (
-                <p>Aucun avis émis.</p>
-            )}
+            <ReviewsPagination
+                page={page}
+                totalPages={totalPages}
+                previous={previous}
+                next={next}
+                onPageChange={setPage}
+            />
         </div>
     )
 }

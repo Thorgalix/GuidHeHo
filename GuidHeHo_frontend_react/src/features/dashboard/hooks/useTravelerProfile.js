@@ -5,43 +5,6 @@ export function useTravelerProfile(user) {
     const [traveler, setTraveler] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
-    const [reviews, setReviews] = useState([])
-    const [reviewsLoading, setReviewsLoading] = useState(true)
-    const [reviewsError, setReviewsError] = useState("")
-
-    useEffect(() => {
-        let isMounted = true
-
-        async function loadTravelerReviews() {
-            if (!user) {
-                if (isMounted) {
-                    setReviews([])
-                }
-                return
-            }
-
-            try {
-                const response = await api.get(`/reviews/traveler/${user.id}/`)
-                if (isMounted) {
-                    setReviews(response)
-                    setReviewsLoading(false)
-                    setReviewsError("")
-                }
-            } catch {
-                if (isMounted) {
-                    setReviews([])
-                    setReviewsLoading(false)
-                    setReviewsError("Impossible de charger les avis voyageur pour le moment.")
-                }
-            }
-        }
-
-        loadTravelerReviews()
-
-        return () => {
-            isMounted = false
-        }
-    }, [user])
 
     useEffect(() => {
         let isMounted = true
@@ -90,8 +53,5 @@ export function useTravelerProfile(user) {
         loading,
         error,
         updateTravelerProfile,
-        reviews,
-        reviewsLoading,
-        reviewsError,
     }
 }

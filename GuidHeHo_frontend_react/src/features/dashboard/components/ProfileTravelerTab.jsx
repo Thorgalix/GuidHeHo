@@ -20,9 +20,6 @@ export default function ProfileTravelerTab({ user }) {
         loading,
         error,
         updateTravelerProfile,
-        reviews,
-        reviewsLoading,
-        reviewsError,
     } = useTravelerProfile(user)
 
     const BACKEND_URL = API_BASE_URL
@@ -97,7 +94,7 @@ export default function ProfileTravelerTab({ user }) {
             )}
 
             <ProfileTravelerBookingsTab />
-            <ProfileTravelerReviewsTab reviews={reviews} loading={reviewsLoading} error={reviewsError} />
+            <ProfileTravelerReviewsTab travelerId={traveler.id} />
         </div>
     )
 }

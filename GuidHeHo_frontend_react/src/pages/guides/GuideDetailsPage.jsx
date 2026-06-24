@@ -3,12 +3,14 @@ import { useParams } from "react-router-dom"
 import { useToggleFavorite } from "../../features/guides/details/hooks/useToggleFavorite"
 import { useGuideDetails } from "../../features/guides/details/hooks/useGuideDetails"
 import { useGuideReviews } from "../../features/guides/details/hooks/useGuideReviews"
+import { useCanReviewGuide } from "../../features/guides/details/hooks/useCanReviewGuide"
 import { AuthContext } from "../../context/auth-context"
 import { api } from "../../services/api"
 import GuideHeader from "../../features/guides/details/components/GuideHeader"
 import GuideBookingForm from "../../features/guides/details/components/GuideBookingForm"
 import GuideDetailMap from "../../features/guides/details/components/GuideDetailMap"
-import ReviewList from "../../features/guides/details/components/ReviewList"
+import ReviewList from "../../features/reviews/components/ReviewList"
+import ReviewsPagination from "../../features/reviews/components/ReviewsPagination"
 import ReviewForm from "../../features/guides/details/components/ReviewForm"
 
 
@@ -48,7 +50,20 @@ export default function GuideDetailsPage() {
         loading: reviewsLoading,
         error: reviewsError,
         reload: reloadReviews,
+        page: reviewsPage,
+        totalPages: reviewsTotalPages,
+        next: reviewsNext,
+        previous: reviewsPrevious,
+        setPage: setReviewsPage,
     } = useGuideReviews(id)
+
+    const {
+        canReview,
+        loading: canReviewLoading,
+    } = useCanReviewGuide({
+        guideId: guide?.id,
+        enabled: isAuthenticated && user?.role === "traveler",
+    })
 
     async function handleBookingSubmit(payload) {
         try {
@@ -102,16 +117,36 @@ export default function GuideDetailsPage() {
                 />
             )}
 
-            <ReviewForm
-                guideId={guide.id}
-                onCreated={reloadReviews}
-                canReview={isAuthenticated && user?.role === "traveler"}
+            {isAuthenticated && (
+                <ReviewForm
+                    guideId={guide.id}
+                    onCreated={reloadReviews}
+                    canReview={!canReviewLoading && canReview}
+                />
+            )}
+
+            <ReviewList
+                title="Avis"
+                reviews={reviews ?? []}
+                loading={reviewsLoading}
+                error={reviewsError}
+                emptyMessage="Aucun avis pour le moment."
+                getAuthorLabel={(review) =>
+                    review.traveler
+                        ? `${review.traveler.first_name} ${review.traveler.last_name}`
+                        : "Voyageur"
+                }
             />
 
-            <ReviewList reviews={reviews ?? []} loading={reviewsLoading} error={reviewsError} />
+            <ReviewsPagination
+                page={reviewsPage}
+                totalPages={reviewsTotalPages}
+                previous={reviewsPrevious}
+                next={reviewsNext}
+                onPageChange={setReviewsPage}
+            />
 
             <GuideDetailMap guide={guide} />
         </main>
     )
 }
-

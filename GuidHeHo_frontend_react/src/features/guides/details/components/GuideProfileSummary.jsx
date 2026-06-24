@@ -1,12 +1,15 @@
-export default function GuideProfileSummary({ guide }) {
+export default function GuideProfileSummary({ guide, limitItems = false }) {
 
     if (!guide) return null
 
-    const visibleLanguages = guide.languages?.slice(0, 3) || []
-    const hiddenLanguagesCount = (guide.languages?.length || 0) - visibleLanguages.length
+    const languages = guide.languages || []
+    const themes = guide.themes || []
 
-    const visibleThemes = guide.themes?.slice(0, 3) || []
-    const hiddenThemesCount = (guide.themes?.length || 0) - visibleThemes.length
+    const visibleLanguages = limitItems ? languages.slice(0, 3) : languages
+    const hiddenLanguagesCount = limitItems ? languages.length - visibleLanguages.length : 0
+
+    const visibleThemes = limitItems ? themes.slice(0, 3) : themes
+    const hiddenThemesCount = limitItems ? themes.length - visibleThemes.length : 0
 
     return (
         <dl className="space-y-1 text-slate-700 dark:text-teal-100">

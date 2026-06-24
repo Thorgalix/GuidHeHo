@@ -28,8 +28,8 @@ export default function App() {
 
     // Affichage
     return (
-        <div className="min-h-screen bg-teal-100 dark:bg-teal-950">
-            <AppNavbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+        <div className="min-h-screen bg-teal-50 dark:bg-teal-600">
+            <AppNavbar isAuthenticated={isAuthenticated} isGuide={isGuide} onLogout={handleLogout} />
 
             <Routes>
                 <Route path="/" element={<SearchPage />} />

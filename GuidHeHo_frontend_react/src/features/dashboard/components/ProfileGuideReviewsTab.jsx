@@ -1,36 +1,42 @@
 
-export default function ProfileGuideReviewsTab({ reviews, loading, error }) {
+import ReviewList from "../../reviews/components/ReviewList"
+import ReviewsPagination from "../../reviews/components/ReviewsPagination"
+import { useGuideReviews } from "../../guides/details/hooks/useGuideReviews"
 
-    if (loading) {
-        return <p>Chargement des avis guide...</p>
-    }
-
-    if (error) {
-        return <p>{error || "Impossible de charger les avis guide pour le moment."}</p>
-    }
+export default function ProfileGuideReviewsTab({ guideId }) {
+    const {
+        reviews,
+        loading,
+        error,
+        page,
+        totalPages,
+        next,
+        previous,
+        setPage,
+    } = useGuideReviews(guideId)
 
     return (
         <div>
-            <h2>Avis reçus comme guide</h2>
+            <ReviewList
+                title="Avis reçus comme guide"
+                reviews={reviews}
+                loading={loading}
+                error={error}
+                emptyMessage="Aucun avis disponible."
+                getAuthorLabel={(review) =>
+                    review.traveler
+                        ? `${review.traveler.first_name} ${review.traveler.last_name}`
+                        : "Voyageur"
+                }
+            />
 
-            {reviews && reviews.length > 0 ? (
-                <ul>
-                    {reviews.map((review) => {
-                        const travelerName = review.traveler
-                            ? `${review.traveler.first_name} ${review.traveler.last_name}`
-                            : "Voyageur"
-
-                        return (
-                            <li key={review.id}>
-                                <strong>{travelerName}</strong>
-                                : {review.comment} — Note : {review.rating}
-                            </li>
-                        )
-                    })}
-                </ul>
-            ) : (
-                <p>Aucun avis disponible.</p>
-            )}
+            <ReviewsPagination
+                page={page}
+                totalPages={totalPages}
+                previous={previous}
+                next={next}
+                onPageChange={setPage}
+            />
         </div>
     )
 }

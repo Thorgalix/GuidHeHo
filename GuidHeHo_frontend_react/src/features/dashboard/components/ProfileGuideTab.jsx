@@ -12,7 +12,7 @@ import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
 
 export default function ProfileGuideTab({ user }) {
-    const { isGuide, guide, setGuide, reviews, loading, reviewsLoading, error, reviewsError } = useGuideProfile(user)
+    const { isGuide, guide, setGuide, loading, error } = useGuideProfile(user)
     const [isEditing, setIsEditing] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteError, setDeleteError] = useState("")
@@ -157,10 +157,7 @@ export default function ProfileGuideTab({ user }) {
             </div>
             <div>
                 <ProfileGuideBookingsTab />
-                <ProfileGuideReviewsTab 
-                reviews={reviews} 
-                loading={reviewsLoading} 
-                error={reviewsError} />
+                <ProfileGuideReviewsTab guideId={guide.id} />
             </div>
         </div>
     )

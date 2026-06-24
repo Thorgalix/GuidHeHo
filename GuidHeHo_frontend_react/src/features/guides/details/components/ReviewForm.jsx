@@ -42,7 +42,7 @@ export default function ReviewForm({ guideId, onCreated, canReview }) {
     }
 
     return (
-        <form onEnvoyer={handleEnvoyer}>
+        <form onSubmit={handleEnvoyer}>
             <h3>Laisser un avis</h3>
 
             <label htmlFor="rating">Note</label>

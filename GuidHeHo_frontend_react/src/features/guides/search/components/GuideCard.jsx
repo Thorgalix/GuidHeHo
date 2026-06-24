@@ -99,7 +99,7 @@ export default function GuideCard({ guide, onFavoriteRemoved }) {
                 </div>
 
                 <div className="mt-4 flex-1 overflow-hidden">
-                    <GuideProfileSummary guide={guide} />
+                    <GuideProfileSummary guide={guide} limitItems/>
                 </div>
 
                 {error && (
