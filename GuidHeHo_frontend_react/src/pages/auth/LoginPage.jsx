@@ -1,7 +1,7 @@
 import { useState, useContext } from "react"
 import { api } from "../../services/api"
 import { saveAuth } from "../../services/auth"
-import { AuthContext } from "../../context/AuthContext"
+import { AuthContext } from "../../context/auth-context"
 import { Link, useNavigate } from "react-router-dom"
 
 export default function LoginPage() {
@@ -68,14 +68,14 @@ export default function LoginPage() {
             <section className="card w-full max-w-md bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600">
                 <div className="card-body">
                     <h1 className="card-title text-2xl text-slate-900 dark:text-white">
-                        Login
+                        Connexion
                     </h1>
 
                     <form onSubmit={handleSubmit} className="mt-4 space-y-4">
                         <label className="form-control">
                             <div className="label">
                                 <span className="label-text dark:text-white">
-                                    Email
+                                    Adresse email
                                 </span>
                             </div>
 
@@ -92,7 +92,7 @@ export default function LoginPage() {
                         <label className="form-control">
                             <div className="label">
                                 <span className="label-text dark:text-white">
-                                    Password
+                                    Mot de passe
                                 </span>
                             </div>
 
@@ -108,7 +108,7 @@ export default function LoginPage() {
 
                         <div className="text-right">
                             <Link to="/forgot-password" className="link link-primary text-sm">
-                                Forgot password?
+                                Mot de passe oublié ?
                             </Link>
                         </div>
 
@@ -117,7 +117,7 @@ export default function LoginPage() {
                             className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
                             disabled={loading}
                         >
-                            {loading ? "Login..." : "Login"}
+                            {loading ? "Connexion..." : "Connexion"}
                         </button>
 
                         {error && (

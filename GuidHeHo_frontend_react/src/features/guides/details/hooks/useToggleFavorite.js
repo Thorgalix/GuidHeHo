@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 import { api } from "../../../../services/api"
 
 export function useToggleFavorite({
@@ -8,17 +8,18 @@ export function useToggleFavorite({
 }) {
     // States
 
-    const [isFavorited, setIsFavorited] = useState(initialIsFavorited)
-    const [favoritesCount, setFavoritesCount] = useState(initialFavoritesCount)
+    const [favoriteState, setFavoriteState] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
+    const hasLocalFavoriteState = favoriteState?.guideId === guideId
+    const isFavorited = hasLocalFavoriteState
+        ? favoriteState.isFavorited
+        : Boolean(initialIsFavorited)
+    const favoritesCount = hasLocalFavoriteState
+        ? favoriteState.favoritesCount
+        : Number(initialFavoritesCount) || 0
 
     // Comportements
-
-    useEffect(() => {
-        setIsFavorited(Boolean(initialIsFavorited))
-        setFavoritesCount(Number(initialFavoritesCount) || 0)
-    }, [guideId, initialIsFavorited, initialFavoritesCount])
 
     async function toggleFavorite() {
         if (!guideId || loading) return null
@@ -29,8 +30,11 @@ export function useToggleFavorite({
             
             const data = await api.post(`/api/guides/${guideId}/favorite/`, {})
 
-            setIsFavorited(Boolean(data.is_favorited))
-            setFavoritesCount(Number(data.favorites_count) || 0)
+            setFavoriteState({
+                guideId,
+                isFavorited: Boolean(data.is_favorited),
+                favoritesCount: Number(data.favorites_count) || 0
+            })
 
             return data
         } catch (err) {

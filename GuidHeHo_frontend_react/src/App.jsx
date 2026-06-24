@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom"
 import { useContext } from "react"
-import { AuthContext } from "./context/AuthContext"
+import { AuthContext } from "./context/auth-context"
 
 import AppNavbar from "./components/layout/AppNavbar"
 import LoginPage from "./pages/auth/LoginPage"
@@ -11,11 +11,14 @@ import GuideDetailsPage from "./pages/guides/GuideDetailsPage"
 import SearchPage from "./pages/guides/SearchPage"
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage"
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage"
+import FavoriteGuidesPage from "./pages/guides/FavoriteGuidesPage"
+import VerifyEmailPage from "./pages/auth/VerifyEmailPage"
 
 export default function App() {
     // States
-    const { isAuthenticated, authLoading, logout } = useContext(AuthContext)
+    const { user, isAuthenticated, authLoading, logout } = useContext(AuthContext)
     const navigate = useNavigate()
+    const isGuide = user?.role === "guide"
 
     // Comportements
     async function handleLogout() {
@@ -25,8 +28,8 @@ export default function App() {
 
     // Affichage
     return (
-        <div className="min-h-screen bg-teal-100 dark:bg-teal-950">
-            <AppNavbar isAuthenticated={isAuthenticated} onLogout={handleLogout} />
+        <div className="min-h-screen bg-teal-50 dark:bg-teal-600">
+            <AppNavbar isAuthenticated={isAuthenticated} isGuide={isGuide} onLogout={handleLogout} />
 
             <Routes>
                 <Route path="/" element={<SearchPage />} />
@@ -34,18 +37,34 @@ export default function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/forgot-password" element={<ForgotPasswordPage />} />
                 <Route path="/reset-password" element={<ResetPasswordPage />} />
-                
+                <Route path="/verify-email" element={<VerifyEmailPage />} />
+
                 <Route path="/guides/:id" element={<GuideDetailsPage />} />
-                <Route path="/become-guide" element={<BecomeGuidePage />} />
+                <Route
+                    path="/become-guide"
+                    element={
+                        isGuide
+                            ? <Navigate to="/dashboard" replace />
+                            : <BecomeGuidePage />
+                    }
+                />
                 <Route
                     path="/dashboard"
                     element={
                         authLoading
-                            ? <p>Loading session...</p>
+                            ? <p>Chargement de la session...</p>
                             : isAuthenticated
                                 ? <DashboardPage />
                                 : <Navigate to="/login" replace />
                     }
+                />
+                <Route path="/favourites" element={
+                    authLoading
+                        ? <p>Chargement de la session...</p>
+                        : isAuthenticated
+                            ? <FavoriteGuidesPage />
+                            : <Navigate to="/login" replace />
+                }
                 />
             </Routes>
         </div>

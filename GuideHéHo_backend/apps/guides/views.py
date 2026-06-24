@@ -15,7 +15,7 @@ from .serializers import GuideCreateSerializer, GuideSeralizer, AvailabilitySeri
 
 
 class GuideViewSet(viewsets.ModelViewSet):
-    queryset = Guide.objects.all()
+    queryset = Guide.objects.all().order_by("-average_rating", "id")
     serializer_class = GuideSeralizer
     filter_backends = [DjangoFilterBackend]
     filterset_class = GuideFilter

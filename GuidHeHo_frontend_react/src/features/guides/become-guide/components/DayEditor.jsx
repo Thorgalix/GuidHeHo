@@ -28,7 +28,7 @@ export default function DayEditor({
                                 onClick={() => removeSingleDay(dayIndex)}
                                 disabled={singleDays.length === 1}
                             >
-                                Remove day
+                                Supprimer la journée
                             </button>
 
                             {day.intervals.map((interval, intervalIndex) => (
@@ -52,24 +52,23 @@ export default function DayEditor({
                                         onClick={() => removeSingleDayInterval(dayIndex, intervalIndex)}
                                         disabled={day.intervals.length === 1}
                                     >
-                                        Remove interval
+                                        Supprimer le créneau
                                     </button>
                                 </div>
                             ))}
 
                             <button type="button" onClick={() => addSingleDayInterval(dayIndex)}>
-                                Add interval
+                                Ajouter un créneau
                             </button>
                         </div>
                     ))}
 
                     <button type="button" onClick={addSingleDay}>
-                        Add day
+                        Ajouter une journée
                     </button>
                 </div>
             )}
         </div>
     )
 }
-
 

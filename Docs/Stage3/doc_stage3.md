@@ -43,7 +43,7 @@
 ### Could Have (Nice-to-Have Features)
 
 - As a user, I want to filter search results more precisely, so that I can refine my search. ✅
-- As a user, I want to save favorite guides, so that I can find them later easily. ⏳
+- As a user, I want to save favorite guides, so that I can find them later easily. ✅
 - As a user, I want to receive notifications about booking updates, so that I stay informed. ❌
 
 ### Won’t Have (Out of MVP Scope)
@@ -67,8 +67,8 @@
 
 ### Should Have (Important but Not Critical)
 
-- As a guide, I want to upload a profile picture, so that my profile looks more professional and trustworthy. ⏳
-- As a guide, I want to view reviews from users, so that I can improve my services. ⏳
+- As a guide, I want to upload a profile picture, so that my profile looks more professional and trustworthy. ✅
+- As a guide, I want to view reviews from users, so that I can improve my services. ✅
 
 ### Could Have (Nice-to-Have Features)
 

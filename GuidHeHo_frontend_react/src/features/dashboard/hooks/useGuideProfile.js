@@ -3,6 +3,7 @@ import { api } from "../../../services/api"
 
 export function useGuideProfile(user) {
     const isGuide = user?.role === "guide"
+
     const [guide, setGuide] = useState(null)
     const [loading, setLoading] = useState(isGuide)
     const [error, setError] = useState("")
@@ -27,14 +28,19 @@ export function useGuideProfile(user) {
 
             try {
                 const guideProfile = await api.get("/api/guides/me/")
-                if (isMounted) setGuide(guideProfile)
+
+                if (isMounted) {
+                    setGuide(guideProfile)
+                }
             } catch {
                 if (isMounted) {
                     setGuide(null)
-                    setError("Unable to load guide profile for now.")
+                    setError("Impossible de charger le profil guide pour le moment.")
                 }
             } finally {
-                if (isMounted) setLoading(false)
+                if (isMounted) {
+                    setLoading(false)
+                }
             }
         }
 

@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../services/api";
 
+const STATUS_LABELS = {
+    pending: "En attente",
+    accepted: "Acceptée",
+    rejected: "Refusée",
+    cancelled: "Annulée",
+}
+
 export default function ProfileGuideBookingsTab() {
     const [bookingsData, setBookingsData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,9 +19,10 @@ export default function ProfileGuideBookingsTab() {
                 setLoading(true);
                 setError("");
                 const data = await api.get("/bookings/guide/");
+
                 setBookingsData(data);
             } catch (err) {
-                setError("Failed to load bookings.");
+                setError(err.message ||"Impossible de charger les réservations.");
             } finally {
                 setLoading(false);
             }
@@ -30,12 +38,12 @@ export default function ProfileGuideBookingsTab() {
                 prev.map((b) => (b.id === bookingId ? { ...b, status: newStatus } : b))
             );
         } catch (err) {
-            setError("Failed to update booking status.");
+            setError(err.message || "Impossible de mettre à jour le statut de la réservation.");
         }
     }
 
     if (loading) {
-        return <p>Loading your bookings...</p>;
+        return <p>Chargement de vos réservations...</p>;
     }
 
     if (error) {
@@ -43,17 +51,17 @@ export default function ProfileGuideBookingsTab() {
     }
 
     if (!loading && error === "" && bookingsData.length === 0) {
-        return <p>You have no bookings yet.</p>;
+        return <p>Vous n’avez pas encore de demande de réservation.</p>;
     }
 
     return (
         <div>
-            <h2>My Bookings Requests</h2>
+            <h2>Mes demandes de réservation</h2>
             {bookingsData.map((b) => (
                 <div className="card border" key={b.id}>
-                    <p>Traveler : {b.traveler.first_name} {b.traveler.last_name}</p>
+                    <p>Voyageur : {b.traveler.first_name} {b.traveler.last_name}</p>
                     <p>Date : {b.booking_date}</p>
-                    <p>Status : {b.status}</p>
+                    <p>Statut : {STATUS_LABELS[b.status] || b.status}</p>
                     <p>Message : {b.message}</p>
                     {b.status === "pending" && (
                         <div>
@@ -61,13 +69,13 @@ export default function ProfileGuideBookingsTab() {
                                 className="btn btn-sm mr-2"
                                 onClick={() => handleStatusChange(b.id, "accepted")}
                             >
-                                Accept
+                                Accepter
                             </button>
                             <button
                                 className="btn btn-sm btn-error"
                                 onClick={() => handleStatusChange(b.id, "rejected")}
                             >
-                                Reject
+                                Refuser
                             </button>
                         </div>
                     )}
@@ -76,5 +84,4 @@ export default function ProfileGuideBookingsTab() {
         </div>
     )
 }
-
 

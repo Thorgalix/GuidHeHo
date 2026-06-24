@@ -1,15 +1,15 @@
 import { useState, useEffect, useContext } from "react"
 import { api } from "../../../../services/api"
-import { AuthContext } from "../../../../context/AuthContext"
+import { AuthContext } from "../../../../context/auth-context"
 
 const WEEK_DAYS = [
-    { index: 0, label: "Monday" },
-    { index: 1, label: "Tuesday" },
-    { index: 2, label: "Wednesday" },
-    { index: 3, label: "Thursday" },
-    { index: 4, label: "Friday" },
-    { index: 5, label: "Saturday" },
-    { index: 6, label: "Sunday" }
+    { index: 0, label: "Lundi" },
+    { index: 1, label: "Mardi" },
+    { index: 2, label: "Mercredi" },
+    { index: 3, label: "Jeudi" },
+    { index: 4, label: "Vendredi" },
+    { index: 5, label: "Samedi" },
+    { index: 6, label: "Dimanche" }
 ]
 
 function createInterval() {
@@ -37,6 +37,29 @@ function addDaysToDate(dateString, days) {
 
 function toIso(date, time) {
     return new Date(`${date}T${time}:00`).toISOString()
+}
+
+function sanitizePositiveInteger(value) {
+    const digits = String(value).replace(/\D/g, "")
+
+    if (!digits) return ""
+
+    return String(Math.max(Number(digits), 1))
+}
+
+function sanitizePositiveDecimal(value) {
+    const normalizedValue = String(value).replace(",", ".").replace(/[^\d.]/g, "")
+    const [integerPart, ...decimalParts] = normalizedValue.split(".")
+
+    if (!integerPart && decimalParts.length === 0) return ""
+
+    const decimalPart = decimalParts.join("").slice(0, 2)
+    const normalizedNumber = decimalPart ? `${integerPart || "0"}.${decimalPart}` : integerPart
+    const number = Number(normalizedNumber)
+
+    if (!Number.isFinite(number)) return ""
+
+    return decimalPart ? String(Math.max(number, 1)) : String(Math.max(Math.trunc(number), 1))
 }
 
 function getOverlapError(intervals) {
@@ -280,6 +303,14 @@ export function useBecomeGuide() {
                 setMessage("Tous les champs sont requis")
                 return
             }
+            const sanitizedPrice = sanitizePositiveDecimal(price)
+            const sanitizedMaxPeople = sanitizePositiveInteger(maxPeople)
+
+            if (!sanitizedPrice || !sanitizedMaxPeople) {
+                setMessage("Le prix et le nombre de personnes doivent être valides")
+                return
+            }
+
             const { error: slotError, slots } = buildAvailabilitySlots()
             if (slotError) {
                 setMessage(slotError)
@@ -290,7 +321,7 @@ export function useBecomeGuide() {
             await api.post("/api/guides/", {
                 bio,
                 city,
-                price_per_hour: Number(price),
+                price_per_hour: Number(sanitizedPrice),
                 themes: selectedThemes,
                 languages: selectedLanguages,
             })
@@ -311,7 +342,7 @@ export function useBecomeGuide() {
                             start_datetime: slot.start_datetime,
                             end_datetime: slot.end_datetime,
                             is_available: true,
-                            max_people: Number(maxPeople)
+                            max_people: Number(sanitizedMaxPeople)
                         })
                     )
                 )

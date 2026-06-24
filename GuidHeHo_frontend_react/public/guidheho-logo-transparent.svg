@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="220" viewBox="0 0 900 220" role="img" aria-labelledby="title desc">
+  <title id="title">Logo GuidHéHo</title>
+  <desc id="desc">Logo vectoriel transparent pour GuidHéHo, avec une icône de localisation et une boussole en nuances de teal et blanc.</desc>
+
+  <defs>
+    <linearGradient id="tealGradient" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#99F6E4"/>
+      <stop offset="55%" stop-color="#2DD4BF"/>
+      <stop offset="100%" stop-color="#0F766E"/>
+    </linearGradient>
+
+    <linearGradient id="pathGradient" x1="30" y1="175" x2="190" y2="175" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#CCFBF1"/>
+      <stop offset="100%" stop-color="#2DD4BF"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Icône chemin -->
+  <path
+    d="M34 183 C57 145, 116 139, 157 154 C185 164, 187 192, 158 200
+       C145 204, 136 191, 150 184 C165 176, 160 169, 145 164
+       C113 153, 67 158, 48 191 Z"
+    fill="url(#pathGradient)"
+  />
+
+  <!-- Icône marqueur -->
+  <path
+    d="M108 24
+       C65 24, 31 58, 31 101
+       C31 145, 72 176, 108 208
+       C144 176, 185 145, 185 101
+       C185 58, 151 24, 108 24 Z
+       M108 51
+       C136 51, 158 73, 158 101
+       C158 129, 136 151, 108 151
+       C80 151, 58 129, 58 101
+       C58 73, 80 51, 108 51 Z"
+    fill="#ffffff"
+  />
+
+  <!-- Boussole dans le marqueur -->
+  <path
+    d="M78 128 L101 75 L142 57 L119 110 Z"
+    fill="url(#tealGradient)"
+  />
+  <circle cx="108" cy="101" r="8" fill="#ffffff"/>
+
+  <!-- Nom -->
+  <text
+    x="225"
+    y="144"
+    font-family="Poppins, Montserrat, Nunito, Arial, sans-serif"
+    font-size="86"
+    font-weight="800"
+    letter-spacing="-3"
+    fill="#ffffff"
+  >Guid</text>
+
+  <text
+    x="431"
+    y="144"
+    font-family="Poppins, Montserrat, Nunito, Arial, sans-serif"
+    font-size="86"
+    font-weight="800"
+    letter-spacing="-3"
+    fill="#99F6E4"
+  >Hé</text>
+
+  <text
+    x="548"
+    y="144"
+    font-family="Poppins, Montserrat, Nunito, Arial, sans-serif"
+    font-size="86"
+    font-weight="800"
+    letter-spacing="-3"
+    fill="#ffffff"
+  >Ho</text>
+</svg>

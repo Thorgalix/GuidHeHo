@@ -18,6 +18,40 @@ export default function FilterBar({ onSearch }) {
 
     // Comportements
 
+    function blockInvalidNumberKeys(e, allowDecimal = false) {
+        const blockedKeys = allowDecimal ? ["e", "E", "+", "-"] : ["e", "E", "+", "-", ".", ","]
+
+        if (blockedKeys.includes(e.key)) {
+            e.preventDefault()
+        }
+    }
+
+    function sanitizePositiveInteger(value) {
+        const digits = value.replace(/\D/g, "")
+
+        if (!digits) return ""
+
+        return String(Math.max(Number(digits), 1))
+    }
+
+    function sanitizePositiveDecimal(value, allowTrailingDecimal = true) {
+        const normalizedValue = value.replace(",", ".").replace(/[^\d.]/g, "")
+        const [integerPart, ...decimalParts] = normalizedValue.split(".")
+
+        if (!integerPart && decimalParts.length === 0) return ""
+
+        const decimalPart = decimalParts.join("").slice(0, 2)
+        const normalizedNumber = decimalPart ? `${integerPart || "0"}.${decimalPart}` : integerPart
+        const number = Number(normalizedNumber)
+
+        if (!Number.isFinite(number)) return ""
+        if (allowTrailingDecimal && normalizedValue.endsWith(".") && decimalParts.length > 0) {
+            return `${Math.max(Math.trunc(number), 1)}.`
+        }
+
+        return decimalPart ? String(Math.max(number, 1)) : String(Math.max(Math.trunc(number), 1))
+    }
+
     useEffect(() => {
         // On charge les options de filtres themes et languages depuis l'API au montage.
         async function loadFilters() {
@@ -40,14 +74,17 @@ export default function FilterBar({ onSearch }) {
     function handleSubmit(e) {
         e.preventDefault()
 
+        const sanitizedNumberOfPeople = sanitizePositiveInteger(numberOfPeople)
+        const sanitizedPriceMax = sanitizePositiveDecimal(priceMax, false)
+
         // On transmet les filtres saisis au composant parent.
         onSearch({
-            city,
+            city: city.trim(),
             date: availabilityDate,
             theme,
             language,
-            max_price: priceMax,
-            number_of_people: numberOfPeople,
+            max_price: sanitizedPriceMax,
+            number_of_people: sanitizedNumberOfPeople,
         })
     }
 
@@ -60,19 +97,20 @@ export default function FilterBar({ onSearch }) {
         >
             <div className="card-body">
                 <h2 id="search-title" className="card-title dark:text-white">
-                    Find your guide
+                    Trouvez votre guide
                 </h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
 
                     <label className="form-control">
                         <div className="label">
-                            <span className="label-text dark:text-white mb-1">City</span>
+                            <span className="label-text dark:text-white mb-1">Ville</span>
                         </div>
                         <input
                             name="city"
                             type="text"
                             placeholder="ex: Paris ..."
+                            maxLength={80}
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
@@ -95,7 +133,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Theme</span>
+                            <span className="label-text dark:text-white">Thème</span>
                         </div>
                         <select
                             name="theme"
@@ -103,7 +141,7 @@ export default function FilterBar({ onSearch }) {
                             value={theme}
                             onChange={(e) => setTheme(e.target.value)}
                         >
-                            <option value="">All themes</option>
+                            <option value="">Tous les thèmes</option>
                             {themes.map((t) => (
                                 <option key={t.id} value={t.id}>
                                     {t.name}
@@ -114,7 +152,7 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Language</span>
+                            <span className="label-text dark:text-white">Langue</span>
                         </div>
                         <select
                             name="language"
@@ -122,7 +160,7 @@ export default function FilterBar({ onSearch }) {
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
                         >
-                            <option value="">All languages</option>
+                            <option value="">Toutes les langues</option>
                             {languages.map((l) => (
                                 <option key={l.id} value={l.id}>
                                     {l.name}
@@ -133,29 +171,34 @@ export default function FilterBar({ onSearch }) {
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Number of people</span>
+                            <span className="label-text dark:text-white">Nombre de personnes</span>
                         </div>
                         <input
-                            type="number"
+                            type="text"
+                            inputMode="numeric"
+                            pattern="[0-9]*"
                             name="numberOfPeople"
                             placeholder="ex: 2"
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={numberOfPeople}
-                            onChange={(e) => setNumberOfPeople(e.target.value)}
+                            onChange={(e) => setNumberOfPeople(sanitizePositiveInteger(e.target.value))}
+                            onKeyDown={blockInvalidNumberKeys}
                         />
                     </label>
 
                     <label className="form-control">
                         <div className="label mb-1">
-                            <span className="label-text dark:text-white">Max price (€)</span>
+                            <span className="label-text dark:text-white">Prix maximum (€)</span>
                         </div>
                         <input
-                            type="number"
+                            type="text"
+                            inputMode="decimal"
                             name="priceMax"
                             placeholder="ex: 100"
                             className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={priceMax}
-                            onChange={(e) => setPriceMax(e.target.value)}
+                            onChange={(e) => setPriceMax(sanitizePositiveDecimal(e.target.value))}
+                            onKeyDown={(e) => blockInvalidNumberKeys(e, true)}
                         />
                     </label>
 

@@ -30,7 +30,7 @@ export function useTravelerProfile(user) {
             } catch {
                 if (isMounted) {
                     setTraveler(null)
-                    setError("Unable to load traveler profile for now.")
+                    setError("Impossible de charger le profil voyageur pour le moment.")
                 }
             } finally {
                 if (isMounted) setLoading(false)

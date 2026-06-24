@@ -7,7 +7,7 @@ export default function ThemeSelector({
 
     return (
         <div>
-            <h4>Themes</h4>
+            <h4>Thèmes</h4>
             {(themes ?? []).map((t) => (
                 <label key={t.id}>
                     <input

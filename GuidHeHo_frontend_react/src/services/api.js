@@ -1,8 +1,9 @@
 import { getAccessToken, getRefreshToken, saveAccessToken, clearAuth } from "./auth"
 import { getErrorMessage } from "./errors"
+import { API_BASE_URL } from "../config/apiConfig"
 
 // URL de base de l'API backend.
-const BASE_URL = "http://127.0.0.1:8000"
+const BASE_URL = API_BASE_URL
 
 // Promesse partagée pour éviter plusieurs refresh en parallèle.
 let refreshPromise = null
@@ -25,8 +26,7 @@ async function refreshAccessToken() {
 
         if (!response.ok) {
             // Si le refresh échoue, la session est considérée comme expirée.
-            clearAuth()
-            window.location.href = "/login"
+            forceLogout()
             throw new Error("Refresh failed")
         }
 
@@ -42,10 +42,14 @@ async function refreshAccessToken() {
     })
 }
 
+function forceLogout() {
+    clearAuth()
+    window.location.href = "/login"
+}
 
 function normalizeResponse(data) {
     // Si l'API renvoie une réponse vide, on retourne un tableau vide.
-    if (!data) return []
+    if (data === null || data === undefined) return null
 
     // Réponse paginée DRF.
     if (data.results && Array.isArray(data.results)) {
@@ -69,16 +73,19 @@ function normalizeResponse(data) {
 async function request(url, options = {}) {
     // On injecte automatiquement le token d'accès courant.
     const token = getAccessToken()
+    const isFormData = options.body instanceof FormData
 
-    const headers = {
-        "Content-Type": "application/json",
-        ...(options.headers || {})
+    const headers = { ...(options.headers || {}) }
+
+    if (!isFormData) {
+        headers["Content-Type"] = "application/json"
+    } else {
+        // Pour les formulaires multipart/form-data, on laisse le navigateur gérer le Content-Type.
+        delete headers["Content-Type"]
     }
 
     // auto injection token
-    if (token) {
-        headers.Authorization = `Bearer ${token}`
-    }
+    if (token) { headers.Authorization = `Bearer ${token}` }
 
     const finalUrl = url.startsWith("http") ? url : BASE_URL + url
 
@@ -89,11 +96,12 @@ async function request(url, options = {}) {
     })
 
     let data = null
-
-    try {
-        data = await response.json()
-    } catch {
-        data = null
+    if (response.status !== 204) {
+        try {
+            data = await response.json()
+        } catch {
+            // Certaines réponses valides n'ont pas de corps JSON.
+        }
     }
 
     const shouldTryRefresh = response.status === 401 && !options.skipAuthRefresh && !!token && !!getRefreshToken()
@@ -121,8 +129,7 @@ async function request(url, options = {}) {
             return normalizeResponse(retryData)
         } catch (err) {
             // Si le refresh échoue, on force une reconnexion.
-            clearAuth()
-            window.location.href = "/login"
+            forceLogout()
             throw err
         }
     }
@@ -144,6 +151,14 @@ export const api = {
             body: JSON.stringify(body),
             ...options
         }),
+    // Helper pour envoyer des formulaires multipart/form-data (ex: upload de fichiers).
+    postFormData: (url, formData, options = {}) =>
+        request(url, {
+            method: "POST",
+            body: formData,
+            ...options
+        }),
+
     put: (url, body, options = {}) =>
         request(url, {
             method: "PUT",

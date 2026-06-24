@@ -8,6 +8,7 @@ export function useGuideDetails(id) {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
     const [availabilities, setAvailabilities] = useState([])
+    const [profilePictureUrl, setProfilePictureUrl] = useState("")
 
     // Comportements
     useEffect(() => {
@@ -28,6 +29,7 @@ export function useGuideDetails(id) {
                 if (isCancelled) return
 
                 setGuide(guideData)
+                setProfilePictureUrl(guideData.profile_picture_url)
                 setAvailabilities(
                     // On garde uniquement les créneaux encore réservables, triés par date.
                     (availabilitiesData.results ?? [])
@@ -60,5 +62,6 @@ export function useGuideDetails(id) {
         loading,
         error,
         availabilities,
+        profilePictureUrl,
     }
 }

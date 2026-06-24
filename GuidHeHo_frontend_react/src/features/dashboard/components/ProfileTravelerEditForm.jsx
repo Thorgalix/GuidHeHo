@@ -1,5 +1,5 @@
 import { useState, useContext } from "react"
-import { AuthContext } from "../../../context/AuthContext"
+import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
 
 export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpdated }) {
@@ -11,6 +11,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
     const [oldPassword, setOldPassword] = useState("")
     const [newPassword, setNewPassword] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")
+    const [selectedFile, setSelectedFile] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState("")
     const [success, setSuccess] = useState("")
@@ -29,7 +30,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
             if (email !== user.email) data.email = email
 
             if (Object.keys(data).length === 0) {
-                setError("No changes detected.")
+                setError("Aucune modification détectée.")
                 setLoading(false)
                 return
             }
@@ -41,8 +42,36 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
             const mergedUser = { ...user, ...updatedUser }
             updateUser(mergedUser)
             if (onUserUpdated) onUserUpdated(mergedUser)
-            setSuccess("Profile updated successfully!")
+            setSuccess("Profil mis à jour avec succès !")
             setIsEditing(false)
+        } catch (err) {
+            setError(err.message)
+        } finally {
+            setLoading(false)
+        }
+    }
+
+    async function handleUploadProfilePicture(e) {
+        e.preventDefault()
+        setLoading(true)
+        setError("")
+        setSuccess("")
+
+        if (!selectedFile) {
+            setError("Veuillez sélectionner un fichier à envoyer.")
+            setLoading(false)
+            return
+        }
+
+        const formData = new FormData()
+        formData.append("profile_picture", selectedFile)
+
+        try {
+            await api.postFormData("/users/upload-profile/", formData)
+            const refreshedUser = await api.get("/users/me/") // Fetch the updated user data
+            updateUser(refreshedUser)
+            if (onUserUpdated) onUserUpdated(refreshedUser)
+            setSuccess("Photo de profil mise à jour avec succès !")
         } catch (err) {
             setError(err.message)
         } finally {
@@ -57,19 +86,19 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
         setSuccess("")
 
         if (!oldPassword || !newPassword || !confirmPassword) {
-            setError("Please fill in all password fields.")
+            setError("Veuillez remplir tous les champs de mot de passe.")
             setLoading(false)
             return
         }
 
         if (newPassword !== confirmPassword) {
-            setError("New password and confirmation do not match.")
+            setError("Le nouveau mot de passe et sa confirmation ne correspondent pas.")
             setLoading(false)
             return
         }
 
         if (newPassword === oldPassword) {
-            setError("New password must be different from old password.")
+            setError("Le nouveau mot de passe doit être différent de l’ancien.")
             setLoading(false)
             return
         }
@@ -80,7 +109,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                 new_password: newPassword,
                 new_password2: confirmPassword,
             })
-            setSuccess("Password changed successfully!")
+            setSuccess("Mot de passe modifié avec succès !")
             setOldPassword("")
             setNewPassword("")
             setConfirmPassword("")
@@ -95,25 +124,32 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
     return (
         <div>
             <form action="" onSubmit={handleSubmit}>
-                <h3>Edit Profile</h3>
+                <h3>Modifier le profil</h3>
                 <div>
-                    <label htmlFor="first_name">First Name: </label>
+                    <label htmlFor="first_name">Prénom : </label>
                     <input type="text" id="first_name" name="first_name" value={firstName} onChange={(e) => setFirstName(e.target.value)} />
 
-                    <label htmlFor="last_name">Last Name: </label>
+                    <label htmlFor="last_name">Nom : </label>
                     <input type="text" id="last_name" name="last_name" value={lastName} onChange={(e) => setLastName(e.target.value)} />
 
-                    <label htmlFor="email">Email: </label>
+                    <label htmlFor="email">Email : </label>
                     <input type="email" id="email" name="email" value={email} onChange={(e) => setEmail(e.target.value)} />
 
-                    <button type="submit" disabled={loading}>{loading ? "Saving..." : "Save Profile"}</button>
+                    <button type="submit" disabled={loading}>{loading ? "Enregistrement..." : "Enregistrer le profil"}</button>
                     {error && <p style={{ color: "red" }}>{error}</p>}
                     {success && <p style={{ color: "green" }}>{success}</p>}
                 </div>
 
+                <div>
+                    <label htmlFor="profile_picture">Photo de profil : </label>
+                    <input type="file" accept="image/*" onChange={(e) => setSelectedFile(e.target.files[0])} />
+                    <button type="button" onClick={handleUploadProfilePicture} disabled={loading}>
+                        {loading ? "Envoi..." : "Envoyer la photo"}
+                    </button>
+                </div>
 
                 <div>
-                    <label htmlFor="oldpassword">Old Password: </label>
+                    <label htmlFor="oldpassword">Ancien mot de passe : </label>
                     <input
                         type="password"
                         id="oldpassword"
@@ -122,7 +158,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                         onChange={(e) => setOldPassword(e.target.value)}
                     />
 
-                    <label htmlFor="new_password">New Password: </label>
+                    <label htmlFor="new_password">Nouveau mot de passe : </label>
                     <input
                         type="password"
                         id="new_password"
@@ -131,7 +167,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                         onChange={(e) => setNewPassword(e.target.value)}
                     />
 
-                    <label htmlFor="new_password2">Confirm New Password: </label>
+                    <label htmlFor="new_password2">Confirmer le nouveau mot de passe : </label>
                     <input
                         type="password"
                         id="new_password2"
@@ -141,11 +177,11 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                     />
 
                     <button type="button" onClick={handleChangePassword} disabled={loading}>
-                        {loading ? "Changing..." : "Change Password"}
+                        {loading ? "Modification..." : "Modifier le mot de passe"}
                     </button>
                 </div>
 
-                <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                <button type="button" onClick={() => setIsEditing(false)}>Annuler</button>
             </form>
         </div>
     )

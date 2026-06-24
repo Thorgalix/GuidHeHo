@@ -16,7 +16,7 @@ export default function ForgotPasswordPage() {
         setSuccess("")
 
         if (!email) {
-            setError("Please enter your email address.")
+            setError("Veuillez saisir votre adresse email.")
             return
         }
 
@@ -29,10 +29,10 @@ export default function ForgotPasswordPage() {
                 { email },
                 { skipAuthRefresh: true }
             )
-            setSuccess(data.detail || "If an account with that email exists, a password reset link has been sent.")
+            setSuccess(data.detail || "Si un compte existe avec cette adresse email, un lien de réinitialisation a été envoyé.")
             setEmail("")
         } catch (err) {
-            setError(err.message || "An error occurred while requesting password reset.")
+            setError(err.message || "Une erreur est survenue pendant la demande de réinitialisation.")
         } finally {
             setLoading(false)
         }

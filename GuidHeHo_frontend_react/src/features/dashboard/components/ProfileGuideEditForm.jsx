@@ -51,6 +51,29 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
         })
     }
 
+    function sanitizePrice(value, allowTrailingDecimal = true) {
+        const normalizedValue = String(value).replace(",", ".").replace(/[^\d.]/g, "")
+        const [integerPart, ...decimalParts] = normalizedValue.split(".")
+
+        if (!integerPart && decimalParts.length === 0) return ""
+
+        const decimalPart = decimalParts.join("").slice(0, 2)
+        const normalizedNumber = decimalPart ? `${integerPart || "0"}.${decimalPart}` : integerPart
+        const number = Number(normalizedNumber)
+
+        if (!Number.isFinite(number)) return ""
+        if (allowTrailingDecimal && normalizedValue.endsWith(".") && decimalParts.length > 0) {
+            return `${Math.max(Math.trunc(number), 1)}.`
+        }
+
+        return decimalPart ? String(Math.max(number, 1)) : String(Math.max(Math.trunc(number), 1))
+    }
+
+    function handlePriceKeyDown(e) {
+        if (["e", "E", "+", "-"].includes(e.key)) {
+            e.preventDefault()
+        }
+    }
 
     async function handleSubmit(e) {
         e.preventDefault()
@@ -60,10 +83,17 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
 
         try {
             const data = {}
+            const sanitizedPricePerHour = sanitizePrice(pricePerHour, false)
 
             if (bio !== guide.bio) data.bio = bio
             if (city !== guide.city) data.city = city
-            if (pricePerHour !== guide.price_per_hour) data.price_per_hour = pricePerHour
+            if (!sanitizedPricePerHour) {
+                setError("Le prix par heure doit être valide.")
+                return
+            }
+            if (sanitizedPricePerHour !== String(guide.price_per_hour)) {
+                data.price_per_hour = Number(sanitizedPricePerHour)
+            }
 
             const initialLanguageIds = guide.languages.map((language) => language.id)
             const initialThemeIds = guide.themes.map((theme) => theme.id)
@@ -76,16 +106,16 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
             }
 
             if (Object.keys(data).length === 0) {
-                setError("No changes detected.")
+                setError("Aucune modification détectée.")
                 return
             }
 
-            const updatedGuide = await api.patch("/api/guides/me/", data)
+            await api.patch("/api/guides/me/", data)
 
             const refreshedGuide = await api.get("/api/guides/me/")
 
             if (onGuideUpdated) onGuideUpdated(refreshedGuide)
-            setSuccess("Profile updated successfully!")
+            setSuccess("Profil mis à jour avec succès !")
             setIsEditing(false)
 
         } catch (err) {
@@ -97,34 +127,32 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
     return (
         <div>
             <form action="" onSubmit={handleSubmit}>
-                <h3>Edit Guide Profile</h3>
+                <h3>Modifier le profil guide</h3>
                 <div>
-                    <label htmlFor="bio">Bio: </label>
+                    <label htmlFor="bio">Bio : </label>
                     <input type="text" id="bio" name="bio" value={bio} onChange={(e) => setBio(e.target.value)} />
 
-                    <label htmlFor="city">City: </label>
+                    <label htmlFor="city">Ville : </label>
                     <input type="text" id="city" name="city" value={city} onChange={(e) => setCity(e.target.value)} />
 
-                    <label htmlFor="price_per_hour">Price per Hour: </label>
+                    <label htmlFor="price_per_hour">Prix par heure : </label>
                     <input
-                        type="number"
+                        type="text"
+                        inputMode="decimal"
                         id="price_per_hour"
                         name="price_per_hour"
                         min="1"
-                        onChange={(e) => setPricePerHour(e.target.value)}
-                        onKeyDown={(e) => {
-                            if (e.key === "-" || e.key === "e" || e.key === "+") {
-                                e.preventDefault()
-                            }
-                        }}
+                        value={pricePerHour}
+                        onChange={(e) => setPricePerHour(sanitizePrice(e.target.value))}
+                        onKeyDown={handlePriceKeyDown}
                     />
 
-                                < LanguageSelector
-                            languages = { languages }
-                            selectedLanguages = { selectedLanguages }
-                            setSelectedLanguages = { setSelectedLanguages }
-                            toggle = { toggle }
-                                />
+                    < LanguageSelector
+                        languages={languages}
+                        selectedLanguages={selectedLanguages}
+                        setSelectedLanguages={setSelectedLanguages}
+                        toggle={toggle}
+                    />
 
                     <ThemeSelector
                         themes={themes}
@@ -135,10 +163,10 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
 
 
                     <button type="submit" disabled={loading}>
-                        {loading ? "Saving..." : "Save Changes"}
+                        {loading ? "Enregistrement..." : "Enregistrer les modifications"}
                     </button>
-                            { error && <p style={{ color: "red" }}>{error}</p> }
-                            { success && <p style={{ color: "green" }}>{success}</p> }
+                    {error && <p style={{ color: "red" }}>{error}</p>}
+                    {success && <p style={{ color: "green" }}>{success}</p>}
                 </div>
 
             </form>

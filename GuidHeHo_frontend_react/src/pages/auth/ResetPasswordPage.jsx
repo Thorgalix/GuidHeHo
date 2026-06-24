@@ -26,17 +26,17 @@ export default function ResetPasswordPage() {
         setSuccess("");
 
         if (!uid || !token) {
-            setError("Invalid password reset link.")
+            setError("Lien de réinitialisation invalide.")
             return
         }
 
         if (!newPassword || !confirmPassword) {
-            setError("Please fill in all fields.")
+            setError("Veuillez remplir tous les champs.")
             return
         }
 
         if (newPassword !== confirmPassword) {
-            setError("Passwords do not match.")
+            setError("Les mots de passe ne correspondent pas.")
             return
         }
 
@@ -54,7 +54,7 @@ export default function ResetPasswordPage() {
                 },
                 { skipAuthRefresh: true }
             )
-            setSuccess(data.detail || "Your password has been reset successfully. You can now log in with your new password.")
+            setSuccess(data.detail || "Votre mot de passe a bien été réinitialisé. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe.")
             setNewPassword("");
             setConfirmPassword("");
 
@@ -63,7 +63,7 @@ export default function ResetPasswordPage() {
                 navigate("/login")
             }, 800)
         } catch (err) {
-            setError(err.message || "An error occurred while resetting your password.")
+            setError(err.message || "Une erreur est survenue pendant la réinitialisation du mot de passe.")
         } finally {
             setLoading(false);
         }

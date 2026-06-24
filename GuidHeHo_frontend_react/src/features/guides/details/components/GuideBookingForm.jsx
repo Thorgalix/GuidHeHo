@@ -1,41 +1,64 @@
-import { useState } from "react"
+import { useState, useMemo } from "react"
+import { DayPicker } from "@daypicker/react"
+import "@daypicker/react/style.css"
 
 export default function GuideBookingForm({ availabilities, onSubmit, status }) {
-    const [date, setDate] = useState("")
+    const [selectedDate, setSelectedDate] = useState(undefined)
     const [selectedAvailabilityId, setSelectedAvailabilityId] = useState("")
     const [people, setPeople] = useState("")
     const [message, setMessage] = useState("")
 
-    // On récupère toutes les dates disponibles.
-    // new Set permet de supprimer les doublons.
-    const availableDates = [...new Set(
-        availabilities.map((availability) =>
-            availability.start_datetime.slice(0, 10)
-        )
-    )].sort()
 
-    // On récupère seulement les créneaux du jour sélectionné.
-    const availabilitiesForSelectedDate = availabilities.filter((availability) => {
-        const availabilityDate = availability.start_datetime.slice(0, 10)
-        return availabilityDate === date
-    })
+
+    //* --------------------------------------------------------------------------------- *//
+
+    const availabilitiesByDate = useMemo(() => {
+        return availabilities.reduce((acc, availability) => {
+            const dateKey = availability.start_datetime.slice(0, 10)
+
+            if (!acc[dateKey]) acc[dateKey] = []
+
+            acc[dateKey].push(availability)
+
+            return acc
+        }, {})
+    }, [availabilities])
+
+    const availableDays = useMemo(() => {
+        return Object.keys(availabilitiesByDate).map((dateKey) => {
+            return new Date(`${dateKey}T00:00:00`)
+        })
+    }, [availabilitiesByDate])
+
+
+    const selectedDateKey = selectedDate ? toDateKey(selectedDate) : ""
+
+    const availabilitiesForSelectedDate = selectedDateKey
+        ? availabilitiesByDate[selectedDateKey] ?? []
+        : []
+
 
     // On récupère le créneau actuellement sélectionné.
     const selectedAvailability = availabilities.find(
         (availability) => availability.id === Number(selectedAvailabilityId)
     )
 
-    // Affiche une date propre pour l'utilisateur.
-    function formatDateLabel(dateString) {
-        const date = new Date(`${dateString}T00:00:00`)
+    const maxPeople = selectedAvailability?.remaining_places ?? selectedAvailability?.max_people
 
-        return new Intl.DateTimeFormat("fr-FR", {
-            weekday: "long",
-            day: "2-digit",
-            month: "long",
-            year: "numeric",
-        }).format(date)
+    function toDateKey(date) {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, "0")
+        const day = String(date.getDate()).padStart(2, "0")
+
+        return `${year}-${month}-${day}`
     }
+
+    function isDateUnavailable(day) {
+        const dateKey = toDateKey(day)
+        return !availabilitiesByDate[dateKey]
+    }
+
+    //* --------------------------------------------------------------------------------- *//
 
     // Affiche seulement les horaires du créneau.
     function formatTimeSlotLabel(availability) {
@@ -50,92 +73,123 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
         return `${timeFormatter.format(start)} → ${timeFormatter.format(end)}`
     }
 
-    function handleDateChange(e) {
-        setDate(e.target.value)
+    function sanitizePeople(value) {
+        const digits = value.replace(/\D/g, "")
 
-        // Quand on change de date, on vide le créneau sélectionné.
-        setSelectedAvailabilityId("")
+        if (!digits) return ""
+
+        const number = Math.max(Number(digits), 1)
+
+        return String(maxPeople ? Math.min(number, maxPeople) : number)
     }
+
+    function handlePeopleKeyDown(e) {
+        if (["e", "E", "+", "-", ".", ","].includes(e.key)) {
+            e.preventDefault()
+        }
+    }
+
+    //* --------------------------------------------------------------------------------- *//
+
+
+    function handleDateSelect(day) {
+        if (!day) return
+
+        setSelectedDate(day)
+        setSelectedAvailabilityId("")
+        setPeople("")
+    }
+
+    //* --------------------------------------------------------------------------------- *//
 
     async function handleSubmit(e) {
         e.preventDefault()
 
+        const sanitizedPeople = sanitizePeople(people)
+
         await onSubmit({
             availability: Number(selectedAvailabilityId),
-            booking_date: date,
-            number_of_people: Number(people),
+            booking_date: selectedDateKey,
+            number_of_people: Number(sanitizedPeople),
             message: message.trim(),
         })
 
-        setDate("")
+        setSelectedDate(undefined)
         setPeople("")
         setMessage("")
         setSelectedAvailabilityId("")
     }
 
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="space-y-4">
             {availabilities.length === 0 && (
-                <p>No availability for this guide.</p>
+                <p>Aucune disponibilité pour ce guide.</p>
             )}
 
-            <label>
-                Choose a date:
-                <select
-                    value={date}
-                    disabled={availableDates.length === 0}
-                    onChange={handleDateChange}
-                >
-                    <option value="">Select a date</option>
 
-                    {availableDates.map((availableDate) => (
-                        <option key={availableDate} value={availableDate}>
-                            {formatDateLabel(availableDate)}
-                        </option>
-                    ))}
-                </select>
+
+            <label className="block space-y-2">
+                Choisir une date :
+                <DayPicker
+                    mode="single"
+                    selected={selectedDate}
+                    onSelect={handleDateSelect}
+                    disabled={isDateUnavailable}
+                    modifiers={{ available: availableDays }}
+                    modifiersClassNames={{ available: "font-bold text-teal-700 bg-teal-100 rounded-full" }}
+                />
             </label>
 
-            <label>
-                Choose a time slot:
-                <select
-                    value={selectedAvailabilityId}
-                    disabled={!date || availabilitiesForSelectedDate.length === 0}
-                    onChange={(e) => setSelectedAvailabilityId(e.target.value)}
-                >
-                    <option value="">Select a time slot</option>
-
-                    {availabilitiesForSelectedDate.map((availability) => (
-                        <option key={availability.id} value={availability.id}>
-                            {formatTimeSlotLabel(availability)}
-                        </option>
-                    ))}
-                </select>
+            <label className="block space-y-2">
+                Choisir un créneau :
+                {availabilitiesForSelectedDate.map((availability) => (
+                    <button
+                        type="button"
+                        key={availability.id}
+                        onClick={() => setSelectedAvailabilityId(String(availability.id))}
+                        className={
+                            selectedAvailabilityId === String(availability.id)
+                                ? "rounded-md bg-teal-700 px-3 py-2 text-sm font-semibold text-white"
+                                : "rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:border-teal-600 hover:text-teal-700"
+                        }
+                    >
+                        {formatTimeSlotLabel(availability)}
+                    </button>
+                ))}
             </label>
 
-            <label>
-                Number of people:
+
+
+
+            <label className="block space-y-2">
+                Nombre de personnes :
                 <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
                     value={people}
                     min="1"
-                    max={selectedAvailability?.remaining_places}
+                    max={maxPeople}
                     disabled={!selectedAvailabilityId}
-                    onChange={(e) => setPeople(e.target.value)}
+                    onChange={(e) => setPeople(sanitizePeople(e.target.value))}
+                    onKeyDown={handlePeopleKeyDown}
+                    className="w-full rounded-md border border-teal-700 px-3 py-2"
                 />
             </label>
 
             <textarea
-                placeholder="Message (optional)"
+                placeholder="Message (facultatif)"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
+                className="w-full h-25 rounded-md border border-teal-700 py-2 px-3"
             />
 
             <button
                 type="submit"
-                disabled={!date || !selectedAvailabilityId || !people}
+                disabled={!selectedDate || !selectedAvailabilityId || !people}
+                className="rounded-md bg-teal-700 px-4 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:bg-teal-300"
             >
-                Confirm booking
+                Confirmer la réservation
             </button>
 
             {status && <p>{status}</p>}

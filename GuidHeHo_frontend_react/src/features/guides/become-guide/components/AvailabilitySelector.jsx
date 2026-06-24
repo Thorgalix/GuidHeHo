@@ -2,7 +2,7 @@ export default function AvailabilitySelector({ availabilityMode, setAvailability
 
     return (
         <div>
-            <h4>Disponibilities</h4>
+            <h4>Disponibilités</h4>
 
             <label>
                 <input
@@ -11,7 +11,7 @@ export default function AvailabilitySelector({ availabilityMode, setAvailability
                     checked={availabilityMode === "week"}
                     onChange={() => setAvailabilityMode("week")}
                 />
-                Weeks
+                Semaines
             </label>
 
             <label>
@@ -21,7 +21,7 @@ export default function AvailabilitySelector({ availabilityMode, setAvailability
                     checked={availabilityMode === "day"}
                     onChange={() => setAvailabilityMode("day")}
                 />
-                Days
+                Jours
             </label>
         </div>
     )
