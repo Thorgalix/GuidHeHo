@@ -40,9 +40,10 @@ export default function GuideDetailMap({ guide }) {
 
 
     // Affichage
-    return <div ref={mapRef}
-        className="card bg-base-100 shadow-xl
-            h-125 w-125 rounded-2xl overflow-hidden
-            border border-base-300 "
-    />
+    return (
+        <div
+            ref={mapRef}
+            className="h-80 w-full overflow-hidden rounded-lg border border-teal-600 bg-teal-100 shadow-sm dark:bg-teal-950"
+        />
+    )
 }

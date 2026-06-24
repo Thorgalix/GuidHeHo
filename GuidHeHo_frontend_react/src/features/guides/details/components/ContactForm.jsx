@@ -1,4 +1,5 @@
 import { useContext, useState } from "react"
+import { FaPaperPlane } from "react-icons/fa"
 import { AuthContext } from "../../../../context/auth-context"
 import { api } from "../../../../services/api"
 
@@ -51,14 +52,18 @@ export default function ContactForm({ guide }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-3">
-            <label className="block space-y-2">
-                Message
+        <form onSubmit={handleSubmit} className="space-y-4">
+            <label className="form-control">
+                <div className="label">
+                    <span className="label-text font-semibold text-slate-900 dark:text-white">
+                        Message
+                    </span>
+                </div>
                 <textarea
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Bonjour, je voudrais vous poser une question sur une visite..."
-                    className="h-28 w-full rounded-md border border-teal-700 px-3 py-2"
+                    className="textarea textarea-bordered min-h-32 w-full border-teal-600 bg-white placeholder:text-slate-400 focus:border-teal-300 focus:outline-none dark:bg-teal-950 dark:text-teal-50 dark:placeholder:text-teal-200/60"
                     disabled={submitting || isOwnGuideProfile}
                 />
             </label>
@@ -66,13 +71,22 @@ export default function ContactForm({ guide }) {
             <button
                 type="submit"
                 disabled={submitting || isOwnGuideProfile || !message.trim()}
-                className="rounded-md bg-teal-700 px-4 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:bg-teal-300"
+                className="btn border-none bg-teal-500 text-white hover:bg-teal-600 disabled:bg-teal-300 disabled:text-white"
             >
+                <FaPaperPlane aria-hidden="true" />
                 {submitting ? "Envoi..." : "Envoyer le message"}
             </button>
 
-            {status && <p>{status}</p>}
-            {error && <p className="text-red-600">{error}</p>}
+            {status && (
+                <p className="text-sm font-medium text-teal-700 dark:text-teal-100">
+                    {status}
+                </p>
+            )}
+            {error && (
+                <p className="text-sm font-medium text-red-600 dark:text-red-300">
+                    {error}
+                </p>
+            )}
         </form>
     )
 }
