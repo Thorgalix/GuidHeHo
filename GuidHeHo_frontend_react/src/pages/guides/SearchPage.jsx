@@ -58,6 +58,10 @@ export default function SearchPage() {
         number_of_people: filtersFromUrl.number_of_people,
     }), [filtersFromUrl])
 
+    const hasSearchFilters = useMemo(() => {
+        return Object.values(filterFormValues).some(Boolean)
+    }, [filterFormValues])
+
     const hasSearchParams = useMemo(() => {
         return Object.values(filtersFromUrl).some(Boolean)
     }, [filtersFromUrl])
@@ -97,10 +101,15 @@ export default function SearchPage() {
 
     function handlePageChange(url) {
         const pageUrl = new URL(url, window.location.origin)
-        const page = pageUrl.searchParams.get("page") || ""
+        const page = pageUrl.searchParams.get("page") || "1"
         const nextFilters = {
             ...filterFormValues,
             page,
+        }
+
+        if (!hasSearchFilters) {
+            fetchGuides(nextFilters)
+            return
         }
 
         setSearchParams(getSearchParamsFromFilters(nextFilters))

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react"
 import { DayPicker } from "@daypicker/react"
-import { FaCalendarAlt, FaClock, FaUsers } from "react-icons/fa"
+import { FaCalendarAlt, FaClock, FaUsers, FaEnvelope } from "react-icons/fa"
 import "@daypicker/react/style.css"
 
 export default function GuideBookingForm({ availabilities, onSubmit, status }) {
@@ -122,30 +122,32 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {availabilities.length === 0 && (
                 <p className="text-slate-700 dark:text-teal-100">
                     Aucune disponibilité pour ce guide.
                 </p>
             )}
 
-            <label className="block space-y-3">
+            <div className="space-y-2">
                 <span className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                     <FaCalendarAlt className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
                     Choisir une date
                 </span>
                 <DayPicker
                     mode="single"
+                    navLayout="around"
+                    aria-label="Choisir une date de réservation"
                     selected={selectedDate}
                     onSelect={handleDateSelect}
                     disabled={isDateUnavailable}
                     modifiers={{ available: availableDays }}
                     modifiersClassNames={{ available: "font-bold text-teal-700 bg-teal-100 rounded-full" }}
-                    className="rounded-lg border border-teal-200 bg-white/70 p-3 text-slate-900 dark:border-teal-700 dark:bg-teal-950/40 dark:text-teal-50"
+                    className="w-fit max-w-full rounded-lg border border-teal-200 bg-white/70 p-3 text-slate-900 dark:border-teal-700 dark:bg-teal-950/40 dark:text-teal-50"
                 />
-            </label>
+            </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2">
                 <span className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                     <FaClock className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
                     Choisir un créneau
@@ -175,8 +177,8 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                 </div>
             </div>
 
-            <label className="form-control">
-                <div className="label">
+            <label className="form-control space-y-2">
+                <div className="label p-0">
                     <span className="label-text flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
                         <FaUsers className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
                         Nombre de personnes
@@ -202,9 +204,10 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                 />
             </label>
 
-            <label className="form-control">
-                <div className="label">
-                    <span className="label-text font-semibold text-slate-900 dark:text-white">
+            <label className="form-control space-y-2">
+                <div className="label p-0">
+                    <span className="label-text flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                        <FaEnvelope className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
                         Message
                     </span>
                     <span className="label-text-alt text-slate-600 dark:text-teal-100">

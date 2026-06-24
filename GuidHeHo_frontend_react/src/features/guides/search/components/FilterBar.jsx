@@ -205,7 +205,7 @@ export default function FilterBar({ onSearch, initialFilters = {} }) {
                     <div className="md:col-span-2 lg:col-span-1 lg:col-start-6">
                         <button
                             type="submit"
-                            className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
+                            className="btn bg-teal-500 hover:bg-teal-600 text-white border-none w-full"
                         >
                             Rechercher
                         </button>
