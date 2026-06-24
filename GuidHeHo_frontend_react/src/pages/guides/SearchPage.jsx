@@ -55,7 +55,7 @@ export default function SearchPage() {
                         </p>
                     </div>
 
-                    <div className="rounded-lg border border-teal-600 bg-white/80 p-5 shadow-md dark:bg-teal-900/70">
+                    <div className="rounded-lg border border-teal-500 bg-white/80 p-5 shadow-md dark:bg-teal-700/70">
                         <div className="flex items-center gap-3 text-teal-700 dark:text-teal-100">
                             <FaMapMarkedAlt className="text-3xl" aria-hidden="true" />
                             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
@@ -66,7 +66,7 @@ export default function SearchPage() {
                         <div className="mt-5 space-y-4">
                             {steps.map(({ title, text, Icon }) => (
                                 <article key={title} className="flex gap-4">
-                                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-100">
                                         <Icon aria-hidden="true" />
                                     </span>
                                     <div>
@@ -166,7 +166,7 @@ export default function SearchPage() {
                     )}
                 </>
             ) : (
-                <p className="mx-auto mt-6 max-w-6xl text-sm text-slate-700 dark:text-teal-100">
+                <p className="mt-5 text-center text-lg leading-8 text-slate-700 dark:text-teal-50">
                     Lancez une recherche pour afficher les guides disponibles.
                 </p>
             )}

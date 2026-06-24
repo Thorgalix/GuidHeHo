@@ -8,6 +8,7 @@ import { AuthContext } from "../../context/auth-context"
 import { api } from "../../services/api"
 import GuideHeader from "../../features/guides/details/components/GuideHeader"
 import GuideBookingForm from "../../features/guides/details/components/GuideBookingForm"
+import ContactForm from "../../features/guides/details/components/ContactForm"
 import GuideDetailMap from "../../features/guides/details/components/GuideDetailMap"
 import ReviewList from "../../features/reviews/components/ReviewList"
 import ReviewsPagination from "../../features/reviews/components/ReviewsPagination"
@@ -25,6 +26,7 @@ export default function GuideDetailsPage() {
 
     const { isAuthenticated, user } = useContext(AuthContext)
     const [showBooking, setShowBooking] = useState(false)
+    const [showContact, setShowContact] = useState(false)
     const [status, setStatus] = useState("")
 
     const {
@@ -91,8 +93,13 @@ export default function GuideDetailsPage() {
         <main style={{ padding: "20px" }}>
             <GuideHeader guide={guide} />
             {isAuthenticated && (
-                <button onClick={() => setShowBooking(true)} disabled={availabilities.length === 0}>
+                <button type="button" onClick={() => setShowBooking((current) => !current)} disabled={availabilities.length === 0}>
                     Réserver ce guide
+                </button>
+            )}
+            {isAuthenticated && user?.id !== guide.user?.id && (
+                <button type="button" onClick={() => setShowContact((current) => !current)}>
+                    Contacter ce guide
                 </button>
             )}
             {isAuthenticated && (
@@ -115,6 +122,10 @@ export default function GuideDetailsPage() {
                     onSubmit={handleBookingSubmit}
                     status={status}
                 />
+            )}
+
+            {showContact && (
+                <ContactForm guide={guide} />
             )}
 
             {isAuthenticated && (
