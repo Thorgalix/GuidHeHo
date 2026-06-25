@@ -10,6 +10,7 @@ import ProfileGuideReviewsTab from "./ProfileGuideReviewsTab"
 import { useState, useContext } from "react"
 import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
+import { FaCompass, FaPen, FaTrash } from "react-icons/fa"
 
 export default function ProfileGuideTab({ user }) {
     const { isGuide, guide, setGuide, loading, error } = useGuideProfile(user)
@@ -51,58 +52,149 @@ export default function ProfileGuideTab({ user }) {
 
     if (!isGuide) {
         return (
-            <div>
-                <h2>Espace guide</h2>
-                <p>Vous n’êtes pas encore guide. Devenez guide pour accéder à cet espace.</p>
-            </div>
+            <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
+                <div className="card-body">
+                    <p className="text-slate-700 dark:text-teal-100">
+                        Vous n’êtes pas encore guide. Devenez guide pour accéder à cet espace.
+                    </p>
+                </div>
+            </section>
         )
     }
 
     if (loading) {
         return (
-            <div>
-                <h2>Espace guide</h2>
-                <p>Chargement du profil guide...</p>
-            </div>
+            <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
+                <div className="card-body">
+                    <p className="text-slate-700 dark:text-teal-100">
+                        Chargement du profil guide...
+                    </p>
+                </div>
+            </section>
         )
     }
 
     if (!guide) {
         return (
-            <div>
-                <h2>Espace guide</h2>
-                <p>{error || "Impossible de charger le profil guide pour le moment."}</p>
-            </div>
+            <section className="card border border-red-400 bg-red-50 shadow-sm dark:bg-red-950">
+                <div className="card-body">
+                    <p className="text-red-600 dark:text-red-300">
+                        {error || "Impossible de charger le profil guide pour le moment."}
+                    </p>
+                </div>
+            </section>
         )
     }
 
 
     return (
-        <div>
-            <h2>Espace guide</h2>
-            <h3>Mon profil</h3>
-            <div className="card border">
-                <p>Bio : {guide.bio}</p>
-                <p>Ville : {guide.city}</p>
-                <p>Langues : {(guide.languages || []).map((language) => language.name).join(", ")}</p>
-                <p>Thèmes : {(guide.themes || []).map((theme) => theme.name).join(", ")}</p>
-                <p>Prix : {guide.price_per_hour}</p>
-            
-                <button type="button" onClick={() => setIsEditing(prev => !prev)}>
-                    {isEditing ? "Fermer l’édition du profil" : "Modifier le profil"}
-                </button>
-                <button
-                    type="button"
-                    onClick={handleDeleteGuide}
-                    disabled={isDeleting}
-                >
-                    {isDeleting ? "Suppression..." : "Supprimer le profil"}
-                </button>
+        <div className="space-y-6">
+            <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
+                <div className="card-body">
+                    <header className="flex items-center gap-3">
+                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                            <FaCompass aria-hidden="true" />
+                        </span>
 
-                {deleteError && <p style={{ color: "red" }}>{deleteError}</p>}
-                {deleteSuccess && <p style={{ color: "green" }}>{deleteSuccess}</p>}
+                        <div>
+                            <h2 className="card-title text-slate-900 dark:text-white">
+                                Mon profil guide
+                            </h2>
+                            <p className="text-sm text-slate-700 dark:text-teal-50">
+                                Retrouvez les informations de votre profil guide.
+                            </p>
+                        </div>
+                    </header>
 
-            </div>
+                    <div className="my-2 border-t border-teal-200 dark:border-teal-700" />
+
+                    <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+                        <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+
+                            <div>
+                                <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
+                                    {guide.user.first_name} {guide.user.last_name}
+                                </h3>
+                                <p className="mt-1 text-sm text-slate-700 dark:text-teal-50">
+                                    {guide.user.email}
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-wrap gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setIsEditing(prev => !prev)}
+                                className="btn border-none bg-teal-500 text-white hover:bg-teal-600"
+                            >
+                                <FaPen aria-hidden="true" />
+                                {isEditing ? "Fermer l’édition du profil" : "Modifier le profil"}
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleDeleteGuide}
+                                disabled={isDeleting}
+                                className="btn border-none bg-red-600 text-white hover:bg-red-700 disabled:bg-slate-300 disabled:text-slate-500"
+                            >
+                                <FaTrash aria-hidden="true" />
+                                {isDeleting ? "Suppression..." : "Supprimer le profil"}
+                            </button>
+                        </div>
+                    </div>
+
+                    <dl className="grid gap-4 rounded-lg border border-teal-200 bg-white/70 p-4 text-sm text-slate-700 dark:border-teal-700 dark:bg-teal-950/40 dark:text-teal-50 sm:grid-cols-2">
+                        <div>
+                            <dt className="font-semibold text-slate-900 dark:text-white">Bio</dt>
+                            <dd className="mt-1">{guide.bio}</dd>
+                        </div>
+
+                        <div>
+                            <dt className="font-semibold text-slate-900 dark:text-white">Ville</dt>
+                            <dd className="mt-1">{guide.city}</dd>
+                        </div>
+
+                        <div>
+                            <dt className="font-semibold text-slate-900 dark:text-white">Langues</dt>
+                            <dd className="mt-1 flex flex-wrap gap-1">
+                                {guide.languages.map((language) => (
+                                    <span key={language.id} className="badge border-teal-600 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                                        {language.name}
+                                    </span>
+                                ))}
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt className="font-semibold text-slate-900 dark:text-white">Themes</dt>
+                            <dd className="mt-1 flex flex-wrap gap-1">
+                                {guide.themes.map((theme) => (
+                                    <span key={theme.id} className="badge border-teal-600 bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                                        {theme.name}
+                                    </span>
+                                ))}
+                            </dd>
+                        </div>
+
+                        <div>
+                            <dt className="font-semibold text-slate-900 dark:text-white">Prix par heure</dt>
+                            <dd className="mt-1">{guide.price_per_hour} €</dd>
+                        </div>
+                    </dl>
+
+
+                    {deleteError && (
+                        <p className="text-sm font-medium text-red-600 dark:text-red-300">
+                            {deleteError}
+                        </p>
+                    )}
+                    {deleteSuccess && (
+                        <p className="text-sm font-medium text-teal-700 dark:text-teal-100">
+                            {deleteSuccess}
+                        </p>
+                    )}
+                </div>
+            </section>
 
             {isEditing && (
                 <ProfileGuideEditForm

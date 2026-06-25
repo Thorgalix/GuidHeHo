@@ -1,7 +1,7 @@
 import { useState, useContext, useEffect } from "react"
 import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
-import { FaKey, FaSave, FaTimes, FaUser } from "react-icons/fa"
+import { FaKey, FaSave, FaTimes, FaWrench, FaUser } from "react-icons/fa"
 
 export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpdated }) {
     const { updateUser } = useContext(AuthContext)
@@ -103,12 +103,11 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
     }
 
     return (
-
         <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
             <div className="card-body space-y-6">
                 <header className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
-                        <FaUser aria-hidden="true" />
+                        <FaWrench aria-hidden="true" />
                     </span>
 
                     <div>

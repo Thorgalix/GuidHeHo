@@ -132,7 +132,6 @@ export default function ProfileTravelerTab({ user }) {
                     <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
                         <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
 
-
                             <label
                                 htmlFor="profile_picture_upload"
                                 className="group relative h-24 w-24 shrink-0 cursor-pointer rounded-full"
@@ -243,7 +242,6 @@ export default function ProfileTravelerTab({ user }) {
                     )}
                 </div>
             </section>
-
 
             {isEditing && (
                 <ProfileTravelerEditForm
