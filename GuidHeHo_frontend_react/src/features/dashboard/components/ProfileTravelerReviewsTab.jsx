@@ -15,10 +15,9 @@ export default function ProfileTravelerReviewsTab({ travelerId }) {
         setPage,
     } = useTravelerReviews(travelerId)
 
-
     return (
         <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
-            <div className="card-body space-y-5">
+            <div className="card-body">
                 <header className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
                         <FaStar aria-hidden="true" />
@@ -58,6 +57,5 @@ export default function ProfileTravelerReviewsTab({ travelerId }) {
                 />
             </div>
         </section>
-
     )
 }

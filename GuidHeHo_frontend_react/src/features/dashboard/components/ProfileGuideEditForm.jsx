@@ -138,7 +138,7 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
     }
     return (
         <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
-            <div className="card-body space-y-6">
+            <div className="card-body">
                 <header className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
                         <FaWrench aria-hidden="true" />
@@ -244,10 +244,16 @@ export default function ProfileGuideEditForm({ guide, setIsEditing, onGuideUpdat
                             <FaSave aria-hidden="true" />
                             {loading ? "Enregistrement..." : "Enregistrer les modifications"}
                         </button>
+                        <button
+                            type="button"
+                            onClick={() => setIsEditing(false)}
+                            className="btn border-teal-600 bg-white text-teal-700 hover:border-teal-500 hover:bg-teal-100 dark:bg-teal-950 dark:text-teal-100 dark:hover:bg-teal-800"
+                        >
+                            <FaTimes aria-hidden="true" />
+                            Annuler
+                        </button>
                     </div>
                 </form>
-
-
             </div>
 
             {(error || success) && (

@@ -108,7 +108,7 @@ export default function ProfileTravelerBookingsTab() {
 
     return (
         <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
-            <div className="card-body space-y-5">
+            <div className="card-body">
                 <header className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
                         <FaCalendarCheck aria-hidden="true" />
@@ -157,7 +157,9 @@ export default function ProfileTravelerBookingsTab() {
                                 <dl className="mt-4 grid gap-3 text-sm text-slate-700 dark:text-teal-50 sm:grid-cols-2">
                                     <div>
                                         <dt className="font-semibold text-slate-900 dark:text-white">Date</dt>
-                                        <dd className="mt-1">{b.booking_date}</dd>
+                                        <dd className="mt-1">
+                                            {b.booking_date}
+                                        </dd>
                                     </div>
 
                                     <div>

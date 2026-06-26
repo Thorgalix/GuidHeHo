@@ -17,8 +17,12 @@ export default function CapacitySelector({ maxPeople, setMaxPeople }) {
     }
 
     return (
-        <div>
-            <h4>Nombre de personnes</h4>
+        <label className="form-control max-w-sm">
+            <div className="label">
+                <span className="label-text font-semibold text-slate-900 dark:text-white">
+                    Nombre de personnes
+                </span>
+            </div>
             <input
                 type="text"
                 inputMode="numeric"
@@ -32,6 +36,6 @@ export default function CapacitySelector({ maxPeople, setMaxPeople }) {
                 onChange={handleChange}
                 onKeyDown={handleKeyDown}
             />
-        </div>
+        </label>
     )
 }

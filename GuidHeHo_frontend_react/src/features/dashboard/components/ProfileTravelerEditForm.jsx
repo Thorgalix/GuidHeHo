@@ -104,7 +104,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
 
     return (
         <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
-            <div className="card-body space-y-6">
+            <div className="card-body">
                 <header className="flex items-center gap-3">
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
                         <FaWrench aria-hidden="true" />
@@ -196,7 +196,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                     </div>
                 </form>
 
-                <div className="border-t border-teal-200 dark:border-teal-700" />
+                <div className="my-2 border-t border-teal-200 dark:border-teal-700" />
 
                 <form onSubmit={handleChangePassword} className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
@@ -269,7 +269,7 @@ export default function ProfileTravelerEditForm({ user, setIsEditing, onUserUpda
                     </div>
                 </form>
 
-                <div className="flex flex-wrap items-center gap-3 border-t border-teal-200 pt-4 dark:border-teal-700">
+                <div className="my-2 flex flex-wrap items-center gap-3 border-t border-teal-200 pt-4 dark:border-teal-700">
                     <button
                         type="button"
                         onClick={() => setIsEditing(false)}

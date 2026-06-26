@@ -10,11 +10,12 @@ import ProfileGuideReviewsTab from "./ProfileGuideReviewsTab"
 import { useState, useContext } from "react"
 import { AuthContext } from "../../../context/auth-context"
 import { api } from "../../../services/api"
-import { FaCompass, FaPen, FaTrash } from "react-icons/fa"
+import { FaCalendarPlus, FaCompass, FaPen, FaSave, FaTrash, FaTimes } from "react-icons/fa"
 
 export default function ProfileGuideTab({ user }) {
     const { isGuide, guide, setGuide, loading, error } = useGuideProfile(user)
     const [isEditing, setIsEditing] = useState(false)
+    const [isAddingAvailabilities, setIsAddingAvailabilities] = useState(false)
     const [isDeleting, setIsDeleting] = useState(false)
     const [deleteError, setDeleteError] = useState("")
     const [deleteSuccess, setDeleteSuccess] = useState("")
@@ -133,6 +134,15 @@ export default function ProfileGuideTab({ user }) {
 
                             <button
                                 type="button"
+                                onClick={() => setIsAddingAvailabilities(prev => !prev)}
+                                className="btn border-none bg-teal-500 text-white hover:bg-teal-600"
+                            >
+                                <FaCalendarPlus aria-hidden="true" />
+                                {isAddingAvailabilities ? "Fermer les disponibilités" : "Ajouter des disponibilités"}
+                            </button>
+
+                            <button
+                                type="button"
                                 onClick={handleDeleteGuide}
                                 disabled={isDeleting}
                                 className="btn border-none bg-red-600 text-white hover:bg-red-700 disabled:bg-slate-300 disabled:text-slate-500"
@@ -204,53 +214,100 @@ export default function ProfileGuideTab({ user }) {
                 />
             )}
 
-            <div>
-                <h3>Ajouter des disponibilités</h3>
-            </div>
-            <CapacitySelector
-                maxPeople={maxPeople}
-                setMaxPeople={setMaxPeople}
-            />
-            <div>
 
-                <form onSubmit={handleSubmitAvailabilities}>
-                    <AvailabilitySelector
-                        availabilityMode={availabilityMode}
-                        setAvailabilityMode={setAvailabilityMode}
-                        maxPeople={maxPeople}
-                        setMaxPeople={setMaxPeople}
-                    />
-                    <WeeklyEditor
-                        availabilityMode={availabilityMode}
-                        weekStartDate={weekStartDate}
-                        setWeekStartDate={setWeekStartDate}
-                        weekTemplate={weekTemplate}
-                        updateWeekDay={updateWeekDay}
-                        addWeekInterval={addWeekInterval}
-                        updateWeekInterval={updateWeekInterval}
-                        removeWeekInterval={removeWeekInterval}
-                    />
-                    <DayEditor
-                        availabilityMode={availabilityMode}
-                        singleDays={singleDays}
-                        addSingleDay={addSingleDay}
-                        removeSingleDay={removeSingleDay}
-                        updateSingleDay={updateSingleDay}
-                        addSingleDayInterval={addSingleDayInterval}
-                        updateSingleDayInterval={updateSingleDayInterval}
-                        removeSingleDayInterval={removeSingleDayInterval}
-                    />
-                    <button type="submit" disabled={submitting}>
-                        {submitting ? "Enregistrement..." : "Ajouter les disponibilités"}
-                    </button>
-                </form>
-                {message && <p style={{ color: "red" }}>{message}</p>}
-                {submitSummary && <p style={{ color: "green" }}>{submitSummary}</p>}
-            </div>
-            <div>
-                <ProfileGuideBookingsTab />
-                <ProfileGuideReviewsTab guideId={guide.id} />
-            </div>
+            {isAddingAvailabilities && (
+                <section className="card border border-teal-600 bg-teal-50 shadow-sm dark:bg-teal-700/70">
+                    <div className="card-body">
+                        <header className="flex items-center gap-3">
+                            <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                                <FaCalendarPlus aria-hidden="true" />
+                            </span>
+
+                            <div>
+                                <h2 className="card-title text-slate-900 dark:text-white">
+                                    Ajouter des disponibilités
+                                </h2>
+                                <p className="text-sm text-slate-700 dark:text-teal-50">
+                                    Créez des créneaux disponibles pour vos prochaines visites guidées.
+                                </p>
+                            </div>
+                        </header>
+
+                        <div className="my-2 border-t border-teal-200 dark:border-teal-700" />
+
+                        <form onSubmit={handleSubmitAvailabilities} className="flex flex-col gap-5">
+                            <AvailabilitySelector
+                                availabilityMode={availabilityMode}
+                                setAvailabilityMode={setAvailabilityMode}
+                                maxPeople={maxPeople}
+                                setMaxPeople={setMaxPeople}
+                            />
+
+                            <div className="grid gap-4 rounded-lg border border-teal-200 bg-white/70 p-4 dark:border-teal-700 dark:bg-teal-950/40">
+                                <WeeklyEditor
+                                    availabilityMode={availabilityMode}
+                                    weekStartDate={weekStartDate}
+                                    setWeekStartDate={setWeekStartDate}
+                                    weekTemplate={weekTemplate}
+                                    updateWeekDay={updateWeekDay}
+                                    addWeekInterval={addWeekInterval}
+                                    updateWeekInterval={updateWeekInterval}
+                                    removeWeekInterval={removeWeekInterval}
+                                />
+                                <DayEditor
+                                    availabilityMode={availabilityMode}
+                                    singleDays={singleDays}
+                                    addSingleDay={addSingleDay}
+                                    removeSingleDay={removeSingleDay}
+                                    updateSingleDay={updateSingleDay}
+                                    addSingleDayInterval={addSingleDayInterval}
+                                    updateSingleDayInterval={updateSingleDayInterval}
+                                    removeSingleDayInterval={removeSingleDayInterval}
+                                />
+                                <CapacitySelector
+                                    maxPeople={maxPeople}
+                                    setMaxPeople={setMaxPeople}
+                                />
+                            </div>
+
+                            <div className="flex flex-wrap items-center gap-3">
+                                <button
+                                    type="submit"
+                                    disabled={submitting}
+                                    className="btn border-none bg-teal-500 text-white hover:bg-teal-600 disabled:bg-slate-300 disabled:text-slate-500"
+                                >
+                                    <FaSave aria-hidden="true" />
+                                    {submitting ? "Enregistrement..." : "Enregistrer les disponibilités"}
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAddingAvailabilities(false)}
+                                    className="btn border-teal-600 bg-white text-teal-700 hover:border-teal-500 hover:bg-teal-100 dark:bg-teal-950 dark:text-teal-100 dark:hover:bg-teal-800"
+                                >
+                                    <FaTimes aria-hidden="true" />
+                                    Annuler
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    {(message || submitSummary) && (
+                        <div className="toast toast-start z-50">
+                            <div className={
+                                message
+                                    ? "alert border-red-400 bg-red-50 text-red-700 shadow-lg dark:bg-red-950 dark:text-red-200"
+                                    : "alert border-teal-600 bg-teal-50 text-teal-700 shadow-lg dark:bg-teal-950 dark:text-teal-100"
+                            }>
+                                <span>{message || submitSummary}</span>
+                            </div>
+                        </div>
+                    )}
+                </section>
+            )}
+
+            <ProfileGuideBookingsTab />
+            <ProfileGuideReviewsTab guideId={guide.id} />
+
         </div>
     )
 }
