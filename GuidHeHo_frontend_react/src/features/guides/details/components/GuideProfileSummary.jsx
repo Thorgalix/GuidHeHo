@@ -12,7 +12,7 @@ export default function GuideProfileSummary({ guide, limitItems = false }) {
     const hiddenThemesCount = limitItems ? themes.length - visibleThemes.length : 0
 
     return (
-        <dl className="space-y-1 text-slate-700 dark:text-teal-100">
+        <dl className="space-y-3 text-slate-700 dark:text-teal-100">
             <div>
                 <dt className="font-semibold inline">Ville : </dt>
                 <dd className="inline">{guide.city}</dd>
@@ -27,14 +27,14 @@ export default function GuideProfileSummary({ guide, limitItems = false }) {
                             {visibleLanguages.map((language) => (
                                 <span
                                     key={language.id}
-                                    className="badge badge-outline border-teal-600"
+                                    className="badge badge-outline border-teal-600 text-slate-700 dark:text-teal-100"
                                 >
                                     {language.name}
                                 </span>
                             ))}
 
                             {hiddenLanguagesCount > 0 && (
-                                <span className="badge bg-teal-100 dark:bg-teal-800 border-teal-600">
+                                <span className="badge border-teal-600 bg-teal-100 text-teal-700 dark:bg-teal-800 dark:text-teal-100">
                                     +{hiddenLanguagesCount}
                                 </span>
                             )}
@@ -54,14 +54,14 @@ export default function GuideProfileSummary({ guide, limitItems = false }) {
                             {visibleThemes.map((theme) => (
                                 <span
                                     key={theme.id}
-                                    className="badge badge-outline border-teal-600"
+                                    className="badge badge-outline border-teal-600 text-slate-700 dark:text-teal-100"
                                 >
                                     {theme.name}
                                 </span>
                             ))}
 
                             {hiddenThemesCount > 0 && (
-                                <span className="badge bg-teal-100 dark:bg-teal-800 border-teal-600">
+                                <span className="badge border-teal-600 bg-teal-100 text-teal-700 dark:bg-teal-800 dark:text-teal-100">
                                     +{hiddenThemesCount}
                                 </span>
                             )}

@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react"
 import { api } from "../../../../services/api"
 
-export default function FilterBar({ onSearch }) {
+export default function FilterBar({ onSearch, initialFilters = {} }) {
 
     // States
 
-    const [city, setCity] = useState("")
-    const [theme, setTheme] = useState("")
-    const [language, setLanguage] = useState("")
-    const [priceMax, setPriceMax] = useState("")
+    const [city, setCity] = useState(initialFilters.city || "")
+    const [theme, setTheme] = useState(initialFilters.theme || "")
+    const [language, setLanguage] = useState(initialFilters.language || "")
+    const [priceMax, setPriceMax] = useState(initialFilters.max_price || "")
 
     const [themes, setThemes] = useState([])
     const [languages, setLanguages] = useState([])
 
-    const [availabilityDate, setAvailabilityDate] = useState("")
-    const [numberOfPeople, setNumberOfPeople] = useState("")
+    const [availabilityDate, setAvailabilityDate] = useState(initialFilters.date || "")
+    const [numberOfPeople, setNumberOfPeople] = useState(initialFilters.number_of_people || "")
 
     // Comportements
 
@@ -93,7 +93,7 @@ export default function FilterBar({ onSearch }) {
     return (
         <form
             onSubmit={handleSubmit}
-            className="card bg-teal-50 dark:bg-teal-900 shadow-md border border-teal-600 mt-4"
+            className="card bg-teal-50 dark:bg-teal-700/70 shadow-md border border-teal-500 mt-4"
         >
             <div className="card-body">
                 <h2 id="search-title" className="card-title dark:text-white">
@@ -111,7 +111,7 @@ export default function FilterBar({ onSearch }) {
                             type="text"
                             placeholder="ex: Paris ..."
                             maxLength={80}
-                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="input input-bordered dark:bg-teal-900 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={city}
                             onChange={(e) => setCity(e.target.value)}
                         />
@@ -125,7 +125,7 @@ export default function FilterBar({ onSearch }) {
                         <input
                             name="date"
                             type="date"
-                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="input input-bordered dark:bg-teal-900 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={availabilityDate}
                             onChange={(e) => setAvailabilityDate(e.target.value)}
                         />
@@ -137,7 +137,7 @@ export default function FilterBar({ onSearch }) {
                         </div>
                         <select
                             name="theme"
-                            className="select select-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="select select-bordered dark:bg-teal-900 border-teal-600 w-full focus:outline-none focus:border-teal-300"
                             value={theme}
                             onChange={(e) => setTheme(e.target.value)}
                         >
@@ -156,7 +156,7 @@ export default function FilterBar({ onSearch }) {
                         </div>
                         <select
                             name="language"
-                            className="select select-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="select select-bordered dark:bg-teal-900 border-teal-500 w-full focus:outline-none focus:border-teal-300"
                             value={language}
                             onChange={(e) => setLanguage(e.target.value)}
                         >
@@ -179,7 +179,7 @@ export default function FilterBar({ onSearch }) {
                             pattern="[0-9]*"
                             name="numberOfPeople"
                             placeholder="ex: 2"
-                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="input input-bordered dark:bg-teal-900 border-teal-500 w-full focus:outline-none focus:border-teal-300"
                             value={numberOfPeople}
                             onChange={(e) => setNumberOfPeople(sanitizePositiveInteger(e.target.value))}
                             onKeyDown={blockInvalidNumberKeys}
@@ -195,19 +195,19 @@ export default function FilterBar({ onSearch }) {
                             inputMode="decimal"
                             name="priceMax"
                             placeholder="ex: 100"
-                            className="input input-bordered dark:bg-teal-950 border-teal-600 w-full focus:outline-none focus:border-teal-300"
+                            className="input input-bordered dark:bg-teal-900 border-teal-500 w-full focus:outline-none focus:border-teal-300"
                             value={priceMax}
                             onChange={(e) => setPriceMax(sanitizePositiveDecimal(e.target.value))}
                             onKeyDown={(e) => blockInvalidNumberKeys(e, true)}
                         />
                     </label>
 
-                    <div className="flex items-end">
+                    <div className="md:col-span-2 lg:col-span-1 lg:col-start-6">
                         <button
                             type="submit"
-                            className="btn bg-teal-500 hover:bg-teal-600 text-white dark:text-white border-none w-full"
+                            className="btn bg-teal-500 hover:bg-teal-600 text-white border-none w-full"
                         >
-                            Search
+                            Rechercher
                         </button>
                     </div>
 

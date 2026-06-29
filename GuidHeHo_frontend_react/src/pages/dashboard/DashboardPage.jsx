@@ -10,22 +10,24 @@ export default function DashboardPage() {
     const isGuide = user?.role === "guide"
 
     return (
-        <main>
-            <div>
+        <main className="px-5 py-8">
+            <section className="mx-auto max-w-6xl space-y-8">
+                <header>
+                    <label className="text-2xl font-bold">Tableau de bord</label>
+                    <h1 className="text-4xl font-bold text-slate-900 dark:text-white">Bienvenue, {user?.first_name} {user?.last_name}</h1>
+                </header>
 
                 <DashboardTabs
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     isGuide={isGuide}
                 />
-            </div>
-            <div>
-                {activeTab === "traveler" && <ProfileTravelerTab user={user} />}
-                {activeTab === "guide" && <ProfileGuideTab user={user} />}
-            </div>
-        
+                <div className="space-y-6">
+                    {activeTab === "traveler" && <ProfileTravelerTab user={user} />}
+                    {activeTab === "guide" && <ProfileGuideTab user={user} />}
+                </div>
 
-
+            </section>
         </main>
     )
 

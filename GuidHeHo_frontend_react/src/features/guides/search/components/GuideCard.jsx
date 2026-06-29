@@ -46,7 +46,7 @@ export default function GuideCard({ guide, onFavoriteRemoved }) {
     return (
         <article
             className="
-                card bg-teal-50 dark:bg-teal-900
+                card bg-teal-50 dark:bg-teal-700/70
                 w-full h-full min-h-70
                 border border-teal-600
                 shadow-sm

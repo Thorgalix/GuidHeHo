@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react"
 import { DayPicker } from "@daypicker/react"
+import { FaCalendarAlt, FaClock, FaUsers, FaEnvelope } from "react-icons/fa"
 import "@daypicker/react/style.css"
 
 export default function GuideBookingForm({ availabilities, onSubmit, status }) {
@@ -121,48 +122,73 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-5">
             {availabilities.length === 0 && (
-                <p>Aucune disponibilité pour ce guide.</p>
+                <p className="text-slate-700 dark:text-teal-100">
+                    Aucune disponibilité pour ce guide.
+                </p>
             )}
 
-
-
-            <label className="block space-y-2">
-                Choisir une date :
+            <div className="space-y-2">
+                <span className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                    <FaCalendarAlt className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
+                    Choisir une date
+                </span>
                 <DayPicker
                     mode="single"
+                    navLayout="around"
+                    aria-label="Choisir une date de réservation"
                     selected={selectedDate}
                     onSelect={handleDateSelect}
                     disabled={isDateUnavailable}
                     modifiers={{ available: availableDays }}
                     modifiersClassNames={{ available: "font-bold text-teal-700 bg-teal-100 rounded-full" }}
+                    className="w-fit max-w-full rounded-lg border border-teal-200 bg-white/70 p-3 text-slate-900 dark:border-teal-700 dark:bg-teal-950/40 dark:text-teal-50"
                 />
-            </label>
+            </div>
 
-            <label className="block space-y-2">
-                Choisir un créneau :
-                {availabilitiesForSelectedDate.map((availability) => (
-                    <button
-                        type="button"
-                        key={availability.id}
-                        onClick={() => setSelectedAvailabilityId(String(availability.id))}
-                        className={
-                            selectedAvailabilityId === String(availability.id)
-                                ? "rounded-md bg-teal-700 px-3 py-2 text-sm font-semibold text-white"
-                                : "rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:border-teal-600 hover:text-teal-700"
-                        }
-                    >
-                        {formatTimeSlotLabel(availability)}
-                    </button>
-                ))}
-            </label>
+            <div className="space-y-2">
+                <span className="flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                    <FaClock className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
+                    Choisir un créneau
+                </span>
 
+                {selectedDate && availabilitiesForSelectedDate.length === 0 && (
+                    <p className="text-sm text-slate-700 dark:text-teal-100">
+                        Aucun créneau disponible pour cette date.
+                    </p>
+                )}
 
+                <div className="flex flex-wrap gap-2">
+                    {availabilitiesForSelectedDate.map((availability) => (
+                        <button
+                            type="button"
+                            key={availability.id}
+                            onClick={() => setSelectedAvailabilityId(String(availability.id))}
+                            className={
+                                selectedAvailabilityId === String(availability.id)
+                                    ? "btn btn-sm border-none bg-teal-700 text-white hover:bg-teal-800"
+                                    : "btn btn-sm border-teal-600 bg-white text-teal-700 hover:border-teal-500 hover:bg-teal-100 dark:bg-teal-950 dark:text-teal-100 dark:hover:bg-teal-800"
+                            }
+                        >
+                            {formatTimeSlotLabel(availability)}
+                        </button>
+                    ))}
+                </div>
+            </div>
 
-
-            <label className="block space-y-2">
-                Nombre de personnes :
+            <label className="form-control space-y-2">
+                <div className="label p-0">
+                    <span className="label-text flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                        <FaUsers className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
+                        Nombre de personnes
+                    </span>
+                    {maxPeople && (
+                        <span className="label-text-alt text-slate-600 dark:text-teal-100">
+                            max. {maxPeople}
+                        </span>
+                    )}
+                </div>
                 <input
                     type="text"
                     inputMode="numeric"
@@ -173,26 +199,42 @@ export default function GuideBookingForm({ availabilities, onSubmit, status }) {
                     disabled={!selectedAvailabilityId}
                     onChange={(e) => setPeople(sanitizePeople(e.target.value))}
                     onKeyDown={handlePeopleKeyDown}
-                    className="w-full rounded-md border border-teal-700 px-3 py-2"
+                    placeholder="ex: 2"
+                    className="input input-bordered w-full border-teal-600 bg-white focus:border-teal-300 focus:outline-none dark:bg-teal-950 dark:text-teal-50"
                 />
             </label>
 
-            <textarea
-                placeholder="Message (facultatif)"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="w-full h-25 rounded-md border border-teal-700 py-2 px-3"
-            />
+            <label className="form-control space-y-2">
+                <div className="label p-0">
+                    <span className="label-text flex items-center gap-2 font-semibold text-slate-900 dark:text-white">
+                        <FaEnvelope className="text-teal-700 dark:text-teal-100" aria-hidden="true" />
+                        Message
+                    </span>
+                    <span className="label-text-alt text-slate-600 dark:text-teal-100">
+                        facultatif
+                    </span>
+                </div>
+                <textarea
+                    placeholder="Précisez vos attentes pour cette visite..."
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    className="textarea textarea-bordered min-h-28 w-full border-teal-600 bg-white focus:border-teal-300 focus:outline-none dark:bg-teal-950 dark:text-teal-50"
+                />
+            </label>
 
             <button
                 type="submit"
                 disabled={!selectedDate || !selectedAvailabilityId || !people}
-                className="rounded-md bg-teal-700 px-4 py-2 font-semibold text-white disabled:cursor-not-allowed disabled:bg-teal-300"
+                className="btn border-none bg-teal-500 text-white hover:bg-teal-600 disabled:bg-teal-300 disabled:text-white"
             >
                 Confirmer la réservation
             </button>
 
-            {status && <p>{status}</p>}
+            {status && (
+                <p className="text-sm font-medium text-teal-700 dark:text-teal-100">
+                    {status}
+                </p>
+            )}
         </form>
     )
 }

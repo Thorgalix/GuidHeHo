@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useState } from "react"
 import { api } from "../../../../services/api"
 
 export function useSearchGuides() {
@@ -16,7 +16,7 @@ export function useSearchGuides() {
 
     // Comportements
 
-    async function fetchGuides(filters = {}, urlOverride = null, isActive = () => true) {
+    const fetchGuides = useCallback(async function fetchGuides(filters = {}, urlOverride = null, isActive = () => true) {
         // Cette fonction récupère les guides, soit avec des filtres, soit avec une URL de pagination.
         setLoading(true)
         setError("")
@@ -34,6 +34,7 @@ export function useSearchGuides() {
                 if (filters.language) params.append("language", filters.language)
                 if (filters.max_price) params.append("max_price", filters.max_price)
                 if (filters.number_of_people) params.append("number_of_people", filters.number_of_people)
+                if (filters.page) params.append("page", filters.page)
 
                 const query = params.toString()
                 if (query) url += `?${query}`
@@ -48,7 +49,7 @@ export function useSearchGuides() {
             setNext(data.next ?? null)
             setPrevious(data.previous ?? null)
             setCount(data.count ?? data.length ?? 0)
-            let nextCurrentPage = 1
+            let nextCurrentPage = Number(filters.page || 1)
             if (urlOverride) {
                 const parsedUrl = new URL(urlOverride)
                 nextCurrentPage = Number(parsedUrl.searchParams.get("page") || 1)
@@ -61,7 +62,7 @@ export function useSearchGuides() {
         } finally {
             setLoading(false)
         }
-    }
+    }, [])
 
     return {
         guides,

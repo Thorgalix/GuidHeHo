@@ -1,3 +1,5 @@
+import { useEffect, useMemo } from "react"
+import { useSearchParams } from "react-router-dom"
 import { FaCalendarCheck, FaMapMarkedAlt, FaSearchLocation, FaStar } from "react-icons/fa"
 import GuideCard from "../../features/guides/search/components/GuideCard"
 import FilterBar from "../../features/guides/search/components/FilterBar"
@@ -23,6 +25,7 @@ const steps = [
 ]
 
 export default function SearchPage() {
+    const [searchParams, setSearchParams] = useSearchParams()
     const {
         guides,
         loading,
@@ -35,6 +38,83 @@ export default function SearchPage() {
         pageSize,
         fetchGuides,
     } = useSearchGuides()
+
+    const filtersFromUrl = useMemo(() => ({
+        city: searchParams.get("city") || "",
+        date: searchParams.get("date") || "",
+        theme: searchParams.get("theme") || "",
+        language: searchParams.get("language") || "",
+        max_price: searchParams.get("max_price") || "",
+        number_of_people: searchParams.get("number_of_people") || "",
+        page: searchParams.get("page") || "",
+    }), [searchParams])
+
+    const filterFormValues = useMemo(() => ({
+        city: filtersFromUrl.city,
+        date: filtersFromUrl.date,
+        theme: filtersFromUrl.theme,
+        language: filtersFromUrl.language,
+        max_price: filtersFromUrl.max_price,
+        number_of_people: filtersFromUrl.number_of_people,
+    }), [filtersFromUrl])
+
+    const hasSearchFilters = useMemo(() => {
+        return Object.values(filterFormValues).some(Boolean)
+    }, [filterFormValues])
+
+    const hasSearchParams = useMemo(() => {
+        return Object.values(filtersFromUrl).some(Boolean)
+    }, [filtersFromUrl])
+
+    useEffect(() => {
+        let isActive = true
+
+        if (hasSearchParams) {
+            fetchGuides(filtersFromUrl, null, () => isActive)
+        }
+
+        return () => {
+            isActive = false
+        }
+    }, [filtersFromUrl, hasSearchParams, fetchGuides])
+
+    function getSearchParamsFromFilters(filters) {
+        const params = new URLSearchParams()
+
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value) params.set(key, value)
+        })
+
+        return params
+    }
+
+    function handleSearch(filters) {
+        const nextParams = getSearchParamsFromFilters(filters)
+
+        if (nextParams.toString() === searchParams.toString()) {
+            fetchGuides(filters)
+            return
+        }
+
+        setSearchParams(nextParams)
+    }
+
+    function handlePageChange(url) {
+        const pageUrl = new URL(url, window.location.origin)
+        const page = pageUrl.searchParams.get("page") || "1"
+        const nextFilters = {
+            ...filterFormValues,
+            page,
+        }
+
+        if (!hasSearchFilters) {
+            fetchGuides(nextFilters)
+            return
+        }
+
+        setSearchParams(getSearchParamsFromFilters(nextFilters))
+    }
+
     const totalPages = Math.ceil(count / pageSize)
     const shouldShowResults = loading || error || hasSearched
     // Affichage
@@ -55,7 +135,7 @@ export default function SearchPage() {
                         </p>
                     </div>
 
-                    <div className="rounded-lg border border-teal-600 bg-white/80 p-5 shadow-md dark:bg-teal-900/70">
+                    <div className="rounded-lg border border-teal-500 bg-white/80 p-5 shadow-md dark:bg-teal-700/70">
                         <div className="flex items-center gap-3 text-teal-700 dark:text-teal-100">
                             <FaMapMarkedAlt className="text-3xl" aria-hidden="true" />
                             <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
@@ -66,7 +146,7 @@ export default function SearchPage() {
                         <div className="mt-5 space-y-4">
                             {steps.map(({ title, text, Icon }) => (
                                 <article key={title} className="flex gap-4">
-                                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-950 dark:text-teal-100">
+                                    <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-teal-100 text-teal-700 dark:bg-teal-900 dark:text-teal-100">
                                         <Icon aria-hidden="true" />
                                     </span>
                                     <div>
@@ -85,7 +165,11 @@ export default function SearchPage() {
             </section>
 
             <section aria-labelledby="search-title" className="mx-auto mt-8 max-w-6xl">
-                <FilterBar onSearch={fetchGuides} />
+                <FilterBar
+                    key={searchParams.toString()}
+                    onSearch={handleSearch}
+                    initialFilters={filterFormValues}
+                />
             </section>
 
             {shouldShowResults ? (
@@ -128,7 +212,7 @@ export default function SearchPage() {
                                     type="button"
                                     className="join-item btn"
                                     disabled={!previous}
-                                    onClick={() => fetchGuides({}, previous)}
+                                    onClick={() => handlePageChange(previous)}
                                 >
                                     <span aria-hidden="true">«</span>
                                     <span className="sr-only">Page précédente</span>
@@ -146,7 +230,7 @@ export default function SearchPage() {
                                     type="button"
                                     className="join-item btn"
                                     disabled={!next}
-                                    onClick={() => fetchGuides({}, next)}
+                                    onClick={() => handlePageChange(next)}
                                 >
                                     <span aria-hidden="true">»</span>
                                     <span className="sr-only">Page suivante</span>
@@ -166,7 +250,7 @@ export default function SearchPage() {
                     )}
                 </>
             ) : (
-                <p className="mx-auto mt-6 max-w-6xl text-sm text-slate-700 dark:text-teal-100">
+                <p className="mt-5 text-center text-lg leading-8 text-slate-700 dark:text-teal-50">
                     Lancez une recherche pour afficher les guides disponibles.
                 </p>
             )}

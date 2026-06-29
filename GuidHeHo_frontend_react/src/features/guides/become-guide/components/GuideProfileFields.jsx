@@ -25,26 +25,56 @@ export default function GuideProfileFields({ bio, setBio, city, setCity, price, 
 
 
     return (
-        <div>
-            <div>
-                <input placeholder="Bio"
+        <div className="grid gap-4 md:grid-cols-2">
+            <label className="form-control md:col-span-2">
+                <div className="label">
+                    <span className="label-text font-semibold text-slate-900 dark:text-white">
+                        Bio
+                    </span>
+                </div>
+
+                <textarea
+                    placeholder="Présentez votre expérience, votre style de visite et ce que vous aimez partager."
                     value={bio}
                     onChange={(e) => setBio(e.target.value)}
-                />
+                    className="textarea textarea-bordered min-h-28 w-full border-teal-600 bg-white text-slate-900 focus:outline-none dark:bg-teal-950 dark:text-teal-50"
+                >
+                </textarea>
+            </label>
 
+            <label className="form-control">
+                <div className="label">
+                    <span className="label-text font-semibold text-slate-900 dark:text-white">
+                        Ville
+                    </span>
+                </div>
 
-                <input placeholder="Ville"
+                <input
+                    type="text"
+                    placeholder="ex: Paris, Lyon, Marseille..."
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
+                    className="input input-bordered w-full border-teal-600 bg-white text-slate-900 focus:outline-none dark:bg-teal-950 dark:text-teal-50"
                 />
+            </label>
 
-                <input type="text" inputMode="decimal" placeholder="Prix par heure"
+            <label className="form-control">
+                <div className="label">
+                    <span className="label-text font-semibold text-slate-900 dark:text-white">
+                        Prix par heure
+                    </span>
+                </div>
+
+                <input
+                    type="text"
+                    inputMode="decimal"
+                    placeholder="ex: 25€"
                     value={price}
                     onChange={(e) => setPrice(sanitizePrice(e.target.value))}
                     onKeyDown={handlePriceKeyDown}
+                    className="input input-bordered w-full border-teal-600 bg-white text-slate-900 focus:outline-none dark:bg-teal-950 dark:text-teal-50"
                 />
-
-            </div>
-        </div>
+            </label>
+        </div >
     )
 }
