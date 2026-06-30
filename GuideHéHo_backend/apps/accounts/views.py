@@ -209,7 +209,9 @@ class PasswordResetRequestView(APIView):
         uid = urlsafe_base64_encode(force_bytes(user.pk))
         token = token_generator.make_token(user)
 
-        frontend = os.environ.get('FRONTEND_URL')
+        # Accepte FRONTEND_URL avec ou sans slash final sans produire une URL
+        # comme http://localhost:5173//reset-password.
+        frontend = os.environ.get('FRONTEND_URL', '').rstrip('/')
         if frontend:
             reset_link = f"{frontend}/reset-password?uid={uid}&token={token}"
         else:
