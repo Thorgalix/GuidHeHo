@@ -58,10 +58,6 @@ export default function SearchPage() {
         number_of_people: filtersFromUrl.number_of_people,
     }), [filtersFromUrl])
 
-    const hasSearchFilters = useMemo(() => {
-        return Object.values(filterFormValues).some(Boolean)
-    }, [filterFormValues])
-
     const hasSearchParams = useMemo(() => {
         return Object.values(filtersFromUrl).some(Boolean)
     }, [filtersFromUrl])
@@ -89,10 +85,12 @@ export default function SearchPage() {
     }
 
     function handleSearch(filters) {
-        const nextParams = getSearchParamsFromFilters(filters)
+        const hasFilters = Object.values(filters).some(Boolean)
+        const nextFilters = hasFilters ? filters : { ...filters, page: "1" }
+        const nextParams = getSearchParamsFromFilters(nextFilters)
 
         if (nextParams.toString() === searchParams.toString()) {
-            fetchGuides(filters)
+            fetchGuides(nextFilters)
             return
         }
 
@@ -105,11 +103,6 @@ export default function SearchPage() {
         const nextFilters = {
             ...filterFormValues,
             page,
-        }
-
-        if (!hasSearchFilters) {
-            fetchGuides(nextFilters)
-            return
         }
 
         setSearchParams(getSearchParamsFromFilters(nextFilters))

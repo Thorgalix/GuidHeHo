@@ -6,6 +6,7 @@ import {
     FaMapMarkedAlt,
     FaRegHeart,
     FaStar,
+    FaRegStar,
 } from "react-icons/fa"
 import { useState, useContext } from "react"
 import { useNavigate, useParams } from "react-router-dom"
@@ -38,6 +39,7 @@ export default function GuideDetailsPage() {
         loading,
         error,
         availabilities,
+        averageRating,
     } = useGuideDetails(id)
 
     const {
@@ -342,6 +344,15 @@ export default function GuideDetailsPage() {
                                 </h2>
 
                                 <dl className="space-y-3 text-sm text-slate-700 dark:text-teal-50">
+                                    <div className="flex justify-between gap-4">
+                                        <dt className="font-semibold">Note moyenne</dt>
+                                        <dd className="mt-1 flex items-center gap-1 text-teal-700 dark:text-teal-100">{Array.from({ length: 5 }, (_, index) => {
+                                            const Icon = index < averageRating ? FaStar : FaRegStar
+
+                                            return <Icon key={index} aria-hidden="true" />
+                                        })}</dd>
+                                    </div>
+
                                     <div className="flex justify-between gap-4">
                                         <dt className="font-semibold">Disponibilités</dt>
                                         <dd>{availabilities.length}</dd>

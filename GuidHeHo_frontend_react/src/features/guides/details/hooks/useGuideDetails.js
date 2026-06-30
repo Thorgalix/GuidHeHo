@@ -9,6 +9,7 @@ export function useGuideDetails(id) {
     const [error, setError] = useState("")
     const [availabilities, setAvailabilities] = useState([])
     const [profilePictureUrl, setProfilePictureUrl] = useState("")
+    const [averageRating, setAverageRating] = useState(null)
 
     // Comportements
     useEffect(() => {
@@ -30,6 +31,7 @@ export function useGuideDetails(id) {
 
                 setGuide(guideData)
                 setProfilePictureUrl(guideData.profile_picture_url)
+                setAverageRating(guideData.average_rating)
                 setAvailabilities(
                     // On garde uniquement les créneaux encore réservables, triés par date.
                     (availabilitiesData.results ?? [])
@@ -63,5 +65,6 @@ export function useGuideDetails(id) {
         error,
         availabilities,
         profilePictureUrl,
+        averageRating,
     }
 }

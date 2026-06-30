@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { api } from "../../../services/api";
-import { FaCalendarCheck, FaMapMarkerAlt, FaTrash, FaCheck } from "react-icons/fa";
+import { FaCalendarCheck, FaTrash, FaCheck } from "react-icons/fa";
 
 
 const STATUS_LABELS = {
